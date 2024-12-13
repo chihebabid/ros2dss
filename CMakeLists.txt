@@ -10,6 +10,22 @@ find_package(ament_cmake REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
+
+
+set(dependencies
+        rclcpp
+)
+add_executable(ros2dss src/main.cpp src/DSSPublisher.cpp )
+ament_target_dependencies(ros2dss ${dependencies})
+
+install(TARGETS
+        ros2dss
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        RUNTIME DESTINATION lib/${PROJECT_NAME}
+)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
