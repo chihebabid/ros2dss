@@ -10,6 +10,8 @@
 class DSSSubscriber : public rclcpp::Node {
 public:
 	DSSSubscriber();
+private:
+	void receiveMarking();
 };
 
 

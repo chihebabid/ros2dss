@@ -7,3 +7,8 @@
 
 DSSSubscriber::DSSSubscriber(): Node("speed_calc_node") {
 }
+
+void DSSSubscriber::receiveMarking() {
+
+}
+
