@@ -17,7 +17,8 @@ find_package(std_msgs REQUIRED)
 set(dependencies
         rclcpp
 )
-add_executable(ros2dss src/main.cpp src/DSSPublisher.cpp )
+add_executable(ros2dss src/main.cpp src/DSSPublisher.cpp src/DSSSubscriber.cpp)
+target_include_directories(ros2dss PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/ros2dss)
 ament_target_dependencies(ros2dss ${dependencies})
 
 install(TARGETS

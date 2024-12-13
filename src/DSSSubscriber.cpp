@@ -3,3 +3,7 @@
 //
 
 #include "DSSSubscriber.h"
+
+
+DSSSubscriber::DSSSubscriber(): Node("speed_calc_node") {
+}

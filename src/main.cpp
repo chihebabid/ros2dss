@@ -2,14 +2,17 @@
 // Created by chiheb on 12/12/24.
 //
 #include "rclcpp/rclcpp.hpp"
-#include "../include/ros2dss/DSSPublisher.h"
+#include "DSSPublisher.h"
+#include "DSSSubscriber.h"
 int main(int argc, char * argv[]) {
     rclcpp::init(argc, argv);
-    auto node = rclcpp::Node::make_shared("simple_node");
+    auto  pubNode {std::make_shared<DSSPublisher>()};
+    auto  subNode {std::make_shared<DSSSubscriber>()};
     rclcpp::executors::MultiThreadedExecutor executor;
-    executor.add_node(node);
+    executor.add_node(pubNode);
+    executor.add_node(subNode);
     std::cout<<"Running..\n";
-    rclcpp::spin(node);
+    executor.spin();
     rclcpp::shutdown();
     std::cout<<"Hello   kok\n";
     return 0;

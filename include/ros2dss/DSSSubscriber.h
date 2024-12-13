@@ -5,10 +5,11 @@
 #ifndef DSSSUBSCRIBER_H
 #define DSSSUBSCRIBER_H
 
+#include "rclcpp/rclcpp.hpp"
 
-
-class DSSSubscriber {
-
+class DSSSubscriber : public rclcpp::Node {
+public:
+	DSSSubscriber();
 };
 
 
