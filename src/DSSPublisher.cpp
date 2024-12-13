@@ -5,5 +5,6 @@
 #include "DSSPublisher.h"
 
 DSSPublisher::DSSPublisher():Node("dss_publisher") {
+
 }
 
