@@ -4,8 +4,10 @@
 #include "rclcpp/rclcpp.hpp"
 #include "DSSPublisher.h"
 #include "DSSSubscriber.h"
+#include "BuildPetri.h"
 int main(int argc, char * argv[]) {
     rclcpp::init(argc, argv);
+    dss::BuildPetri construire;
     auto  pubNode {std::make_shared<DSSPublisher>()};
     auto  subNode {std::make_shared<DSSSubscriber>()};
     rclcpp::executors::MultiThreadedExecutor executor;
