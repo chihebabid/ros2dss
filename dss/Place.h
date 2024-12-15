@@ -8,9 +8,8 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
-#include <cstdint>
-#include "Node.h"
-
+#include "misc.h"
+namespace dss {
 class Place : public Node {
 public:
     void subTokens(const uint32_t nb);
@@ -27,7 +26,7 @@ public:
 
 private:
 
-    uint32_t m_nb_tokens {0};
+    uint32_t m_nb_tokens {};
 };
-
+}
 #endif // !defined(AFX_PLACE_H__4A191FB4_6CFF_4348_9744_00D6AE78A3E1__INCLUDED_)

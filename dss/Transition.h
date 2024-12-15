@@ -9,10 +9,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-
-#include "Node.h"
-#include "Place.h"
-#include "PetriNet.h"    // Added by ClassView
+#include "misc.h"
+namespace dss {
 struct transition_t {
     Place *place;
     int poids {};
@@ -74,5 +72,5 @@ private:
     vector<int> m_poids_entrees;
 
 };
-
+}
 #endif // !defined(AFX_TRANSITION_H__AD708264_D0C2_490C_967C_95F9B5F7195D__INCLUDED_)

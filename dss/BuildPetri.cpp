@@ -29,8 +29,9 @@ namespace dss {
 
 
         fp = fopen(m_nom_fichier.c_str(), "r");
+        PetriNet *petri {nullptr};
         if (fp) {
-            //Cr�er le r�seau de Petri
+
             std::cout << "Loading Petri net from file..." << std::endl;
 
             //Lecture de nombre de modules
@@ -42,7 +43,7 @@ namespace dss {
             std::cout << "This modular Petri net consists of " << mot << " modules" << std::endl;
             std::cout << "Displaying informations related to the modular Petri net" << std::endl;
             //Initialisation
-            PetriNet *petri;
+
             std::vector<Place> liste_places;
             std::vector<Transition> liste_transitions;
             // for (unsigned int ii = 0; ii < nb_modules; ii++) {
@@ -56,7 +57,7 @@ namespace dss {
                 std::string chaine;
                 petri = new PetriNet();
                 // Sp�cifier le num du module
-                petri->setNumero(ii);
+                //petri->setNumero(ii);
                 Place place;
                 liste_places.clear();
                 /******************************************/
@@ -179,18 +180,18 @@ namespace dss {
             /*************************************************/
             std::cout << "Determining synchronised transitions..." << std::endl;
             getNextWord();
-            std::string transition;
+            //std::string transition;
             std::vector<string> liste_sync;
             std::string temp;
             do {
-                transition = getNextWord();
-                if (transition != "End") {
-                    cout << transition.c_str() << " ";
-                    temp = transition;
+                nom_transition = getNextWord();
+                if (nom_transition != "End") {
+                    cout << nom_transition.c_str() << " ";
+                    temp = nom_transition;
                     liste_sync.emplace_back(std::move(temp));
                 }
 
-            } while (transition != "End");
+            } while (nom_transition != "End");
            // MPetri->setSync(liste_sync);
         } else {
             cout << "Error: can't open file";

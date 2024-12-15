@@ -1,9 +1,9 @@
 // PetriNet.cpp: implementation of the PetriNet class.
 //
 //////////////////////////////////////////////////////////////////////
-#include <algorithm>
-#include "PetriNet.h"
 #include "misc.h"
+
+namespace dss {
 
 typedef vector<element_t> Pile;
 typedef vector<PElement> PStack;
@@ -292,4 +292,5 @@ bool PetriNet::areTransitionsIncluded(const std::set<string> &list_transitions) 
         }
     }
     return true;
+}
 }

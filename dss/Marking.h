@@ -11,15 +11,16 @@
 #endif // _MSC_VER > 1000
 
 
-class Transition;
 
-class SCC;
 
 using namespace std;
 typedef unsigned char Octet;
 
 
 namespace dss {
+    class Transition;
+
+    class SCC;
 class Marking {
 public:
     int index; // Used in Tarjan algorithm

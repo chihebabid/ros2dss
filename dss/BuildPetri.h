@@ -4,7 +4,7 @@
 
 #ifndef BUILDPETRI_H
 #define BUILDPETRI_H
-
+#include "misc.h"
 
 namespace dss {
     class BuildPetri {

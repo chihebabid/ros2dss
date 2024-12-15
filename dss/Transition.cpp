@@ -3,10 +3,10 @@
 //////////////////////////////////////////////////////////////////////
 
 
-#include "Transition.h"
+#include "misc.h"
 
 
-
+namespace dss {
 bool Transition::isLocallyFirable() {
     for (auto & i_place : ml_input_places) {
         if (i_place.place->getTokens() < i_place.poids) return false;
@@ -57,4 +57,4 @@ int Transition::getPetri() {
     return m_petri_num;
 }
 
-
+}

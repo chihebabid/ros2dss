@@ -7,6 +7,7 @@
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
+namespace dss {
 Marking::Marking(const size_t size) : m_sccContainer(nullptr),m_data(size) {
 
 }
@@ -59,4 +60,5 @@ ostream &operator<<(ostream &stream, const Marking &m) {
         stream << "\n";
     }
     return stream;
+}
 }

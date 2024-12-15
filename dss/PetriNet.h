@@ -11,17 +11,19 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-class Transition;
 
-class ListMarquage;
-
-class MetaState;
-
-class SCC;
 
 using std::vector;
 using std::string;
 namespace dss {
+    class Transition;
+
+    class ListMarquage;
+
+    class MetaState;
+
+    class SCC;
+
     class PetriNet {
     public:
         string getSCCName(SCC *scc);
