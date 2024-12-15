@@ -23,6 +23,7 @@ public:
     void setData(ProductSCC source, TransitionFusionSet *transition, MetaState *destination);
 
     MetaState *getMetaStateDest();
+
     ProductSCC *getStartProduct();
 private:
     TransitionFusionSet *m_fusion;

@@ -15,7 +15,7 @@ void TransitionFusionSet::addTransition(Transition *transition) {
     m_transitions.push_back(transition);
 }
 
-bool TransitionFusionSet::isFranchissable() {
+bool TransitionFusionSet::isEnabled() {
     for (const auto transition : m_transitions)
         if (!transition->isLocallyFirable()) return false;
     return true;

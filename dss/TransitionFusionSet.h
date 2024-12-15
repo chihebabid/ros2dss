@@ -31,7 +31,7 @@ public:
 
     string getFusionName();
 
-    bool isFranchissable();
+    bool isEnabled();
 
     void addTransition(Transition *transition);
 
