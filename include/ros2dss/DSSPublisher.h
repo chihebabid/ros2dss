@@ -11,6 +11,7 @@
 class DSSPublisher : public rclcpp::Node {
 public:
     DSSPublisher(dss::PetriNet  *);
+    void publishCommand(const string&);
 private:
     void init();
     rclcpp::Publisher<std_msgs::msg::String>::SharedPtr m_command_pub;

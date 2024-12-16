@@ -1,11 +1,14 @@
 //
 // Created by chiheb on 12/12/24.
 //
+#include <chrono>
 #include "rclcpp/rclcpp.hpp"
+#include "misc.h"
 #include "DSSPublisher.h"
 #include "DSSSubscriber.h"
-#include "misc.h"
+#include "SMBuilder.h"
 
+using namespace chrono_literals;
 int main(int argc, char * argv[]) {
     dss::BuildPetri build;
     if (argc!=2) {
@@ -20,8 +23,23 @@ int main(int argc, char * argv[]) {
     rclcpp::executors::MultiThreadedExecutor executor;
     executor.add_node(pubNode);
     executor.add_node(subNode);
-    executor.spin();
-    rclcpp::shutdown();
 
+
+    rclcpp::WallRate loop_rate(500ms);
+    SMBuilder sm_builder {petri,pubNode};
+    while (rclcpp::ok())
+    {
+        try {
+            sm_builder.run();
+            executor.spin_all(10000ns);
+        } catch (const rclcpp::exceptions::RCLError & e)
+        {
+
+        }
+        loop_rate.sleep();
+    }
+
+    rclcpp::shutdown();
+    delete petri;
     return 0;
 }

@@ -5,7 +5,7 @@
 #include "DSSSubscriber.h"
 
 
-DSSSubscriber::DSSSubscriber(): Node("speed_calc_node") {
+DSSSubscriber::DSSSubscriber(): Node("dss_receiver") {
 }
 
 void DSSSubscriber::receiveMarking() {
