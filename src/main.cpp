@@ -31,7 +31,7 @@ int main(int argc, char * argv[]) {
     {
         try {
             sm_builder.run();
-            executor.spin_all(10000ns);
+            executor.spin_all(0ns);
         } catch (const rclcpp::exceptions::RCLError & e)
         {
 

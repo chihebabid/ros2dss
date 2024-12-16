@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.8)
-project(ros2dss)
+project(ros2dss_project)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  add_compile_options(-Wall -Wextra -Wpedantic)
+  add_compile_options(-Wall -Wextra -Wpedantic -std=c++17)
 endif()
 
 # find dependencies
@@ -13,6 +13,16 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 
+find_package(rosidl_default_generators REQUIRED)
+
+set(msg_files	"msg/Command.msg")
+
+rosidl_generate_interfaces(${PROJECT_NAME}
+        ${msg_files}
+)
+
+ament_export_dependencies(rosidl_default_runtime)
+rosidl_get_typesupport_target(cpp_typesupport_target  ${PROJECT_NAME} rosidl_typesupport_cpp)
 
 set(dependencies
         rclcpp std_msgs
@@ -29,6 +39,9 @@ file(GLOB_RECURSE SOURCES
 add_executable(ros2dss src/main.cpp src/DSSPublisher.cpp src/DSSSubscriber.cpp src/SMBuilder.cpp ${SOURCES})
 target_include_directories(ros2dss PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/ros2dss dss)
 ament_target_dependencies(ros2dss ${dependencies})
+
+target_link_libraries(ros2dss "${cpp_typesupport_target}")
+
 
 install(TARGETS
         ros2dss

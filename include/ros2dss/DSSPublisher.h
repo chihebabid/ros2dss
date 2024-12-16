@@ -6,15 +6,16 @@
 #define DSSPUBLISHER_H
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
+#include "ros2dss_project/msg/command.hpp"
 #include "misc.h"
 
 class DSSPublisher : public rclcpp::Node {
 public:
     DSSPublisher(dss::PetriNet  *);
-    void publishCommand(const string&);
+    void publishCommand(const ros2dss_project::msg::Command&);
 private:
     void init();
-    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr m_command_pub;
+    rclcpp::Publisher<ros2dss_project::msg::Command>::SharedPtr m_command_pub;
     dss::PetriNet  *m_petri_net;
 };
 
