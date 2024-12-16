@@ -30,11 +30,11 @@ namespace dss {
 
         int addPlacesEntrees(string nom_transition, vector<string> liste_places_entrees, vector<int> liste_poids);
 
-        Transition *getTransitionAdresse(const string nom_transition);
+        Transition *getTransitionPtr(const string& nom_transition);
 
-        int getNumero();
+        uint32_t getPetriID();
 
-        void setNumero(const int index);
+        void setPetriID(const uint32_t index);
 
         string getMarquageName(Marking marquage);
 
@@ -48,7 +48,7 @@ namespace dss {
 
         Place getPlace(const int index);
 
-        Transition *getTransitionAdresse(const int code);
+        Transition *getTransitionPtr(const int code);
 
         void addListTransitions(vector<Transition> liste_transitions);
 
@@ -65,8 +65,12 @@ namespace dss {
         void printMetaStateEx(MetaState *ms);
 
         bool areTransitionsIncluded(const std::set<string> &list_transitions);
+
+        uint32_t getModulesCount() const ;
+        void setModulesCount(const uint32_t);
     private:
-        int m_numero;
+        uint32_t m_petri_id;
+        uint32_t m_modules_count {};
 
         vector<Transition *> getListeTransitionsFranchissables();
 

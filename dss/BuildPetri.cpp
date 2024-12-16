@@ -30,14 +30,18 @@ namespace dss {
         PetriNet *petri{nullptr};
         if (fp) {
             std::cout << "Loading Petri net from file..." << std::endl;
-
+            petri = new PetriNet();
             std::string mot;
             getNextWord();
             mot = getNextWord();
-            uint32_t id_module{static_cast<uint32_t>(std::stoi(mot.c_str()))};
-            petri = new PetriNet();
-            petri->setNumero(id_module);
-            std::cout << "Loading module with order " << id_module << " modules" << std::endl;
+            uint32_t int_value{static_cast<uint32_t>(std::stoi(mot.c_str()))};
+            petri->setModulesCount(int_value);
+            getNextWord();
+            mot = getNextWord();
+            int_value=static_cast<uint32_t>(std::stoi(mot.c_str()));
+            petri->setPetriID(int_value);
+            std::cout<<"#Modules: "<<petri->getModulesCount()<<std::endl;
+            std::cout << "Module ID: " << petri->getPetriID() << " modules" << std::endl;
             std::cout << "Displaying informations related to the modular Petri net" << std::endl;
             //Initialisation
 

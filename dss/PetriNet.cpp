@@ -29,7 +29,7 @@ void PetriNet::addListPlaces(vector<Place> liste_places) {
 
 void PetriNet::addListTransitions(vector<Transition> liste_transitions) {
     for (unsigned int i = 0; i < liste_transitions.size(); i++) {
-        liste_transitions[i].setPetri(this->getNumero());
+        liste_transitions[i].setPetri(this->getPetriID());
         ml_transitions.push_back(liste_transitions[i]);
     }
 }
@@ -49,7 +49,7 @@ Place *PetriNet::getPlaceAdresse(string placename) {
 ///////////////////////////////////////////////////////////////////////////////
 // Retourner un pointeur sur une transition ayant le code pass� en param�tre //
 ///////////////////////////////////////////////////////////////////////////////
-Transition *PetriNet::getTransitionAdresse(const int code) {
+Transition *PetriNet::getTransitionPtr(const int code) {
     int indice = -1;
     for (int i = 0; i < ml_transitions.size() && indice == -1; i++) {
         if (code == ml_transitions[i].getCode()) indice = i;
@@ -94,7 +94,7 @@ vector<Transition *> PetriNet::getListeTransitionsFranchissables() {
 }
 
 void PetriNet::tirer(Transition &t) {
-    Transition *transition = getTransitionAdresse(t.getCode());
+    Transition *transition = getTransitionPtr(t.getCode());
     if (transition->isFranchissable()) transition->fire();
 }
 
@@ -165,24 +165,23 @@ string PetriNet::getMarquageName(Marking marquage) {
 ///////////////////////////////////
 // Sp�cifier le num�ro du module //
 ///////////////////////////////////
-void PetriNet::setNumero(const int index) {
-    m_numero = index;
+void PetriNet::setPetriID(const uint32_t index) {
+    m_petri_id = index;
 }
 
 /////////////////////////////////////
 // Renvoyer le num�ro de ce module //
 /////////////////////////////////////
-int PetriNet::getNumero() {
-    return m_numero;
+uint32_t PetriNet::getPetriID() {
+    return m_petri_id;
 }
 
 /////////////////////////////////////////////////////////////////////
 // Renvoyer un pointeur vers une transition en connaissant son nom //
 /////////////////////////////////////////////////////////////////////
-Transition *PetriNet::getTransitionAdresse(const string nom_transition) {
-
-    for (int i = 0; i < ml_transitions.size(); i++) {
-        if (nom_transition == ml_transitions[i].getName())  return &ml_transitions[i];
+Transition *PetriNet::getTransitionPtr(const string& nom_transition) {
+    for (auto & transition : ml_transitions) {
+        if (nom_transition == transition.getName())  return &transition;
     }
     return nullptr;
 }
@@ -293,4 +292,12 @@ bool PetriNet::areTransitionsIncluded(const std::set<string> &list_transitions) 
     }
     return true;
 }
+
+
+    uint32_t PetriNet::getModulesCount() const {
+        return m_modules_count;
+    }
+    void PetriNet::setModulesCount(const uint32_t v) {
+        m_modules_count=v;
+    }
 }

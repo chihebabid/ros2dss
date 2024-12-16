@@ -7,8 +7,10 @@
 #include "DSSPublisher.h"
 #include "DSSSubscriber.h"
 #include "SMBuilder.h"
+#include "gmisc.h"
 
 using namespace chrono_literals;
+
 int main(int argc, char * argv[]) {
     dss::BuildPetri build;
     if (argc!=2) {
