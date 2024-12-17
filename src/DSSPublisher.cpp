@@ -5,7 +5,10 @@
 #include "DSSPublisher.h"
 
 DSSPublisher::DSSPublisher(dss::PetriNet  *petri):Node("dss_publisher"),m_petri_net(petri) {
-    m_command_pub=create_publisher<ros2dss_project::msg::Command>("dss/command",10);
+    rclcpp::QoS qos(rclcpp::KeepLast(petri->getModulesCount()));  // Keep the last message
+    qos.durability(RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL);
+    m_command_pub=create_publisher<ros2dss_project::msg::Command>("dss/command",qos);
+
     //init();
 }
 
@@ -16,4 +19,8 @@ void DSSPublisher::init() {
 
 void DSSPublisher::publishCommand(const ros2dss_project::msg::Command &msg) {
     m_command_pub->publish(msg);
+}
+
+int DSSPublisher::getCommandSubCount() const {
+    return m_command_pub->get_subscription_count();
 }

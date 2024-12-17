@@ -21,7 +21,7 @@ int main(int argc, char * argv[]) {
     auto petri {build.getPetriNet()};
     rclcpp::init(argc, argv);
     auto  pubNode {std::make_shared<DSSPublisher>(petri)};
-    auto  subNode {std::make_shared<DSSSubscriber>()};
+    auto  subNode {std::make_shared<DSSSubscriber>(petri)};
     rclcpp::executors::MultiThreadedExecutor executor;
     executor.add_node(pubNode);
     executor.add_node(subNode);
