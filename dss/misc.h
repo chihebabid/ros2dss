@@ -23,7 +23,8 @@
 #include "SCC.h"
 #include "ProductSCC.h"
 #include "ArcSync.h"
-
+#include "ModuleSS.h"
+#include "SSBuilder.h"
 namespace dss {
     struct element_t {
         Marking marquage;
