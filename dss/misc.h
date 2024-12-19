@@ -11,11 +11,11 @@
 #include <cstdint>
 #include <set>
 #include <algorithm>
+#include "ArrayModel.h"
 #include "MarkingArray.h"
 #include "Marking.h"
 #include "Node.h"
 #include "Place.h"
-
 #include "Transition.h"
 #include "TransitionFusionSet.h"
 #include "MetaState.h"

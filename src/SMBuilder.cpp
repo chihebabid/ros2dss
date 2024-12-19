@@ -12,6 +12,7 @@ SMBuilder::SMBuilder(dss::PetriNet *petri, std::shared_ptr<DSSPublisher> &publis
         (*_ptr_modules)[i]=0;
     }
     (*_ptr_modules)[m_petri->getPetriID()-1]=1;
+    m_module_ss=new dss::ModuleSS(m_petri->getPetriID()-1);
 }
 
 void SMBuilder::run() {
@@ -40,14 +41,25 @@ void SMBuilder::run() {
                 RCLCPP_INFO(m_publisher->get_logger(),"Enter\n");
                 once_execution=true;
                 ptrMS=m_petri->getMetaState(m_petri->getMarquage());
-                RCLCPP_INFO(m_publisher->get_logger(), "SCC Name : %s\n",m_petri->getSCCName(ptrMS->getInitialSCC()).c_str());
+                _ptr_metastate_name=std::make_unique<dss::ArrayModel<std::string>>(m_petri->getModulesCount());
+                _ptr_metastate_name->operator[](m_petri->getPetriID()-1)=m_petri->getSCCName(ptrMS->getInitialSCC());
+
             }
             command.cmd="METASTATE";
-            command.scc="";
+            command.param=m_petri->getPetriID();
+            command.scc=(*_ptr_metastate_name)[m_petri->getPetriID()];
+            m_publisher->publishCommand(command);
+            m_current_state=state_t::COMPUTE_ENABLED_SYNC;
+            for (size_t i{};i<_ptr_metastate_name->size();++i) {
+                if (_ptr_metastate_name->operator[](i).empty()) {
+                    m_current_state=state_t::BUILD_META_STATE;
+                    break;
+                }
+            }
             RCLCPP_INFO(m_publisher->get_logger(), "BUILD_META_STATE : %d\n",m_petri->getModulesCount());
 
             break;
-        case state_t::BUILD_LOCAL:
+        case state_t::COMPUTE_ENABLED_SYNC:
             std::cout<<"Build_local\n";
             break;
     }

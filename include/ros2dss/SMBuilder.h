@@ -8,7 +8,7 @@
 #include "misc.h"
 
 class SMBuilder {
-    enum class state_t {INIT,BUILD_META_STATE,BUILD_LOCAL};
+    enum class state_t {INIT,BUILD_META_STATE,COMPUTE_ENABLED_SYNC};
 public:
     SMBuilder(dss::PetriNet *petri, std::shared_ptr<DSSPublisher> &publisher);
     ~SMBuilder() = default;
@@ -17,7 +17,7 @@ private:
     dss::PetriNet *m_petri;
     state_t m_current_state {state_t::INIT};
     std::shared_ptr<DSSPublisher> m_publisher;
-
+    dss::ModuleSS  *m_module_ss {};
 };
 
 

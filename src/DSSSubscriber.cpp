@@ -26,7 +26,7 @@ void DSSSubscriber::command_receiver(const ros2dss_project::msg::Command & msg) 
    }
    else
    if (msg.cmd=="METASTATE") {
-
+       (*_ptr_metastate_name)[msg.param-1]=msg.scc;
    }
 }
 
