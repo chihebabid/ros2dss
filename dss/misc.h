@@ -5,6 +5,7 @@
 #ifndef MISC_H
 #define MISC_H
 #include <string>
+#include <cstring>
 #include <vector>
 #include <iostream>
 #include <cstdint>

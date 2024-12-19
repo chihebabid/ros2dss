@@ -23,7 +23,7 @@ namespace dss {
     }
 
     PetriNet *BuildPetri::getPetriNet() {
-        PetriNet *Petri{nullptr};
+
 
 
         fp = fopen(m_nom_fichier.c_str(), "r");
@@ -175,7 +175,7 @@ namespace dss {
             /*************************************************/
             /** Lecture de transititions de syn,chronisation**/
             /*************************************************/
-            /*std::cout << "Determining synchronised transitions..." << std::endl;
+            std::cout << "Determining synchronised transitions..." << std::endl;
             getNextWord();
             //std::string transition;
             std::vector<string> liste_sync;
@@ -187,8 +187,8 @@ namespace dss {
                     temp = nom_transition;
                     liste_sync.emplace_back(std::move(temp));
                 }
-            } while (nom_transition != "End");*/
-            // MPetri->setSync(liste_sync);
+            } while (nom_transition != "End");
+            petri->setSyncTransitions(liste_sync);
         } else {
             cout << "Error: can't open file";
         }
