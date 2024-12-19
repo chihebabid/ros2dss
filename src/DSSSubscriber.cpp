@@ -24,5 +24,9 @@ void DSSSubscriber::command_receiver(const ros2dss_project::msg::Command & msg) 
    if (msg.cmd=="INIT") {
        (*_ptr_modules)[static_cast<int>(msg.param)-1]=1;
    }
+   else
+   if (msg.cmd=="METASTATE") {
+
+   }
 }
 

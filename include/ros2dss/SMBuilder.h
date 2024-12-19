@@ -8,7 +8,7 @@
 #include "misc.h"
 
 class SMBuilder {
-    enum class state_t {INIT,WAIT_FOR_ALL,BUILD_LOCAL};
+    enum class state_t {INIT,BUILD_META_STATE,BUILD_LOCAL};
 public:
     SMBuilder(dss::PetriNet *petri, std::shared_ptr<DSSPublisher> &publisher);
     ~SMBuilder() = default;

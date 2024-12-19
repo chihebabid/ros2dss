@@ -68,7 +68,7 @@ void ModuleSS::removeMetaState(MetaState *ms) {
     }
 }
 }
-ostream &operator<<(ostream &os, const ModuleSS &ss) {
+ostream &operator<<(ostream &os, const dss::ModuleSS &ss) {
     //os << dt.mo << '/' << dt.da << '/' << dt.yr;
 
     return os;

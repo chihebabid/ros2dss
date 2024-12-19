@@ -19,6 +19,7 @@ class ProductSCC;
 class MetaState {
 public:
     MetaState();
+    explicit MetaState(const size_t s);
     virtual ~MetaState()=default;
 
     vector<ArcSync *> &getSyncSucc();
@@ -37,7 +38,10 @@ public:
     void computeSCCTarjan();
     void setIdModule(const size_t id) { m_id_module = id;}
     [[nodiscard]] size_t getIdModule() const { return m_id_module;}
+    void setSCCName(const string &name,const int pos);
+    std::string& getSCCName(const int pos);
 private:
+    std::vector<std::string> m_metastate_name;
     size_t m_id_module;
     ProductSCC *m_name {nullptr};
     vector<ArcSync *> mArcs;

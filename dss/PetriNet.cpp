@@ -86,7 +86,7 @@ void PetriNet::setMarquage(Marking *marquage) {
 vector<Transition *> PetriNet::getListeTransitionsFranchissables() {
     vector<Transition *> liste_transitions;
     for (int i = 0; i < ml_transitions.size(); i++)
-        if (ml_transitions.at(i).isFranchissable()) {
+        if (ml_transitions[i].isFranchissable()) {
             liste_transitions.push_back(&ml_transitions.at(i));
         }
 
@@ -196,7 +196,7 @@ MetaState *PetriNet::getMetaState(Marking marquage) {
     //vector<Marquage> list_marq_inserted;
     PStack pstack;
     PElement elt;
-    auto *ms = new MetaState();
+    auto *ms = new MetaState(getModulesCount());
     elt.marquage = new Marking(marquage);
     setMarquage(&marquage);
     elt.liste_transitions = getListeTransitionsFranchissables();
@@ -281,7 +281,7 @@ void PetriNet::printMetaStateEx(MetaState *ms) {
 
 
 string PetriNet::getSCCName(SCC *scc) {
-    return getMarquageName(*scc->getListStates()->at(0));
+    return getMarquageName(*(scc->getListStates())->at(0));
 }
 
 bool PetriNet::areTransitionsIncluded(const std::set<string> &list_transitions) {

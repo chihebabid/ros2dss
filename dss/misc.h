@@ -23,6 +23,7 @@
 #include "SCC.h"
 #include "ProductSCC.h"
 #include "ArcSync.h"
+#include "MetaStateName.h"
 #include "ModuleSS.h"
 #include "SSBuilder.h"
 namespace dss {

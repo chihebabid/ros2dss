@@ -16,11 +16,12 @@ SMBuilder::SMBuilder(dss::PetriNet *petri, std::shared_ptr<DSSPublisher> &publis
 
 void SMBuilder::run() {
     auto command {ros2dss_project::msg::Command{}};
-
+    static bool once_execution {false};
+    dss::MetaState *ptrMS {};
     switch (m_current_state) {
         case state_t::INIT:
             if (m_publisher->getCommandSubCount()==m_petri->getModulesCount()) {
-                m_current_state=state_t::WAIT_FOR_ALL;
+                m_current_state=state_t::BUILD_META_STATE;
                 command.cmd="INIT";
                 command.param=m_petri->getPetriID();
                 m_publisher->publishCommand(command);
@@ -32,11 +33,18 @@ void SMBuilder::run() {
                     }
                 }
             }
-
+            RCLCPP_INFO(m_publisher->get_logger(), "INIT STATE\n");
             break;
-
-        case state_t::WAIT_FOR_ALL:
-            std::cout<<"WAIT_FOR_ALL: "<<m_petri->getModulesCount()<<"\n";
+        case state_t::BUILD_META_STATE:
+            if (!once_execution) {
+                RCLCPP_INFO(m_publisher->get_logger(),"Enter\n");
+                once_execution=true;
+                ptrMS=m_petri->getMetaState(m_petri->getMarquage());
+                RCLCPP_INFO(m_publisher->get_logger(), "SCC Name : %s\n",m_petri->getSCCName(ptrMS->getInitialSCC()).c_str());
+            }
+            command.cmd="METASTATE";
+            command.scc="";
+            RCLCPP_INFO(m_publisher->get_logger(), "BUILD_META_STATE : %d\n",m_petri->getModulesCount());
 
             break;
         case state_t::BUILD_LOCAL:
