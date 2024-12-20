@@ -22,11 +22,11 @@ void DSSSubscriber::receiveMarking() {
 void DSSSubscriber::command_receiver(const ros2dss_project::msg::Command & msg) const {
     RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "I heard: '%s', param: %d", msg.cmd.c_str(),msg.param);
    if (msg.cmd=="INIT") {
-       (*_ptr_modules)[static_cast<int>(msg.param)-1]=1;
+       (*_ptr_modules)[static_cast<int>(msg.param)]=1;
    }
    else
    if (msg.cmd=="METASTATE") {
-       (*_ptr_metastate_name)[msg.param-1]=msg.scc;
+       (*_ptr_metastate_name)[msg.param]=msg.scc;
    }
 }
 

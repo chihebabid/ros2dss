@@ -18,6 +18,7 @@ private:
     state_t m_current_state {state_t::INIT};
     std::shared_ptr<DSSPublisher> m_publisher;
     dss::ModuleSS  *m_module_ss {};
+    dss::MetaState* m_current_meta_state {};
 };
 
 

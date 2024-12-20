@@ -39,7 +39,7 @@ namespace dss {
             getNextWord();
             mot = getNextWord();
             int_value=static_cast<uint32_t>(std::stoi(mot.c_str()));
-            petri->setPetriID(int_value);
+            petri->setPetriID(int_value-1);
             std::cout<<"#Modules: "<<petri->getModulesCount()<<std::endl;
             std::cout << "Module ID: " << petri->getPetriID() << " modules" << std::endl;
             std::cout << "Displaying informations related to the modular Petri net" << std::endl;

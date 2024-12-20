@@ -34,7 +34,7 @@ namespace dss {
     };
 
     template <typename T>
-       ArrayModel<T>::~ArrayModel() {
+           ArrayModel<T>::~ArrayModel() {
         if (m_data) delete []m_data;
     }
 
@@ -66,7 +66,9 @@ namespace dss {
     ArrayModel<T>::ArrayModel(const ArrayModel<T> &other) {
         m_size=other.m_size;
         m_data=new T[m_size];
-        memcpy(m_data,other.m_data,m_size*sizeof(T));
+        for (size_t i{};i<m_size;++i) {
+            m_data[i]=other.m_data[i];
+        }
     }
 
     template <typename T>
