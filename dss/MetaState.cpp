@@ -11,9 +11,8 @@ namespace dss {
         m_id = m_Counter++;
     }
 
-    MetaState::MetaState(const size_t s) {
+    MetaState::MetaState(const size_t s): m_metastate_name(s) {
         m_id = m_Counter++;
-        m_metastate_name.resize(s);
     }
 
     vector<Marking *> &MetaState::getListMarkings() {
@@ -38,15 +37,6 @@ namespace dss {
 
     SCC *MetaState::getInitialSCC() {
         return findSCC(m_nodes[0]);
-    }
-
-
-    ProductSCC *MetaState::getSCCProductName() {
-        return m_name;
-    }
-
-    void MetaState::setSCCProductName(ProductSCC *name) {
-        m_name = name;
     }
 
 
@@ -144,10 +134,33 @@ namespace dss {
         }
     }
 
-    void MetaState::setSCCName(const string &name,const int pos) {
-        m_metastate_name[pos]=name;
+    void MetaState::setSCCName(const string &name, const int pos) {
+        m_metastate_name[pos] = name;
     }
-    std::string& MetaState::getSCCName(const int pos) {
+
+    std::string &MetaState::getSCCName(const int pos) {
         return m_metastate_name[pos];
     }
+
+    void MetaState::setName(const ArrayModel<std::string> &name) {
+        m_metastate_name = name;
+    }
+
+    /*
+     * @brief getName
+     * @return the name of a metastate
+     */
+    ArrayModel<string> MetaState::getName() const {
+        return m_metastate_name;
+    }
+
+    std::string MetaState::toString()  {
+        std::string  strbuf{"["};
+        for (size_t i{};i<m_metastate_name.size();++i) {
+            strbuf=strbuf+m_metastate_name[i];
+            strbuf+=std::string{","};
+        }
+        return strbuf;
+    }
+
 }

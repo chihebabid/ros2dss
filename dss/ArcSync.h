@@ -20,14 +20,14 @@ public:
 
     void setDestination(MetaState *destination);
 
-    void setData(ProductSCC source, TransitionFusionSet *transition, MetaState *destination);
+    void setData(ArrayModel<string> source, TransitionFusionSet *transition, MetaState *destination);
 
     MetaState *getMetaStateDest();
 
-    ProductSCC *getStartProduct();
+    ArrayModel<string> *getStartProduct();
 private:
     TransitionFusionSet *m_fusion;
-    ProductSCC m_source;
+    ArrayModel<string> m_source;
     MetaState *m_destination;
 };
 

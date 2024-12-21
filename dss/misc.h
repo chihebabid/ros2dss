@@ -11,6 +11,7 @@
 #include <cstdint>
 #include <set>
 #include <algorithm>
+#include <sstream>
 #include "ArrayModel.h"
 #include "MarkingArray.h"
 #include "Marking.h"
@@ -22,7 +23,6 @@
 #include "PetriNet.h"
 #include "BuildPetri.h"
 #include "SCC.h"
-#include "ProductSCC.h"
 #include "ArcSync.h"
 #include "MetaStateName.h"
 #include "ModuleSS.h"

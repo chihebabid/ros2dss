@@ -14,7 +14,7 @@ MetaState *ArcSync::getMetaStateDest() {
 }
 
 
-void ArcSync::setData(ProductSCC source, TransitionFusionSet *transition, MetaState *destination) {
+void ArcSync::setData(ArrayModel<string> source, TransitionFusionSet *transition, MetaState *destination) {
     m_fusion = transition;
     m_destination = destination;
     m_source = source;
@@ -29,7 +29,7 @@ TransitionFusionSet *ArcSync::getFusion() {
     return m_fusion;
 }
 
-ProductSCC *ArcSync::getStartProduct() {
+ArrayModel<string> *ArcSync::getStartProduct() {
     return &m_source;
 }
 }

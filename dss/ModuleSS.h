@@ -17,7 +17,7 @@ namespace dss {
 
         bool insertMS(MetaState *ms);
 
-        MetaState *findMetaStateByProductSCC(ProductSCC &productscc);
+        MetaState *findMetaStateByProductSCC(ArrayModel<string> &productscc);
 
         friend ostream &operator<<(ostream &os, const ModuleSS &ss);
 

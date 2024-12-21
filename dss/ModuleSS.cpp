@@ -17,9 +17,9 @@ bool ModuleSS::insertMS(MetaState *ms) {
     return true;
 }
 
-MetaState *ModuleSS::findMetaStateByProductSCC(ProductSCC &productscc) {
+MetaState *ModuleSS::findMetaStateByProductSCC(ArrayModel<string> &productscc) {
     for (const auto &elt: mlMetaState) {
-        if (*(elt->getSCCProductName()) == productscc) return elt;
+        if ((elt->getName()) == productscc) return elt;
     }
     return nullptr;
 }

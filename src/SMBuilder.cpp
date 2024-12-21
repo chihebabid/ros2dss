@@ -18,7 +18,7 @@ SMBuilder::SMBuilder(dss::PetriNet *petri, std::shared_ptr<DSSPublisher> &publis
 void SMBuilder::run() {
     auto command {ros2dss_project::msg::Command{}};
     static bool once_execution {false};
-    dss::MetaState *ptrMS {};
+
     switch (m_current_state) {
         case state_t::INIT:
             if (m_publisher->getCommandSubCount()==m_petri->getModulesCount()) {
@@ -40,10 +40,9 @@ void SMBuilder::run() {
             if (!once_execution) {
                 RCLCPP_INFO(m_publisher->get_logger(),"Enter\n");
                 once_execution=true;
-                ptrMS=m_petri->getMetaState(m_petri->getMarquage());
-                m_module_ss->insertMS(ptrMS);
+                m_current_meta_state=m_petri->getMetaState(m_petri->getMarquage());
                 _ptr_metastate_name=std::make_unique<dss::ArrayModel<std::string>>(m_petri->getModulesCount());
-                _ptr_metastate_name->operator[](m_petri->getPetriID())=m_petri->getSCCName(ptrMS->getInitialSCC());
+                _ptr_metastate_name->operator[](m_petri->getPetriID())=m_petri->getSCCName(m_current_meta_state->getInitialSCC());
 
             }
             command.cmd="METASTATE";
@@ -59,12 +58,16 @@ void SMBuilder::run() {
             }
             RCLCPP_INFO(m_publisher->get_logger(), "BUILD_META_STATE : %d\n",m_petri->getModulesCount());
             if (m_current_state==state_t::COMPUTE_ENABLED_SYNC) {
-                //m_module_ss->insertMS();
+                m_current_meta_state->setName(*_ptr_metastate_name);
+                m_module_ss->insertMS(m_current_meta_state);
                 once_execution=false;
             }
             break;
         case state_t::COMPUTE_ENABLED_SYNC:
-
+            RCLCPP_INFO(m_publisher->get_logger(), "#Metastates %d\nListe of metastates\n",m_module_ss->getMetaStateCount());
+        for (size_t i{};i<m_module_ss->getMetaStateCount();++i) {
+            RCLCPP_INFO(m_publisher->get_logger(), "#Metastates name %s\n",m_module_ss->getMetaState(i)->toString().c_str());
+        }
             break;
     }
 }

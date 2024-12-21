@@ -27,8 +27,8 @@ public:
     vector<SCC *> *getListSCCs();
     SCC *findSCC(Marking *state);
     SCC *getInitialSCC();
-    ProductSCC *getSCCProductName();
-    void setSCCProductName(ProductSCC *name);
+
+
     void addSyncArc(ArcSync *sync_arc);
     uint32_t getArcCount();
     bool operator==(MetaState &ms);
@@ -40,10 +40,13 @@ public:
     [[nodiscard]] size_t getIdModule() const { return m_id_module;}
     void setSCCName(const string &name,const int pos);
     std::string& getSCCName(const int pos);
+    void setName(const ArrayModel<string> &);
+    ArrayModel<string> getName() const;
+    std::string toString();
 private:
-    std::vector<std::string> m_metastate_name;
+    ArrayModel<string> m_metastate_name;
     size_t m_id_module;
-    ProductSCC *m_name {nullptr};
+
     vector<ArcSync *> mArcs;
     uint32_t m_id;
     static uint32_t m_Counter;
