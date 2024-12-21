@@ -17,11 +17,18 @@ bool ModuleSS::insertMS(MetaState *ms) {
     return true;
 }
 
-MetaState *ModuleSS::findMetaStateByProductSCC(ArrayModel<string> &productscc) {
+MetaState *ModuleSS::findMetaState(ArrayModel<string> &productscc) {
     for (const auto &elt: mlMetaState) {
         if ((elt->getName()) == productscc) return elt;
     }
     return nullptr;
+}
+
+MetaState *ModuleSS::findMetaState(const string &name) {
+  for (const auto &elt: mlMetaState) {
+    if (elt->toString() == name) return elt;
+  }
+  return nullptr;
 }
 
 size_t ModuleSS::getMetaStateCount() const {

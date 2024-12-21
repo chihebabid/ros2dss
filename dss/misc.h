@@ -12,6 +12,7 @@
 #include <set>
 #include <algorithm>
 #include <sstream>
+#include <stack>
 #include "ArrayModel.h"
 #include "MarkingArray.h"
 #include "Marking.h"
