@@ -7,7 +7,7 @@
 DSSPublisher::DSSPublisher(dss::PetriNet  *petri):Node("dss_publisher"),m_petri_net(petri) {
     rclcpp::QoS qos(rclcpp::KeepLast(petri->getModulesCount()));  // Keep the last message
     qos.durability(RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL);
-    m_command_pub=create_publisher<ros2dss_project::msg::Command>("dss/command",qos);
+    m_command_pub=create_publisher<ros2dss::Command>("dss/command",qos);
 
     //init();
 }
@@ -17,7 +17,7 @@ void DSSPublisher::init() {
 }
 
 
-void DSSPublisher::publishCommand(const ros2dss_project::msg::Command &msg) {
+void DSSPublisher::publishCommand(const ros2dss::Command &msg) {
     m_command_pub->publish(msg);
 }
 

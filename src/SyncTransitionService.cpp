@@ -8,7 +8,7 @@
 SyncTransitionService::SyncTransitionService(dss::PetriNet  *petri):Node("sync_transitions"),m_petri(petri) {
     auto node {std::make_shared<rclcpp::Node>("sync_transitions")};
     if (petri->getPetriID()==0) {
-       // auto servic {node->create_service<ros2dss_project::srv::SyncTransition>("sync_transitions",&syncTransitionsService)};
+       // auto servic {node->create_service<ros2dss::SyncTransition>("sync_transitions",&syncTransitionsService)};
     }
     else {
     }

@@ -9,15 +9,19 @@
 #include "ros2dss_project/msg/command.hpp"
 #include "ros2dss_project/srv/sync_transition.hpp"
 
+namespace ros2dss {
+    using SyncTransition=ros2dss_project::srv::SyncTransition;
+    using Command=ros2dss_project::msg::Command;
+}
+
+
 #include "misc.h"
-
-
-
 
 #include "SyncTransitionService.h"
 #include "DSSSubscriber.h"
 #include "DSSPublisher.h"
 #include "SMBuilder.h"
+
 
 
 template class dss::ArrayModel<std::string>;

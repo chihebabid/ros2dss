@@ -23,7 +23,7 @@ public:
 
 private:
     void updateSyncTransitions(const dss::PetriNet *petri );
-    void syncTransitionsService(const std::shared_ptr<ros2dss_project::srv::SyncTransition::Request>,std::shared_ptr<ros2dss_project::srv::SyncTransition::Response> );
+    void syncTransitionsService(const std::shared_ptr<ros2dss::SyncTransition::Request>,std::shared_ptr<ros2dss::SyncTransition::Response> );
     dss::PetriNet *m_petri;
 };
 
