@@ -4,10 +4,7 @@
 
 #ifndef DSSPUBLISHER_H
 #define DSSPUBLISHER_H
-#include "rclcpp/rclcpp.hpp"
-#include "std_msgs/msg/string.hpp"
-#include "ros2dss_project/msg/command.hpp"
-#include "misc.h"
+#include "gmisc.h"
 
 class DSSPublisher : public rclcpp::Node {
 public:

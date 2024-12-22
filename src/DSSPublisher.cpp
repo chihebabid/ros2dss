@@ -2,7 +2,7 @@
 // Created by chiheb on 13/12/24.
 //
 
-#include "DSSPublisher.h"
+#include "gmisc.h"
 
 DSSPublisher::DSSPublisher(dss::PetriNet  *petri):Node("dss_publisher"),m_petri_net(petri) {
     rclcpp::QoS qos(rclcpp::KeepLast(petri->getModulesCount()));  // Keep the last message
