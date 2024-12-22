@@ -15,7 +15,7 @@ find_package(std_msgs REQUIRED)
 
 find_package(rosidl_default_generators REQUIRED)
 
-set(msg_files	"msg/Command.msg")
+set(msg_files	"msg/Command.msg" "srv/SyncTransition.srv")
 
 rosidl_generate_interfaces(${PROJECT_NAME}
         ${msg_files}
@@ -36,7 +36,7 @@ file(GLOB_RECURSE SOURCES
 )
 
 #message(WARNING ${SOURCES})
-add_executable(ros2dss src/main.cpp src/DSSPublisher.cpp src/DSSSubscriber.cpp src/SMBuilder.cpp src/sync.cpp ${SOURCES})
+add_executable(ros2dss src/main.cpp src/DSSPublisher.cpp src/DSSSubscriber.cpp src/SMBuilder.cpp src/NodeSyncTransitionService.cpp ${SOURCES})
 target_include_directories(ros2dss PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/ros2dss dss)
 ament_target_dependencies(ros2dss ${dependencies})
 

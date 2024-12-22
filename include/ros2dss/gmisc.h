@@ -6,7 +6,7 @@
 #define GMISC_H
 #include <memory>
 #include "misc.h"
-#include "sync.h"
+#include "NodeSyncTransitionService.h"
 
 template class dss::ArrayModel<std::string>;
 inline std::unique_ptr<dss::MarkingArray> _ptr_modules {};
