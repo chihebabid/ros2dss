@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <sstream>
 #include <stack>
+#include <map>
 #include "ArrayModel.h"
 #include "MarkingArray.h"
 #include "Marking.h"

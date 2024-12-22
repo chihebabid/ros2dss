@@ -1,7 +1,7 @@
 //
 // Created by chiheb on 12/12/24.
 //
-#include <chrono>
+
 #include "rclcpp/rclcpp.hpp"
 #include "misc.h"
 #include "DSSPublisher.h"
@@ -20,6 +20,10 @@ int main(int argc, char * argv[]) {
     build.setFileName(argv[1]);
     auto petri {build.getPetriNet()};
     rclcpp::init(argc, argv);
+
+    ros2dss::updateSyncTransitions(petri);
+
+
     auto  pubNode {std::make_shared<DSSPublisher>(petri)};
     auto  subNode {std::make_shared<DSSSubscriber>(petri)};
     rclcpp::executors::MultiThreadedExecutor executor;

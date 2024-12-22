@@ -28,7 +28,7 @@ namespace dss {
     }
 
     SCC *MetaState::findSCC(Marking *state) {
-        for (int i = 0; i < ml_scc.size(); i++) {
+        for (size_t i{}; i < ml_scc.size(); i++) {
             vector<Marking *> *list_states = ml_scc[i]->getListStates();
             if (std::find(list_states->begin(), list_states->end(), state) != list_states->end()) return ml_scc.at(i);
         }
@@ -160,6 +160,7 @@ namespace dss {
             strbuf=strbuf+m_metastate_name[i];
             strbuf+=std::string{","};
         }
+        strbuf[strbuf.size()-1]=']';
         return strbuf;
     }
 

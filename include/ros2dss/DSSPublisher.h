@@ -13,7 +13,7 @@ class DSSPublisher : public rclcpp::Node {
 public:
     DSSPublisher(dss::PetriNet  *);
     void publishCommand(const ros2dss_project::msg::Command&);
-    int getCommandSubCount() const;
+    uint32_t getCommandSubscribersCount() const;
 private:
     void init();
     rclcpp::Publisher<ros2dss_project::msg::Command>::SharedPtr m_command_pub;

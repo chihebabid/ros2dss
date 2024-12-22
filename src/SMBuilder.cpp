@@ -21,9 +21,11 @@ void SMBuilder::run() {
     static bool once_execution{false};
 
     switch (m_current_state) {
-
+        case state_t::GET_SYNC_FUSION :
+            m_current_state=state_t::INIT;
+            break;
         case state_t::INIT:
-            if (m_publisher->getCommandSubCount() == m_petri->getModulesCount()) {
+            if (m_publisher->getCommandSubscribersCount() == m_petri->getModulesCount()) {
                 m_current_state = state_t::BUILD_META_STATE;
                 command.cmd = "INIT";
                 command.param = m_petri->getPetriID();
@@ -82,14 +84,16 @@ void SMBuilder::run() {
                     command.scc = m_current_meta_state->toString();
                     m_publisher->publishCommand(command);
                     RCLCPP_INFO(m_publisher->get_logger(), "POP_AND_COMPUTE_SYNC\n");
+                    m_current_state = state_t::FIRE_SYNC;
                 }
             } else {
                 if (!_current_meta_state_name.empty()) {
                     m_current_meta_state = m_module_ss->findMetaState(_current_meta_state_name);
+
                     m_current_state = state_t::FIRE_SYNC;
                 }
             }
-            RCLCPP_INFO(m_publisher->get_logger(), "#Metastates %d\nListe of metastates\n",
+            RCLCPP_INFO(m_publisher->get_logger(), "#Metastates %ld\nListe of metastates\n",
                         m_module_ss->getMetaStateCount());
             for (size_t i{}; i < m_module_ss->getMetaStateCount(); ++i) {
                 RCLCPP_INFO(m_publisher->get_logger(), "#Metastates name %s\n",
@@ -98,6 +102,7 @@ void SMBuilder::run() {
             break;
 
         case state_t::FIRE_SYNC:
+            RCLCPP_INFO(m_publisher->get_logger(),"Current state : FIRE_SYNC\n");
             break;
 
         case state_t::TERMINATE_BUILDING:

@@ -21,6 +21,6 @@ void DSSPublisher::publishCommand(const ros2dss_project::msg::Command &msg) {
     m_command_pub->publish(msg);
 }
 
-int DSSPublisher::getCommandSubCount() const {
+uint32_t DSSPublisher::getCommandSubscribersCount() const {
     return m_command_pub->get_subscription_count();
 }
