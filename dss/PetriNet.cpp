@@ -171,7 +171,7 @@ namespace dss {
     /////////////////////////////////////
     // Renvoyer le num�ro de ce module //
     /////////////////////////////////////
-    uint32_t PetriNet::getPetriID() {
+    uint32_t PetriNet::getPetriID() const {
         return m_petri_id;
     }
 

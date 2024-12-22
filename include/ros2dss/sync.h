@@ -6,7 +6,10 @@
 #define GETSYNCTRANSITIONS_H
 
 
-
+/*
+ * This file contains the functions to get the synchronization transitions
+ *
+ */
 namespace ros2dss {
     struct transitionfusionset_t {
         std::string name;

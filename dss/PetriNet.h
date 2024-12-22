@@ -32,7 +32,7 @@ namespace dss {
 
         Transition *getTransitionPtr(const string& nom_transition);
 
-        uint32_t getPetriID();
+        uint32_t getPetriID() const;
 
         void setPetriID(const uint32_t index);
 

@@ -7,6 +7,9 @@
 
 namespace ros2dss {
     void updateSyncTransitions(const dss::PetriNet *petri ) {
+      if (petri->getPetriID()==0) {
+        }
+        else {
+          }
      }
-
 }
