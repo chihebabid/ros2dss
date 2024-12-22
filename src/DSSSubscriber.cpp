@@ -1,8 +1,7 @@
 //
 // Created by chiheb on 13/12/24.
 //
-#include "misc.h"
-#include "DSSSubscriber.h"
+
 #include "gmisc.h"
 
 DSSSubscriber::DSSSubscriber(dss::PetriNet  *petri): Node("dss_receiver"),m_petri_net(petri) {

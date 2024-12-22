@@ -14,6 +14,8 @@
 #include <sstream>
 #include <stack>
 #include <map>
+#include <memory>
+
 #include "ArrayModel.h"
 #include "MarkingArray.h"
 #include "Marking.h"

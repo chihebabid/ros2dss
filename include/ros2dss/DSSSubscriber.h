@@ -5,9 +5,7 @@
 #ifndef DSSSUBSCRIBER_H
 #define DSSSUBSCRIBER_H
 
-#include "rclcpp/rclcpp.hpp"
-#include "std_msgs/msg/string.hpp"
-#include "ros2dss_project/msg/command.hpp"
+
 
 class DSSSubscriber : public rclcpp::Node {
 public:

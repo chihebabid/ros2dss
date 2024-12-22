@@ -4,9 +4,17 @@
 
 #ifndef GMISC_H
 #define GMISC_H
-#include <memory>
+
 #include "misc.h"
-#include "NodeSyncTransitionService.h"
+
+#include "rclcpp/rclcpp.hpp"
+#include "ros2dss_project/srv/sync_transition.hpp"
+#include "std_msgs/msg/string.hpp"
+#include "ros2dss_project/msg/command.hpp"
+
+#include "SyncTransitionService.h"
+#include "DSSSubscriber.h"
+
 
 template class dss::ArrayModel<std::string>;
 inline std::unique_ptr<dss::MarkingArray> _ptr_modules {};

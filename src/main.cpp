@@ -21,7 +21,7 @@ int main(int argc, char * argv[]) {
     auto petri {build.getPetriNet()};
     rclcpp::init(argc, argv);
 
-    ros2dss::updateSyncTransitions(petri);
+    auto syncNode {std::make_shared<SyncTransitionService>(petri)};
 
 
     auto  pubNode {std::make_shared<DSSPublisher>(petri)};
