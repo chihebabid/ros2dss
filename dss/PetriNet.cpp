@@ -309,4 +309,14 @@ namespace dss {
             }
         }
     }
+
+    vector<string> PetriNet::getSyncTransitions() const {
+        vector<string> list_transitions;
+        for (const auto &transition: ml_transitions) {
+            if (transition.isSync()) {
+                list_transitions.push_back(transition.getName());
+            }
+        }
+        return list_transitions;
+    }
 }

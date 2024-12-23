@@ -71,6 +71,7 @@ namespace dss {
 
 
         void setSyncTransitions(const std::vector<std::string>& l_transitions);
+        vector<string> getSyncTransitions() const;
     private:
         uint32_t m_petri_id;
         uint32_t m_modules_count {};
