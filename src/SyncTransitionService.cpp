@@ -39,8 +39,10 @@ void SyncTransitionService::syncTransitionsService(const std::shared_ptr<ros2dss
  std::shared_ptr<ros2dss::SyncTransition::Response> response)  {
 	++m_request_count;
 	RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Received transitions from %d:\n",request->id);
+    auto manageFusion {m_petri->getManageTransitionFusionSet()};
    	for (auto &t : request->transitions) {
     	RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), t.c_str());
+        manageFusion->add_fusion_set(t,request->id);
    	}
     if (m_request_count==m_petri->getModulesCount()-1) {
     	m_should_shutdown=true;

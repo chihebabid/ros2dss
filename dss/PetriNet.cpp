@@ -319,4 +319,7 @@ namespace dss {
         }
         return list_transitions;
     }
+    std::shared_ptr<ManageTransitionFusionSet> PetriNet::getManageTransitionFusionSet() const {
+        return m_manage_transition_fusion_set;
+    }
 }

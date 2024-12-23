@@ -26,6 +26,9 @@ namespace dss {
 
     class PetriNet {
     public:
+        PetriNet()=default;
+        virtual ~PetriNet()=default;
+
         string getSCCName(SCC *scc);
 
         int addPlacesEntrees(string nom_transition, vector<string> liste_places_entrees, vector<int> liste_poids);
@@ -56,22 +59,15 @@ namespace dss {
 
         int getPlacesCount();
 
-        PetriNet()=default;
-
-        virtual ~PetriNet()=default;
 
         MetaState *getMetaState(Marking marquage);
-
         void printMetaStateEx(MetaState *ms);
-
         bool areTransitionsIncluded(const std::set<string> &list_transitions);
-
         uint32_t getModulesCount() const ;
         void setModulesCount(const uint32_t);
-
-
         void setSyncTransitions(const std::vector<std::string>& l_transitions);
         vector<string> getSyncTransitions() const;
+        std::shared_ptr<ManageTransitionFusionSet> getManageTransitionFusionSet() const;
     private:
         uint32_t m_petri_id;
         uint32_t m_modules_count {};
@@ -82,6 +78,8 @@ namespace dss {
 
         vector<Place> m_places;
         vector<Transition> ml_transitions;
+        std::shared_ptr<ManageTransitionFusionSet> m_manage_transition_fusion_set {std::make_shared<ManageTransitionFusionSet>()};
+
 
     };
 }
