@@ -16,18 +16,31 @@ int main(int argc, char * argv[]) {
     build.setFileName(argv[1]);
     auto petri {build.getPetriNet()};
     rclcpp::init(argc, argv);
+    rclcpp::WallRate loop_rate(500ms);
+
 
     auto syncNode {std::make_shared<SyncTransitionService>(petri)};
+    rclcpp::executors::MultiThreadedExecutor executor;
+    executor.add_node(syncNode);
+    while (rclcpp::ok())
+    {
+        try {
+            executor.spin_all(0ns);
+        } catch (const rclcpp::exceptions::RCLError & e)
+        {
 
+        }
+        loop_rate.sleep();
+    }
 
     auto  pubNode {std::make_shared<DSSPublisher>(petri)};
     auto  subNode {std::make_shared<DSSSubscriber>(petri)};
-    rclcpp::executors::MultiThreadedExecutor executor;
+
     executor.add_node(pubNode);
     executor.add_node(subNode);
 
 
-    rclcpp::WallRate loop_rate(500ms);
+
     SMBuilder sm_builder {petri,pubNode};
     while (rclcpp::ok())
     {
