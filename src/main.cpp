@@ -33,6 +33,9 @@ int main(int argc, char * argv[]) {
         loop_rate.sleep();
     }
 
+    executor.remove_node(syncNode);
+    syncNode.reset();
+
     auto  pubNode {std::make_shared<DSSPublisher>(petri)};
     auto  subNode {std::make_shared<DSSSubscriber>(petri)};
 
@@ -42,7 +45,7 @@ int main(int argc, char * argv[]) {
 
 
     SMBuilder sm_builder {petri,pubNode};
-    while (rclcpp::ok())
+    while (rclcpp::ok()  && !syncNode->shouldShutdown())
     {
         try {
             sm_builder.run();

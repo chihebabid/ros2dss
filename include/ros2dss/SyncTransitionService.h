@@ -19,13 +19,16 @@ struct transitionfusionset_t {
 class SyncTransitionService : public rclcpp::Node {
 public:
     SyncTransitionService(dss::PetriNet  *);
-
+    bool shouldShutdown() const;
 
 private:
     void updateSyncTransitions(const dss::PetriNet *petri );
     void syncTransitionsService(const std::shared_ptr<ros2dss::SyncTransition::Request>,std::shared_ptr<ros2dss::SyncTransition::Response> );
     dss::PetriNet *m_petri;
     rclcpp::Service<ros2dss::SyncTransition>::SharedPtr m_server {};
+    bool m_should_shutdown {false};
+    uint32_t m_request_count {};
+
 };
 
 

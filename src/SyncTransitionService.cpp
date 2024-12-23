@@ -26,21 +26,30 @@ SyncTransitionService::SyncTransitionService(dss::PetriNet  *petri):Node("sync_t
         }
 
         auto result {client->async_send_request(request)};
-        if (rclcpp::spin_until_future_complete(node, result) == rclcpp::FutureReturnCode::SUCCESS) {
+        if (rclcpp::spin_until_future_complete(this->get_node_base_interface(),result) == rclcpp::FutureReturnCode::SUCCESS) {
  			RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Synced transitions\n");
  		} else {
  			RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Failed to sync transitions!\n");
         }
+        m_should_shutdown=true;
     }
  }
 
- void SyncTransitionService::syncTransitionsService(const std::shared_ptr<ros2dss::SyncTransition::Request> request,
+void SyncTransitionService::syncTransitionsService(const std::shared_ptr<ros2dss::SyncTransition::Request> request,
  std::shared_ptr<ros2dss::SyncTransition::Response> response)  {
-   RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Received transitions from %d:\n",request->id);
-   for (auto &t : request->transitions) {
-     RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), t.c_str());
-   }
+	++m_request_count;
+	RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Received transitions from %d:\n",request->id);
+   	for (auto &t : request->transitions) {
+    	RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), t.c_str());
+   	}
+    if (m_request_count==m_petri->getModulesCount()-1) {
+    	m_should_shutdown=true;
+    }
+}
 
-   }
+bool SyncTransitionService::shouldShutdown() const {
+   	return m_should_shutdown;
+}
+
 
 
