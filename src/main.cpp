@@ -22,7 +22,7 @@ int main(int argc, char * argv[]) {
     auto syncNode {std::make_shared<SyncTransitionService>(petri)};
     rclcpp::executors::MultiThreadedExecutor executor;
     executor.add_node(syncNode);
-    while (rclcpp::ok())
+    while (rclcpp::ok()  && !syncNode->shouldShutdown())
     {
         try {
             executor.spin_all(0ns);
@@ -45,7 +45,7 @@ int main(int argc, char * argv[]) {
 
 
     SMBuilder sm_builder {petri,pubNode};
-    while (rclcpp::ok()  && !syncNode->shouldShutdown())
+    while (rclcpp::ok() )
     {
         try {
             sm_builder.run();

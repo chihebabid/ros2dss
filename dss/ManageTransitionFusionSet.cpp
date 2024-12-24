@@ -23,12 +23,14 @@ namespace dss {
         return it_res==_set.end();
     }
 
+     /*
+	 * @brief disable all fusion sets
+     */
     void ManageTransitionFusionSet::reset() {
       for (auto &elt: ml_fusion_sets) {
 			for (auto &elt: elt.second) {
                 elt.enabled=false;
 			}
-
       }
     }
 
