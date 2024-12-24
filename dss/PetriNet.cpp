@@ -315,6 +315,7 @@ namespace dss {
         for (const auto &transition: ml_transitions) {
             if (transition.isSync()) {
                 list_transitions.push_back(transition.getName());
+                m_manage_transition_fusion_set->add_fusion_set(transition.getName(),getPetriID());
             }
         }
         return list_transitions;

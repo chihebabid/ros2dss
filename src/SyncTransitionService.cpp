@@ -45,6 +45,8 @@ void SyncTransitionService::syncTransitionsService(const std::shared_ptr<ros2dss
         manageFusion->add_fusion_set(t,request->id);
    	}
     if (m_request_count==m_petri->getModulesCount()-1) {
+        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Syncing is done...",request->id);
+        // for (
     	m_should_shutdown=true;
     }
 }

@@ -15,6 +15,7 @@
 #include <stack>
 #include <map>
 #include <memory>
+#include <list>
 
 #include "ArrayModel.h"
 #include "MarkingArray.h"
