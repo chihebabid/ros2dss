@@ -23,6 +23,16 @@ namespace dss {
         return it_res==_set.end();
     }
 
+    std::vector<std::string> ManageTransitionFusionSet::getEnabledFusionSets() const {
+        std::vector<std::string> _vec;
+        for (auto &elt: ml_fusion_sets) {
+            if (isFusionEnabled(elt.first)) {
+                _vec.push_back(elt.first);
+            }
+        }
+        return _vec;
+    }
+
      /*
 	 * @brief disable all fusion sets
      */

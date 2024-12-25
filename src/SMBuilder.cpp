@@ -116,12 +116,23 @@ void SMBuilder::run() {
                     command.sync=_vec;
                     RCLCPP_INFO(m_publisher->get_logger(), "COMPUTE_SYNC: Send enabled sync transitions");
                     m_publisher->publishCommand(command);
+                    state_t::TERMINATE_BUILDING;
                 }
             }
-            RCLCPP_INFO(m_publisher->get_logger(),"Current state : COMPUTE_SYNC\n");
+            if (m_petri->getPetriID()==0  && _received_sync_count==m_petri->getModulesCount()-1) {
+                m_current_state=state_t::TERMINATE_BUILDING;
+            }
+            RCLCPP_INFO(m_publisher->get_logger(),"Current state : COMPUTE_SYNC %d\n",_received_sync_count);
             break;
 
         case state_t::TERMINATE_BUILDING:
+            if (m_petri->getPetriID()==0) {
+                auto manage {m_petri->getManageTransitionFusionSet()};
+                auto enabled_sync_trans {manage->getEnabledFusionSets()};
+                for (const auto & elt : enabled_sync_trans) {
+                    RCLCPP_INFO(m_publisher->get_logger(), "Enabled sync transition : %s\n", elt.c_str());
+                }
+            }
             break;
     }
 }

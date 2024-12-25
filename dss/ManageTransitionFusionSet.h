@@ -18,9 +18,12 @@ namespace dss {
     public:
         ManageTransitionFusionSet()=default;
         ~ManageTransitionFusionSet()=default;
+        ManageTransitionFusionSet(const ManageTransitionFusionSet&)=delete;
+        ManageTransitionFusionSet& operator=(const ManageTransitionFusionSet&)=delete;
         void add_fusion_set(const std::string& fusion_set_name,const uint32_t module);
         uint32_t getFusionSetsCount() const;
         bool isFusionEnabled(const std::string &) const;
+        std::vector<std::string> getEnabledFusionSets() const;
         void enableFusion(const std::string &,uint32_t);
         void enableSetFusion(const set<string> &,uint32_t);
         void reset();
