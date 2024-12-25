@@ -40,4 +40,10 @@ namespace dss {
         auto it_res {std::find_if(_set.begin(),_set.end(),[module](const fusion_set_t &fusion_set){return  fusion_set.module==module;})};
         it_res->enabled=true;
     }
+
+    void ManageTransitionFusionSet::enableSetFusion(const set<string> &_set,uint32_t module) {
+      for(const auto &elt:_set) {
+        enableFusion(elt,module);
+      }
+    }
 }

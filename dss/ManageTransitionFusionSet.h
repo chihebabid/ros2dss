@@ -22,6 +22,7 @@ namespace dss {
         uint32_t getFusionSetsCount() const;
         bool isFusionEnabled(const std::string &) const;
         void enableFusion(const std::string &,uint32_t);
+        void enableSetFusion(const set<string> &,uint32_t);
         void reset();
     private:
         std::map<std::string,std::list<fusion_set_t>> ml_fusion_sets;
