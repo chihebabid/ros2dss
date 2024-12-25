@@ -54,7 +54,7 @@ void SMBuilder::run() {
             command.param = m_petri->getPetriID();
             command.scc = (*_ptr_metastate_name)[m_petri->getPetriID()];
             m_publisher->publishCommand(command);
-            m_current_state = state_t::POP_AND_COMPUTE_SYNC;
+            m_current_state = state_t::POP_METASTATE;
             for (size_t i{}; i < _ptr_metastate_name->size(); ++i) {
                 if (_ptr_metastate_name->operator[](i).empty()) {
                     m_current_state = state_t::BUILD_META_STATE;
@@ -62,7 +62,7 @@ void SMBuilder::run() {
                 }
             }
             RCLCPP_INFO(m_publisher->get_logger(), "BUILD_META_STATE : %d\n", m_petri->getModulesCount());
-            if (m_current_state == state_t::POP_AND_COMPUTE_SYNC) {
+            if (m_current_state == state_t::POP_METASTATE) {
                 m_current_meta_state->setName(*_ptr_metastate_name);
                 if (m_module_ss->insertMS(m_current_meta_state)) {
                     if (!m_petri->getPetriID()) {
@@ -73,7 +73,7 @@ void SMBuilder::run() {
             }
             break;
 
-        case state_t::POP_AND_COMPUTE_SYNC:
+        case state_t::POP_METASTATE:
             if (m_petri->getPetriID() == 0) {
                 if (m_meta_states_stack.empty()) {
                     m_current_state = state_t::TERMINATE_BUILDING;
@@ -83,14 +83,13 @@ void SMBuilder::run() {
                     command.cmd = "MOVE_TO_METASTATE";
                     command.scc = m_current_meta_state->toString();
                     m_publisher->publishCommand(command);
-                    RCLCPP_INFO(m_publisher->get_logger(), "POP_AND_COMPUTE_SYNC\n");
-                    m_current_state = state_t::FIRE_SYNC;
+                    RCLCPP_INFO(m_publisher->get_logger(), "POP_METASTATE\n");
+                    m_current_state = state_t::COMPUTE_SYNC;
                 }
             } else {
                 if (!_current_meta_state_name.empty()) {
                     m_current_meta_state = m_module_ss->findMetaState(_current_meta_state_name);
-
-                    m_current_state = state_t::FIRE_SYNC;
+                    m_current_state = state_t::COMPUTE_SYNC;
                 }
             }
             RCLCPP_INFO(m_publisher->get_logger(), "#Metastates %ld\nListe of metastates\n",
@@ -101,8 +100,11 @@ void SMBuilder::run() {
             }
             break;
 
-        case state_t::FIRE_SYNC:
-            RCLCPP_INFO(m_publisher->get_logger(),"Current state : FIRE_SYNC\n");
+        case state_t::COMPUTE_SYNC: // Determine enabled sync transitions
+            if (!once_execution) {
+
+            }
+            RCLCPP_INFO(m_publisher->get_logger(),"Current state : COMPUTE_SYNC\n");
             break;
 
         case state_t::TERMINATE_BUILDING:

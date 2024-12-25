@@ -15,6 +15,7 @@ namespace dss {
         MarkingArray& operator=(const MarkingArray &);
         MarkingArray& operator=(MarkingArray &&);
         byte_t& operator[](const size_t index);
+        const byte_t& operator[](const size_t index) const;
         bool operator==(const MarkingArray &) const;
         size_t size() const;
         ~MarkingArray();

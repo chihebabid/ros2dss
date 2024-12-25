@@ -15,7 +15,7 @@ namespace dss {
         m_id = m_Counter++;
     }
 
-    vector<Marking *> &MetaState::getListMarkings() {
+    const vector<Marking *> &MetaState::getListMarkings() const {
         return m_nodes;
     }
 

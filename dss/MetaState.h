@@ -23,7 +23,7 @@ public:
     virtual ~MetaState()=default;
 
     vector<ArcSync *> &getSyncSucc();
-    vector<Marking *> &getListMarkings();
+    const vector<Marking *> &getListMarkings() const;
     vector<SCC *> *getListSCCs();
     SCC *findSCC(Marking *state);
     SCC *getInitialSCC();

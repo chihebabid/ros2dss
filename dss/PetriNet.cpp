@@ -70,9 +70,9 @@ namespace dss {
         return vecteur;
     }
 
-    void PetriNet::setMarquage(Marking *marquage) {
+    void PetriNet::setMarquage(const Marking &marquage) {
         for (int i = 0; i < m_places.size(); i++) {
-            m_places[i].setTokens(marquage->get8BitsValue(i));
+            m_places[i].setTokens(marquage.get8BitsValue(i));
         }
     }
 
@@ -194,7 +194,7 @@ namespace dss {
         PElement elt;
         auto *ms = new MetaState(getModulesCount());
         elt.marquage = new Marking(marquage);
-        setMarquage(&marquage);
+        setMarquage(marquage);
         elt.liste_transitions = getListeTransitionsFranchissables();
         pstack.push_back(elt);
 
@@ -210,7 +210,7 @@ namespace dss {
                 current_elt.liste_transitions.pop_back();
 
                 // On doit tirer la transition correspondante apr�s avoir pr�ciser le marquage
-                setMarquage(current_elt.marquage);
+                setMarquage(*(current_elt.marquage));
                 //cout<<"\n The old  marquage="<<getMarquageName(getMarquage())<<endl;
                 tirer(*transition); // Franchissement
 
@@ -238,7 +238,7 @@ namespace dss {
                 // Ajouter le marquage dans la pile et ses transitions franchissables
                 if (!old_state) {
                     elt.marquage = new_state;
-                    setMarquage(elt.marquage);
+                    setMarquage(*(elt.marquage));
                     elt.liste_transitions = getListeTransitionsFranchissables();
                     if (elt.liste_transitions.size() > 0) pstack.push_back(elt);
                 }
@@ -322,5 +322,17 @@ namespace dss {
     }
     std::shared_ptr<ManageTransitionFusionSet> PetriNet::getManageTransitionFusionSet() const {
         return m_manage_transition_fusion_set;
+    }
+
+    vector<string> PetriNet::getSyncEnabled(const MetaState* ms)  {
+        vector<string> res;
+        const auto & l_markings {ms->getListMarkings()};
+        for (const auto & marking : l_markings) {
+            setMarquage(*marking);
+            for (const auto & t : ml_transitions) {
+
+            }
+        }
+        return res;
     }
 }

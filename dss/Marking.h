@@ -30,7 +30,7 @@ public:
 
     Marking(const Marking &value);
 
-    Octet get8BitsValue(const int index);
+    Octet get8BitsValue(const int index) const;
 
     bool operator==(const Marking &newvec) const {
         return m_data==newvec.m_data;

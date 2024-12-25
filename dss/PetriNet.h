@@ -45,7 +45,7 @@ namespace dss {
 
         void tirer(Transition &t);
 
-        void setMarquage(Marking *marquage);
+        void setMarquage(const Marking & marquage);
 
         Marking getMarquage();
 
@@ -67,6 +67,7 @@ namespace dss {
         void setModulesCount(const uint32_t);
         void setSyncTransitions(const std::vector<std::string>& l_transitions);
         vector<string> getSyncTransitions() const;
+        vector<string> getSyncEnabled(const MetaState *);
         std::shared_ptr<ManageTransitionFusionSet> getManageTransitionFusionSet() const;
     private:
         uint32_t m_petri_id;

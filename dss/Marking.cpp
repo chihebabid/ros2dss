@@ -18,7 +18,7 @@ namespace dss {
     }
 
 
-    Octet Marking::get8BitsValue(const int index) {
+    Octet Marking::get8BitsValue(const int index) const {
         return m_data[index];
     }
 

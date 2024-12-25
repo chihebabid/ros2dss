@@ -16,6 +16,11 @@ namespace dss {
     byte_t& MarkingArray::operator[](const size_t index) {
         return m_marking[index];
     }
+
+    const byte_t& MarkingArray::operator[](const size_t index) const {
+        return m_marking[index];
+    }
+
     size_t MarkingArray::size() const {
         return m_size;
     }
