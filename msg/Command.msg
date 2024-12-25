@@ -1,3 +1,4 @@
 string cmd
-uint8 param
+uint32 param
 string scc
+string[] sync

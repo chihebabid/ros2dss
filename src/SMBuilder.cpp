@@ -102,7 +102,21 @@ void SMBuilder::run() {
 
         case state_t::COMPUTE_SYNC: // Determine enabled sync transitions
             if (!once_execution) {
-
+                once_execution=true;
+                auto enabled_sync_trans {m_petri->getSyncEnabled(m_current_meta_state)};
+                auto manageFusion {m_petri->getManageTransitionFusionSet()};
+                if (m_petri->getPetriID()==0) {
+                    manageFusion->reset();
+                    manageFusion->enableSetFusion(enabled_sync_trans,m_petri->getPetriID());
+                }
+                else {
+                    command.cmd = "SYNC_TRANSITION";
+                    command.param=m_petri->getPetriID();
+                    std::vector <std::string> _vec {enabled_sync_trans.begin(),enabled_sync_trans.end()};
+                    command.sync=_vec;
+                    RCLCPP_INFO(m_publisher->get_logger(), "COMPUTE_SYNC: Send enabled sync transitions");
+                    m_publisher->publishCommand(command);
+                }
             }
             RCLCPP_INFO(m_publisher->get_logger(),"Current state : COMPUTE_SYNC\n");
             break;

@@ -19,8 +19,6 @@ void DSSSubscriber::receiveMarking() {
 
 
 void DSSSubscriber::command_receiver(const ros2dss::Command & msg) const {
-    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "I heard: '%s', param: %d", msg.cmd.c_str(),msg.param);
-
    if (msg.cmd=="INIT") {
        (*_ptr_modules)[static_cast<int>(msg.param)]=1;
    }
@@ -31,5 +29,10 @@ void DSSSubscriber::command_receiver(const ros2dss::Command & msg) const {
    else if (msg.cmd=="MOVE_TO_METASTATE") {
        _current_meta_state_name=msg.scc;
    }
+    else if (msg.cmd=="SYNC_TRANSITION") {
+        ++_received_sync_count;
+        std::set<std::string> enabled_sync_trans {msg.sync.begin(),msg.sync.end()};
+        m_petri_net->getManageTransitionFusionSet()->enableSetFusion(enabled_sync_trans,msg.param);
+    }
 }
 

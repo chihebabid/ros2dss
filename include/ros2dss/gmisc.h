@@ -28,7 +28,7 @@ template class dss::ArrayModel<std::string>;
 inline std::unique_ptr<dss::MarkingArray> _ptr_modules {};
 inline std::unique_ptr<dss::ArrayModel<std::string>> _ptr_metastate_name;
 inline std::string _current_meta_state_name;
-
+inline uint32_t _received_sync_count {};
 
 
 
