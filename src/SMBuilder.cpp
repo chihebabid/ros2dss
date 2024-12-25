@@ -122,7 +122,7 @@ void SMBuilder::run() {
             if (m_petri->getPetriID()==0  && _received_sync_count==m_petri->getModulesCount()-1) {
                 m_current_state=state_t::TERMINATE_BUILDING;
             }
-            RCLCPP_INFO(m_publisher->get_logger(),"Current state : COMPUTE_SYNC %d\n",_received_sync_count);
+            RCLCPP_INFO(m_publisher->get_logger(),"Current state : COMPUTE_SYNC %d\n",_received_sync_count.load());
             break;
 
         case state_t::TERMINATE_BUILDING:
