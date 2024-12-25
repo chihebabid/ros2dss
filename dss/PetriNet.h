@@ -43,7 +43,7 @@ namespace dss {
 
         int addPlacesSorties(string nom_transition, vector<string> liste_places_sorties, vector<int> liste_poids);
 
-        void tirer(Transition &t);
+        void fire(Transition &t);
 
         void setMarquage(const Marking & marquage);
 
@@ -59,7 +59,6 @@ namespace dss {
 
         int getPlacesCount();
 
-
         MetaState *getMetaState(Marking marquage);
         void printMetaStateEx(MetaState *ms);
         bool areTransitionsIncluded(const std::set<string> &list_transitions);
@@ -67,7 +66,7 @@ namespace dss {
         void setModulesCount(const uint32_t);
         void setSyncTransitions(const std::vector<std::string>& l_transitions);
         vector<string> getSyncTransitions() const;
-        vector<string> getSyncEnabled(const MetaState *);
+        set<string> getSyncEnabled(const MetaState *);
         std::shared_ptr<ManageTransitionFusionSet> getManageTransitionFusionSet() const;
     private:
         uint32_t m_petri_id;

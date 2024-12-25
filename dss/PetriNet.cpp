@@ -89,7 +89,7 @@ namespace dss {
         return liste_transitions;
     }
 
-    void PetriNet::tirer(Transition &t) {
+    void PetriNet::fire(Transition &t) {
         Transition *transition = getTransitionPtr(t.getCode());
         if (transition->isFranchissable()) transition->fire();
     }
@@ -209,10 +209,10 @@ namespace dss {
                 Transition *transition = current_elt.liste_transitions.back();
                 current_elt.liste_transitions.pop_back();
 
-                // On doit tirer la transition correspondante apr�s avoir pr�ciser le marquage
+                // On doit fire la transition correspondante apr�s avoir pr�ciser le marquage
                 setMarquage(*(current_elt.marquage));
                 //cout<<"\n The old  marquage="<<getMarquageName(getMarquage())<<endl;
-                tirer(*transition); // Franchissement
+                fire(*transition); // Franchissement
 
                 Marking *new_state;
                 new_state = new Marking(getMarquage());
@@ -324,13 +324,13 @@ namespace dss {
         return m_manage_transition_fusion_set;
     }
 
-    vector<string> PetriNet::getSyncEnabled(const MetaState* ms)  {
-        vector<string> res;
+    set<string> PetriNet::getSyncEnabled(const MetaState* ms)  {
+        set<string> res;
         const auto & l_markings {ms->getListMarkings()};
         for (const auto & marking : l_markings) {
             setMarquage(*marking);
             for (const auto & t : ml_transitions) {
-
+                if (t.isLocallyFirable()) res.insert(t.getName());
             }
         }
         return res;

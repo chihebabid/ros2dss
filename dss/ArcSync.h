@@ -16,17 +16,17 @@ public:
     ArcSync()=default;
     virtual ~ArcSync()=default;
 
-    TransitionFusionSet *getFusion();
+    std::string *getFusion();
 
     void setDestination(MetaState *destination);
 
-    void setData(ArrayModel<string> source, TransitionFusionSet *transition, MetaState *destination);
+    void setData(ArrayModel<string> source, std::string *transition, MetaState *destination);
 
     MetaState *getMetaStateDest();
 
     ArrayModel<string> *getStartProduct();
 private:
-    TransitionFusionSet *m_fusion;
+    std::string *m_fusion;
     ArrayModel<string> m_source;
     MetaState *m_destination;
 };

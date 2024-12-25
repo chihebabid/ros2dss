@@ -55,7 +55,7 @@ public:
         }
     }
 
-    bool isLocallyFirable();
+    bool isLocallyFirable() const;
 
     Transition()=default;
     Transition(const Transition &o)=default;

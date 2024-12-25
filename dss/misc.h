@@ -24,7 +24,6 @@
 #include "Place.h"
 #include "Transition.h"
 #include "ManageTransitionFusionSet.h"
-#include "TransitionFusionSet.h"
 #include "MetaState.h"
 #include "PetriNet.h"
 #include "BuildPetri.h"

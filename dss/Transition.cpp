@@ -7,8 +7,8 @@
 
 
 namespace dss {
-bool Transition::isLocallyFirable() {
-    for (auto & i_place : ml_input_places) {
+bool Transition::isLocallyFirable() const {
+    for (const auto & i_place : ml_input_places) {
         if (i_place.place->getTokens() < i_place.poids) return false;
     }
     return true;

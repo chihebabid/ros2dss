@@ -13,7 +13,7 @@ namespace dss {
     }
 
 
-    void ArcSync::setData(ArrayModel<string> source, TransitionFusionSet *transition, MetaState *destination) {
+    void ArcSync::setData(ArrayModel<string> source, std::string *transition, MetaState *destination) {
         m_fusion = transition;
         m_destination = destination;
         m_source = source;
@@ -24,7 +24,7 @@ namespace dss {
         m_destination = destination;
     }
 
-    TransitionFusionSet *ArcSync::getFusion() {
+    std::string *ArcSync::getFusion() {
         return m_fusion;
     }
 
