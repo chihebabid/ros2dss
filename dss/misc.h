@@ -28,6 +28,7 @@
 #include "PetriNet.h"
 #include "BuildPetri.h"
 #include "SCC.h"
+#include "FiringSyncTransition.h"
 #include "ArcSync.h"
 #include "MetaStateName.h"
 #include "ModuleSS.h"

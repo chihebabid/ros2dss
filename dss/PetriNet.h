@@ -68,7 +68,7 @@ namespace dss {
         vector<string> getSyncTransitions() const;
         set<string> getSyncEnabled(const MetaState *);
         std::shared_ptr<ManageTransitionFusionSet> getManageTransitionFusionSet() const;
-        std::pair<set<SCC*>,set<SCC*>> fireSync(const string &, const MetaState *);
+        // std::pair<set<SCC*>,set<SCC*>> fireSync(const string &, const MetaState *);
     private:
         uint32_t m_petri_id;
         uint32_t m_modules_count {};

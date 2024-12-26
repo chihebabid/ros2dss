@@ -320,9 +320,20 @@ namespace dss {
         return res;
     }
 
-    std::pair<set<SCC*>,set<SCC*>> PetriNet::fireSync(const string &name, const MetaState *ms) {
+   /* std::pair<set<SCC*>,set<SCC*>> PetriNet::fireSync(const MetaState *ms, const string &name) {
         set<SCC*> source_scc,dest_scc;
-
+        auto l_markings {ms->getListMarkings()};
+            for (const auto & marking : l_markings) {
+                setMarquage(*marking);
+                auto t {getTransitionPtr(name)};
+                if (t->isLocallyFirable()) {
+                    t->fire();
+                    for (const auto & succ : marking->getListSucc()) {
+                        auto scc {succ.second->getSCCContainer()};
+                        if (scc) source_scc.insert(scc);
+                    }
+                }
+            }
         return std::make_pair(source_scc,dest_scc);
-    }
+    }*/
 }

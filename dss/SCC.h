@@ -30,7 +30,7 @@ class SCC {
 public:
     SCC();
     virtual ~SCC()=default;
-    Marking *findMarking(Marking *m);
+    Marking *findMarking(Marking *m) const;
     size_t getCount() const;
     void addState(Marking *m);
     vector<Marking *> *getListStates();
@@ -44,7 +44,7 @@ public:
     std::vector<std::pair<SCC * ,Transition*>>::iterator endSucc() {
         return m_iterator_succ.end();
     }
-
+    bool operator==(const SCC &o) const;
 private:
     vector<Marking *> m_list;
     static uint32_t mCounter;
