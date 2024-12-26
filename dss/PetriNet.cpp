@@ -104,8 +104,6 @@ namespace dss {
                 indice = i;
         }
         if (indice != -1) {
-            // Ajout de places d'entr�e
-            //printf("Places d'entr�e\n");
             for (int i = 0; i < liste_places_entrees.size(); i++) {
                 ml_transitions[indice].addPlaceEntree(getPlaceAdresse(liste_places_entrees[i]), liste_poids[i]);
                 //printf("%s, ",liste_places_entrees[i].mot.c_str());
@@ -168,9 +166,9 @@ namespace dss {
         m_petri_id = index;
     }
 
-    /////////////////////////////////////
-    // Renvoyer le num�ro de ce module //
-    /////////////////////////////////////
+    /*
+     * @brief return id of module
+     */
     uint32_t PetriNet::getPetriID() const {
         return m_petri_id;
     }
@@ -231,11 +229,6 @@ namespace dss {
                     new_state = nullptr;
                     current_elt.marquage->addSucc(transition, old_state);
                 }
-
-
-                //cout<<"\n Ajout du noeud réusssi ="<<result;
-                //if (current_elt.liste_transitions.size()>0) pstack.push_back(current_elt);
-                // Ajouter le marquage dans la pile et ses transitions franchissables
                 if (!old_state) {
                     elt.marquage = new_state;
                     setMarquage(*(elt.marquage));
@@ -281,16 +274,7 @@ namespace dss {
         return name;
     }
 
-    bool PetriNet::areTransitionsIncluded(const std::set<string> &list_transitions) {
-        for (const auto &transition: list_transitions) {
-            if (std::find_if(ml_transitions.begin(), ml_transitions.end(), [transition](auto &elt) {
-                return elt.getName() == transition;
-            }) == ml_transitions.end()) {
-                return false;
-            }
-        }
-        return true;
-    }
+
 
 
     uint32_t PetriNet::getModulesCount() const {
@@ -334,5 +318,11 @@ namespace dss {
             }
         }
         return res;
+    }
+
+    std::pair<set<SCC*>,set<SCC*>> PetriNet::fireSync(const string &name, const MetaState *ms) {
+        set<SCC*> source_scc,dest_scc;
+
+        return std::make_pair(source_scc,dest_scc);
     }
 }

@@ -61,13 +61,14 @@ namespace dss {
 
         MetaState *getMetaState(Marking marquage);
         void printMetaStateEx(MetaState *ms);
-        bool areTransitionsIncluded(const std::set<string> &list_transitions);
+
         uint32_t getModulesCount() const ;
         void setModulesCount(const uint32_t);
         void setSyncTransitions(const std::vector<std::string>& l_transitions);
         vector<string> getSyncTransitions() const;
         set<string> getSyncEnabled(const MetaState *);
         std::shared_ptr<ManageTransitionFusionSet> getManageTransitionFusionSet() const;
+        std::pair<set<SCC*>,set<SCC*>> fireSync(const string &, const MetaState *);
     private:
         uint32_t m_petri_id;
         uint32_t m_modules_count {};
