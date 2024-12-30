@@ -33,7 +33,7 @@ namespace dss {
 
         int addPlacesEntrees(string nom_transition, vector<string> liste_places_entrees, vector<int> liste_poids);
 
-        Transition *getTransitionPtr(const string& nom_transition);
+
 
         uint32_t getPetriID() const;
 
@@ -52,7 +52,7 @@ namespace dss {
         Place getPlace(const int index);
 
         Transition *getTransitionPtr(const int code);
-
+        Transition *getTransitionPtr(const string &name);
         void addListTransitions(vector<Transition> liste_transitions);
 
         void addListPlaces(vector<Place> liste_places);
@@ -68,7 +68,7 @@ namespace dss {
         vector<string> getSyncTransitions() const;
         set<string> getSyncEnabled(const MetaState *);
         std::shared_ptr<ManageTransitionFusionSet> getManageTransitionFusionSet() const;
-        // std::pair<set<SCC*>,set<SCC*>> fireSync(const string &, const MetaState *);
+        std::set<FiringSyncTransition> fireSync(const string &, const MetaState *);
     private:
         uint32_t m_petri_id;
         uint32_t m_modules_count {};

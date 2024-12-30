@@ -25,10 +25,11 @@
 #include "Transition.h"
 #include "ManageTransitionFusionSet.h"
 #include "MetaState.h"
+#include "FiringSyncTransition.h"
 #include "PetriNet.h"
 #include "BuildPetri.h"
 #include "SCC.h"
-#include "FiringSyncTransition.h"
+
 #include "ArcSync.h"
 #include "MetaStateName.h"
 #include "ModuleSS.h"

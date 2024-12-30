@@ -173,16 +173,6 @@ namespace dss {
         return m_petri_id;
     }
 
-    /////////////////////////////////////////////////////////////////////
-    // Renvoyer un pointeur vers une transition en connaissant son nom //
-    /////////////////////////////////////////////////////////////////////
-    Transition *PetriNet::getTransitionPtr(const string &nom_transition) {
-        for (auto &transition: ml_transitions) {
-            if (nom_transition == transition.getName()) return &transition;
-        }
-        return nullptr;
-    }
-
 
     // Construction de Meta-graphe
 
@@ -336,4 +326,26 @@ namespace dss {
             }
         return std::make_pair(source_scc,dest_scc);
     }*/
+    std::set<FiringSyncTransition> PetriNet::fireSync(const string &name, const MetaState *ms) {
+        std::set<FiringSyncTransition> res;
+        const auto & l_markings {ms->getListMarkings()};
+        auto transition {getTransitionPtr(name)};
+        for (const auto & marking : l_markings) {
+           setMarquage(*marking);
+            auto source_SCC {marking->getSCCContainer()};
+            MetaState* dest_ms {nullptr};
+            if (transition->isLocallyFirable()) {
+                transition->fire();
+                dest_ms=getMetaState(getMarquage());
+                // Check the existence of dest_ms in res
+            }
+
+        }
+        return res;
+    }
+
+    Transition *PetriNet::getTransitionPtr(const string &name) {
+        auto it {std::find_if(ml_transitions.begin(),ml_transitions.end(),[&name](const Transition &t){return t.getName()==name;})};
+        return it!=ml_transitions.end()?&(*it):nullptr;
+    }
 }
