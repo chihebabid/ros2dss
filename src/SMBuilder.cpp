@@ -120,19 +120,34 @@ void SMBuilder::run() {
                 }
             }
             if (m_petri->getPetriID()==0  && _received_sync_count==m_petri->getModulesCount()-1) {
-                m_current_state=state_t::TERMINATE_BUILDING;
+                auto manage {m_petri->getManageTransitionFusionSet()};
+                ml_enabled_fusion_sets=manage->getEnabledFusionSets();
+                once_execution=false;
+                m_current_state=state_t::FIRE_SYNC;
             }
             RCLCPP_INFO(m_publisher->get_logger(),"Current state : COMPUTE_SYNC %d\n",_received_sync_count.load());
             break;
 
-        case state_t::TERMINATE_BUILDING:
-            if (m_petri->getPetriID()==0) {
-                auto manage {m_petri->getManageTransitionFusionSet()};
-                auto enabled_sync_trans {manage->getEnabledFusionSets()};
-                for (const auto & elt : enabled_sync_trans) {
-                    RCLCPP_INFO(m_publisher->get_logger(), "Enabled sync transition : %s\n", elt.c_str());
+        case state_t::FIRE_SYNC:
+            if (m_petri->getPetriID()==0 and !once_execution) {
+                once_execution=true;
+                if (ml_enabled_fusion_sets.empty()) {
+                    break;
                 }
+                string transition {ml_enabled_fusion_sets[ml_enabled_fusion_sets.size()-1]};
+                ml_enabled_fusion_sets.pop_back();
+                auto res = m_petri->fireSync(transition,m_current_meta_state);
+                for (const auto & t : res) {
+                    RCLCPP_INFO(m_publisher->get_logger(),"Source name %s\n",t.getSCCSource()->getMetaState()->toString().c_str());
+                    RCLCPP_INFO(m_publisher->get_logger(),"Transition name %s\n",t.getTransition().c_str());
+                    RCLCPP_INFO(m_publisher->get_logger(),"Dest name %s\n",t.getDestSCC()->getMetaState()->toString().c_str());
+                }
+
             }
+            break;
+
+        case state_t::TERMINATE_BUILDING:
+            RCLCPP_INFO(m_publisher->get_logger(), "TERMINATE_BUILDING\n");
             break;
     }
 }

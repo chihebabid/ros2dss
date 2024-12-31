@@ -326,6 +326,7 @@ namespace dss {
             }
         return std::make_pair(source_scc,dest_scc);
     }*/
+
     std::set<FiringSyncTransition> PetriNet::fireSync(const string &name, const MetaState *ms) {
         std::set<FiringSyncTransition> res;
         const auto & l_markings {ms->getListMarkings()};
@@ -338,8 +339,18 @@ namespace dss {
                 transition->fire();
                 dest_ms=getMetaState(getMarquage());
                 // Check the existence of dest_ms in res
+                auto check {find_if(res.begin(),res.end(),[dest_ms](const FiringSyncTransition &fst){
+                    return *(dest_ms->getInitialSCC())==*(fst.getDestSCC());
+                })};
+                if (check==res.end()) { // Found
+                    res.insert(FiringSyncTransition{source_SCC,name,dest_ms->getInitialSCC()});
+                }
+                else { // Not found
+                    res.insert(FiringSyncTransition{source_SCC,name,check->getDestSCC()});
+                    delete dest_ms;
+                    dest_ms=nullptr;
+                }
             }
-
         }
         return res;
     }

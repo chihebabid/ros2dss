@@ -16,6 +16,7 @@
 #include <map>
 #include <memory>
 #include <list>
+#include <unordered_set>
 
 #include "ArrayModel.h"
 #include "MarkingArray.h"

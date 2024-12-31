@@ -9,8 +9,7 @@ namespace dss {
     Marking::Marking(const size_t size) : m_data(size), m_sccContainer(nullptr) {
     }
 
-    Marking::~Marking() {
-    }
+
 
 
     void Marking::add8BitsValue(const Octet val, const int index) {

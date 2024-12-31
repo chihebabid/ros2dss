@@ -44,8 +44,8 @@ public:
 
     vector<pair<Transition *, Marking *>> &getListSucc();
 
-    Marking(const size_t);
-    ~Marking();
+    explicit Marking(const size_t);
+    ~Marking()=default;
 
     SCC *getSCCContainer() const;
     void setSCCContainer(SCC *c);
