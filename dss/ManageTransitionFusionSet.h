@@ -27,6 +27,11 @@ namespace dss {
         void enableFusion(const std::string &,uint32_t);
         void enableSetFusion(const set<string> &,uint32_t);
         void reset();
+        /*
+         * For debugging
+         */
+        void display();
+
     private:
         std::map<std::string,std::list<fusion_set_t>> ml_fusion_sets;
     };

@@ -27,7 +27,7 @@ namespace dss {
         return &ml_scc;
     }
 
-    SCC *MetaState::findSCC(Marking *state) {
+    SCC *MetaState::findSCC(Marking *state) const {
         for (size_t i{}; i < ml_scc.size(); i++) {
             vector<Marking *> *list_states = ml_scc[i]->getListStates();
             if (std::find(list_states->begin(), list_states->end(), state) != list_states->end()) return ml_scc.at(i);
@@ -35,7 +35,7 @@ namespace dss {
         return nullptr;
     }
 
-    SCC *MetaState::getInitialSCC() {
+    SCC *MetaState::getInitialSCC() const {
         return findSCC(m_nodes[0]);
     }
 
@@ -162,6 +162,10 @@ namespace dss {
         }
         strbuf[strbuf.size()-1]=']';
         return strbuf;
+    }
+
+    Marking* MetaState::getInitialMarking() const {
+        return m_nodes[0];
     }
 
 }

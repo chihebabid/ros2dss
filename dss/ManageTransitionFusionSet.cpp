@@ -56,4 +56,13 @@ namespace dss {
         enableFusion(elt,module);
       }
     }
+
+    void ManageTransitionFusionSet::display() {
+      	for (auto & [name,l] : ml_fusion_sets) {
+        	printf("Transition: %s\n",name.c_str());
+            for (auto &elt: l) {
+              printf("module: %d, enabled: %d\n",elt.module,elt.enabled);
+            }
+        }
+    }
 }

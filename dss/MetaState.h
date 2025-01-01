@@ -25,8 +25,8 @@ public:
     vector<ArcSync *> &getSyncSucc();
     const vector<Marking *> &getListMarkings() const;
     vector<SCC *> *getListSCCs();
-    SCC *findSCC(Marking *state);
-    SCC *getInitialSCC();
+    SCC *findSCC(Marking *state) const;
+    SCC *getInitialSCC() const;
 
 
     void addSyncArc(ArcSync *sync_arc);
@@ -43,6 +43,7 @@ public:
     void setName(const ArrayModel<string> &);
     ArrayModel<string> getName() const;
     std::string toString();
+    Marking* getInitialMarking() const ;
 private:
     ArrayModel<string> m_metastate_name;
     size_t m_id_module;

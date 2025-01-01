@@ -331,11 +331,19 @@ namespace dss {
         std::set<FiringSyncTransition> res;
         const auto & l_markings {ms->getListMarkings()};
         auto transition {getTransitionPtr(name)};
+        if (transition==nullptr) { // Module is not synchronized
+            MetaState* dest_ms {getMetaState(*(ms->getInitialMarking()))};
+            res.insert(FiringSyncTransition{ms->getInitialSCC(),name,dest_ms->getInitialSCC()});
+            return res;
+        }
+        // Module is synchronized on the transition
         for (const auto & marking : l_markings) {
            setMarquage(*marking);
             auto source_SCC {marking->getSCCContainer()};
             MetaState* dest_ms {nullptr};
+            printf("@transition %.8x\n",transition);
             if (transition->isLocallyFirable()) {
+                printf("Fired!!!\n");
                 transition->fire();
                 dest_ms=getMetaState(getMarquage());
                 // Check the existence of dest_ms in res
@@ -356,7 +364,11 @@ namespace dss {
     }
 
     Transition *PetriNet::getTransitionPtr(const string &name) {
-        auto it {std::find_if(ml_transitions.begin(),ml_transitions.end(),[&name](const Transition &t){return t.getName()==name;})};
-        return it!=ml_transitions.end()?&(*it):nullptr;
+        /*auto it {std::find_if(ml_transitions.begin(),ml_transitions.end(),[&name](const Transition &t){return t.getName()==name;})};
+        return it!=ml_transitions.end()?&(*it):nullptr;*/
+        for (auto & t : ml_transitions) {
+            if (t.getName()==name) return &t;
+        }
+        return nullptr;
     }
 }

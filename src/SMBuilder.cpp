@@ -122,8 +122,12 @@ void SMBuilder::run() {
             if (m_petri->getPetriID()==0  && _received_sync_count==m_petri->getModulesCount()-1) {
                 auto manage {m_petri->getManageTransitionFusionSet()};
                 ml_enabled_fusion_sets=manage->getEnabledFusionSets();
+                for (auto & elt : ml_enabled_fusion_sets) {
+                    RCLCPP_INFO(m_publisher->get_logger(),"enabled fusion %s\n",elt.c_str());
+                }
                 once_execution=false;
                 m_current_state=state_t::FIRE_SYNC;
+                manage->display();
             }
             RCLCPP_INFO(m_publisher->get_logger(),"Current state : COMPUTE_SYNC %d\n",_received_sync_count.load());
             break;
@@ -132,17 +136,31 @@ void SMBuilder::run() {
             if (m_petri->getPetriID()==0 and !once_execution) {
                 once_execution=true;
                 if (ml_enabled_fusion_sets.empty()) {
+                    RCLCPP_INFO(m_publisher->get_logger(),"ml_enabled_fusion_sets: Set is empty");
                     break;
                 }
+                else {
+                    RCLCPP_INFO(m_publisher->get_logger(),"ml_enabled_fusion_sets: Set is not empty");
+                }
+                // Participate in the fusion
                 string transition {ml_enabled_fusion_sets[ml_enabled_fusion_sets.size()-1]};
                 ml_enabled_fusion_sets.pop_back();
-                auto res = m_petri->fireSync(transition,m_current_meta_state);
-                for (const auto & t : res) {
-                    RCLCPP_INFO(m_publisher->get_logger(),"Source name %s\n",t.getSCCSource()->getMetaState()->toString().c_str());
-                    RCLCPP_INFO(m_publisher->get_logger(),"Transition name %s\n",t.getTransition().c_str());
-                    RCLCPP_INFO(m_publisher->get_logger(),"Dest name %s\n",t.getDestSCC()->getMetaState()->toString().c_str());
+                if (m_petri->getTransitionPtr(transition)) {
+                    RCLCPP_INFO(m_publisher->get_logger(),"Transition to sync fire: %s",transition.c_str());
+                    auto res = m_petri->fireSync(transition,m_current_meta_state);
+                    if (res.empty()) RCLCPP_INFO(m_publisher->get_logger(),"res: is empty");
+                    else RCLCPP_INFO(m_publisher->get_logger(),"res: is not empty");
+                    for (const auto & t : res) {
+                        RCLCPP_INFO(m_publisher->get_logger(),"Source name %s\n",t.getSCCSource()->getMetaState()->toString().c_str());
+                        RCLCPP_INFO(m_publisher->get_logger(),"Transition name %s\n",t.getTransition().c_str());
+                        RCLCPP_INFO(m_publisher->get_logger(),"Dest name %s\n",m_petri->getSCCName(t.getDestSCC()).c_str());
+                    }
                 }
+                else { // Module is not synchronized
 
+
+
+                }
             }
             break;
 

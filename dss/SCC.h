@@ -36,7 +36,7 @@ public:
     vector<Marking *> *getListStates();
     bool isEqual(const SCC &scc);
     [[nodiscard]] uint32_t getId() const;
-    [[nodiscard]] MetaState * getMetaState() const;
+    [[nodiscard]] MetaState *getMetaState() const;
     void setMetaState(MetaState* ms);
     std::vector<std::pair<SCC * ,Transition*>>::iterator beginSucc() {
         return m_iterator_succ.begin();

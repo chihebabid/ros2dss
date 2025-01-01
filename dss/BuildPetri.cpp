@@ -23,9 +23,6 @@ namespace dss {
     }
 
     PetriNet *BuildPetri::getPetriNet() {
-
-
-
         fp = fopen(m_nom_fichier.c_str(), "r");
         PetriNet *petri{nullptr};
         if (fp) {
@@ -189,6 +186,11 @@ namespace dss {
                 }
             } while (nom_transition != "End");
             petri->setSyncTransitions(liste_sync);
+            if (petri->getPetriID()==0) {
+                for (const auto & t : liste_sync) {
+                    petri->getManageTransitionFusionSet()->add_fusion_set(t,0);
+                }
+            }
         } else {
             cout << "Error: can't open file";
         }
