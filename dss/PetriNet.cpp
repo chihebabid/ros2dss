@@ -333,6 +333,7 @@ namespace dss {
         auto transition {getTransitionPtr(name)};
         if (transition==nullptr) { // Module is not synchronized
             MetaState* dest_ms {getMetaState(*(ms->getInitialMarking()))};
+            dest_ms->setSCCName(getSCCName(dest_ms->getInitialSCC()),getPetriID());
             res.insert(FiringSyncTransition{ms->getInitialSCC(),name,dest_ms->getInitialSCC()});
             return res;
         }
