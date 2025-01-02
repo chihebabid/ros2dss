@@ -4,6 +4,7 @@
 
 #include "SMBuilder.h"
 #include "ros2dss_project/msg/command.hpp"
+#include "ros2dss_project/msg/firing.hpp"
 #include "gmisc.h"
 
 SMBuilder::SMBuilder(dss::PetriNet *petri, std::shared_ptr<DSSPublisher> &publisher): m_petri(petri),
@@ -158,7 +159,13 @@ void SMBuilder::run() {
                 if (m_petri->getPetriID()!=0) {
                     command.cmd = "NEW_METSTATE";
                     command.param=m_petri->getPetriID();
-
+                    for (const auto &elt: res) {
+                        auto firing {ros2dss_project::msg::Firing{}};
+                        firing.source=elt.getSCCSource()->getMetaState()->getSCCName(m_petri->getPetriID());
+                        firing.target=elt.getDestSCC()->getMetaState()->getSCCName(m_petri->getPetriID());
+                        command.lfiring.emplace_back(firing);
+                        m_publisher->publishCommand(command);
+                    }
                 }
             }
             break;
