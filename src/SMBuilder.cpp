@@ -133,7 +133,7 @@ void SMBuilder::run() {
             break;
 
         case state_t::FIRE_SYNC:
-            if (m_petri->getPetriID()==0 and !once_execution) {
+            if (!once_execution) {
                 once_execution=true;
                 if (ml_enabled_fusion_sets.empty()) {
                     RCLCPP_INFO(m_publisher->get_logger(),"ml_enabled_fusion_sets: Set is empty");
@@ -154,6 +154,11 @@ void SMBuilder::run() {
                     RCLCPP_INFO(m_publisher->get_logger(),"Source metastate: %s",t.getSCCSource()->getMetaState()->toString().c_str());
                     RCLCPP_INFO(m_publisher->get_logger(),"Transition nfusion name: %s",t.getTransition().c_str());
                     RCLCPP_INFO(m_publisher->get_logger(),"Dest metastate %s",t.getDestSCC()->getMetaState()->toString().c_str());
+                }
+                if (m_petri->getPetriID()!=0) {
+                    command.cmd = "NEW_METSTATE";
+                    command.param=m_petri->getPetriID();
+
                 }
             }
             break;
