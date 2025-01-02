@@ -161,8 +161,8 @@ void SMBuilder::run() {
                     command.param=m_petri->getPetriID();
                     for (const auto &elt: res) {
                         auto firing {ros2dss_project::msg::Firing{}};
-                        firing.source=elt.getSCCSource()->getMetaState()->getSCCName(m_petri->getPetriID());
-                        firing.target=elt.getDestSCC()->getMetaState()->getSCCName(m_petri->getPetriID());
+                        firing.source=elt.getSCCSource()->getName(m_petri);
+                        firing.target=elt.getDestSCC()->getName(m_petri);
                         command.lfiring.emplace_back(firing);
                         m_publisher->publishCommand(command);
                     }
