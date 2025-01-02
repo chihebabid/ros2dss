@@ -347,6 +347,7 @@ namespace dss {
                 printf("Fired!!!\n");
                 transition->fire();
                 dest_ms=getMetaState(getMarquage());
+                dest_ms->setSCCName(getSCCName(dest_ms->getInitialSCC()),getPetriID());
                 // Check the existence of dest_ms in res
                 auto check {find_if(res.begin(),res.end(),[dest_ms](const FiringSyncTransition &fst){
                     return *(dest_ms->getInitialSCC())==*(fst.getDestSCC());
