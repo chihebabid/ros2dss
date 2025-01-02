@@ -29,7 +29,7 @@ namespace dss {
         PetriNet()=default;
         virtual ~PetriNet()=default;
 
-        string getSCCName(SCC *scc);
+        string getSCCName(const SCC *scc) const;
 
         int addPlacesEntrees(string nom_transition, vector<string> liste_places_entrees, vector<int> liste_poids);
 
@@ -39,7 +39,7 @@ namespace dss {
 
         void setPetriID(const uint32_t index);
 
-        string getMarquageName(Marking marquage);
+        string getMarquageName(Marking marquage) const;
 
         int addPlacesSorties(string nom_transition, vector<string> liste_places_sorties, vector<int> liste_poids);
 
@@ -49,7 +49,7 @@ namespace dss {
 
         Marking getMarquage();
 
-        Place getPlace(const int index);
+        Place getPlace(const int index) const;
 
         Transition *getTransitionPtr(const int code);
         Transition *getTransitionPtr(const string &name);
@@ -57,7 +57,7 @@ namespace dss {
 
         void addListPlaces(vector<Place> liste_places);
 
-        int getPlacesCount();
+        size_t getPlacesCount() const;
 
         MetaState *getMetaState(Marking marquage);
         void printMetaStateEx(MetaState *ms);

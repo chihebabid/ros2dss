@@ -11,7 +11,7 @@ namespace dss {
     //////////////////////////////////
     // Renvoyer le nombre de places
     //////////////////////////////////
-    int PetriNet::getPlacesCount() {
+    size_t PetriNet::getPlacesCount() const {
         return m_places.size();
     }
 
@@ -54,7 +54,7 @@ namespace dss {
         return &ml_transitions[indice];
     }
 
-    Place PetriNet::getPlace(const int index) {
+    Place PetriNet::getPlace(const int index) const {
         return m_places[index];
     }
 
@@ -140,7 +140,7 @@ namespace dss {
     /////////////////////////////////////
     /// Renvoyer le nom d'un marquage ///
     /////////////////////////////////////
-    string PetriNet::getMarquageName(Marking marquage) {
+    string PetriNet::getMarquageName(Marking marquage) const {
         string resultat = "(";
         char chaine[100] = "\0";
         for (int j = 0; j < getPlacesCount(); j++) {
@@ -257,7 +257,7 @@ namespace dss {
     }
 
 
-    string PetriNet::getSCCName(SCC *scc) {
+    string PetriNet::getSCCName(const SCC *scc) const {
         auto name {getMarquageName(*(scc->getListStates())->at(0))};
         for (auto & c : name)
             c=std::toupper(c);
@@ -366,8 +366,6 @@ namespace dss {
     }
 
     Transition *PetriNet::getTransitionPtr(const string &name) {
-        /*auto it {std::find_if(ml_transitions.begin(),ml_transitions.end(),[&name](const Transition &t){return t.getName()==name;})};
-        return it!=ml_transitions.end()?&(*it):nullptr;*/
         for (auto & t : ml_transitions) {
             if (t.getName()==name) return &t;
         }

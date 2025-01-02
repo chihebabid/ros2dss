@@ -29,7 +29,7 @@ namespace dss {
         m_list.emplace_back(m);
     }
 
-    vector<Marking *> *SCC::getListStates() {
+    const vector<Marking *> *SCC::getListStates() const {
         return &m_list;
     }
 
@@ -73,5 +73,9 @@ namespace dss {
             if (!findMarking(marking)) return false;
         }
         return true;
+    }
+
+    string SCC::getName(const PetriNet* petri) const {
+        return petri->getSCCName(this);
     }
 }

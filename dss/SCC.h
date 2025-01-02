@@ -33,11 +33,12 @@ public:
     Marking *findMarking(Marking *m) const;
     size_t getCount() const;
     void addState(Marking *m);
-    vector<Marking *> *getListStates();
+    const vector<Marking *> *getListStates() const;
     bool isEqual(const SCC &scc);
     [[nodiscard]] uint32_t getId() const;
     [[nodiscard]] MetaState *getMetaState() const;
     void setMetaState(MetaState* ms);
+    string getName(const PetriNet*) const;
     std::vector<std::pair<SCC * ,Transition*>>::iterator beginSucc() {
         return m_iterator_succ.begin();
     }

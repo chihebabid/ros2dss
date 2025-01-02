@@ -29,7 +29,7 @@ namespace dss {
 
     SCC *MetaState::findSCC(Marking *state) const {
         for (size_t i{}; i < ml_scc.size(); i++) {
-            vector<Marking *> *list_states = ml_scc[i]->getListStates();
+            const vector<Marking *> *list_states = ml_scc[i]->getListStates();
             if (std::find(list_states->begin(), list_states->end(), state) != list_states->end()) return ml_scc.at(i);
         }
         return nullptr;

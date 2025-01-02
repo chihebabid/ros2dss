@@ -34,7 +34,7 @@
 #include "ArcSync.h"
 #include "MetaStateName.h"
 #include "ModuleSS.h"
-#include "SSBuilder.h"
+
 namespace dss {
     struct element_t {
         Marking marquage;
