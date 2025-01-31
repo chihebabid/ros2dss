@@ -74,7 +74,7 @@ void SMBuilder::run() {
             }
             break;
 
-        case state_t::POP_METASTATE:
+        case state_t::POP_METASTATE: // Pop a metastate from the stack
             if (m_petri->getPetriID() == 0) {
                 if (m_meta_states_stack.empty()) {
                     m_current_state = state_t::TERMINATE_BUILDING;
@@ -117,7 +117,7 @@ void SMBuilder::run() {
                     command.sync=_vec;
                     RCLCPP_INFO(m_publisher->get_logger(), "COMPUTE_SYNC: Send enabled sync transitions");
                     m_publisher->publishCommand(command);
-                    state_t::TERMINATE_BUILDING;
+                    m_current_state=state_t::FIRE_SYNC;
                 }
             }
             if (m_petri->getPetriID()==0  && _received_sync_count==m_petri->getModulesCount()-1) {

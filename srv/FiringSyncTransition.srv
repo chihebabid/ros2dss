@@ -1,0 +1,4 @@
+string transition
+---
+string[] scc_source
+string[] scc_target

@@ -34,5 +34,8 @@ void DSSSubscriber::command_receiver(const ros2dss::Command & msg) const {
         std::set<std::string> enabled_sync_trans {msg.sync.begin(),msg.sync.end()};
         m_petri_net->getManageTransitionFusionSet()->enableSetFusion(enabled_sync_trans,msg.param);
     }
+    else if (msg.cmd=="NEW_METASTATE") {
+
+    }
 }
 
