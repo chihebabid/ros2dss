@@ -7,8 +7,8 @@
 #include "ros2dss_project/msg/firing.hpp"
 
 
-SMBuilder::SMBuilder(dss::PetriNet *petri, std::shared_ptr<DSSPublisher> &publisher): m_petri(petri),
-    m_publisher(publisher) {
+SMBuilder::SMBuilder(dss::PetriNet *petri, std::shared_ptr<DSSPublisher> publisher,std::shared_ptr<FiringSyncTransitionService> firing_service): m_petri(petri),
+    m_publisher(publisher),m_firing_sync_transition_service(firing_service) {
     _ptr_modules = std::make_unique<dss::MarkingArray>(m_petri->getModulesCount());
     for (uint32_t i{}; i < m_petri->getModulesCount(); ++i) {
         (*_ptr_modules)[i] = 0;
@@ -135,7 +135,7 @@ void SMBuilder::run() {
             break;
 
         case state_t::FIRE_SYNC:
-            if (!once_execution) {
+            if (!once_execution && m_petri->getPetriID()==0) {
                 once_execution=true;
                 if (ml_enabled_fusion_sets.empty()) {
                     RCLCPP_INFO(m_publisher->get_logger(),"ml_enabled_fusion_sets: Set is empty");
@@ -157,6 +157,10 @@ void SMBuilder::run() {
                     RCLCPP_INFO(m_publisher->get_logger(),"Transition nfusion name: %s",t.getTransition().c_str());
                     RCLCPP_INFO(m_publisher->get_logger(),"Dest metastate %s",t.getDestSCC()->getMetaState()->toString().c_str());
                 }
+                for (uint32_t i {1};i<m_petri->getModulesCount();++i) {
+                    m_firing_sync_transition_service->executeRequest(i,transition);
+                }
+                /*
                 if (m_petri->getPetriID()!=0) {
                     command.cmd = "NEW_METSTATE";
                     command.param=m_petri->getPetriID();
@@ -167,7 +171,7 @@ void SMBuilder::run() {
                         command.lfiring.emplace_back(firing);
                         m_publisher->publishCommand(command);
                     }
-                }
+                }*/
             }
             break;
 

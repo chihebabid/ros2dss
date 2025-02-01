@@ -14,7 +14,6 @@ private:
     bool m_should_shutdown {false};
     dss::PetriNet *m_petri;
     rclcpp::Service<ros2dss::FiringSyncTransition>::SharedPtr m_server_firing_service {};
-    rclcpp::Client<ros2dss::FiringSyncTransition>::SharedPtr m_client_firing_service {};
 
 };
 #endif //FIRINGSYNCTRANSITIONSERVICE_H

@@ -28,7 +28,7 @@ int main(int argc, char * argv[]) {
             executor.spin_all(0ns);
         } catch (const rclcpp::exceptions::RCLError & e)
         {
-
+            RCLCPP_ERROR(rclcpp::get_logger("SyncTransitionService"), "Error in spin: %s", e.what());
         }
         loop_rate.sleep();
     }
@@ -42,11 +42,11 @@ int main(int argc, char * argv[]) {
 
     executor.add_node(pubNode);
     executor.add_node(subNode);
-    executor.add_node(fireSyncTransitionNode);
+    if (petri->getPetriID()) {
+        executor.add_node(fireSyncTransitionNode);
+    }
 
-
-
-    SMBuilder sm_builder {petri,pubNode};
+    SMBuilder sm_builder {petri,pubNode,fireSyncTransitionNode};
     while (rclcpp::ok() )
     {
         try {
