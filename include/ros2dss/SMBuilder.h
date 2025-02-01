@@ -6,7 +6,7 @@
 #define SMBUILER_H
 #include "DSSPublisher.h"
 #include "misc.h"
-
+#include "ros2dss_project/srv/firing_sync_transition.hpp"
 class SMBuilder {
     enum class state_t {GET_SYNC_FUSION, INIT,BUILD_META_STATE,POP_METASTATE,COMPUTE_SYNC, FIRE_SYNC,TERMINATE_BUILDING};
 public:
@@ -21,6 +21,8 @@ private:
     dss::MetaState* m_current_meta_state {};
     std::stack<dss::MetaState*> m_meta_states_stack;
     std::vector<std::string> ml_enabled_fusion_sets;
+
+    rclcpp::Service<ros2dss::FiringSyncTransition>::SharedPtr m_server_firing_service {};
 };
 
 

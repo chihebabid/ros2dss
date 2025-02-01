@@ -1,11 +1,11 @@
 //
 // Created by chiheb on 16/12/24.
 //
-
+#include "gmisc.h"
 #include "SMBuilder.h"
 #include "ros2dss_project/msg/command.hpp"
 #include "ros2dss_project/msg/firing.hpp"
-#include "gmisc.h"
+
 
 SMBuilder::SMBuilder(dss::PetriNet *petri, std::shared_ptr<DSSPublisher> &publisher): m_petri(petri),
     m_publisher(publisher) {
@@ -15,6 +15,11 @@ SMBuilder::SMBuilder(dss::PetriNet *petri, std::shared_ptr<DSSPublisher> &publis
     }
     (*_ptr_modules)[m_petri->getPetriID()] = 1;
     m_module_ss = new dss::ModuleSS(m_petri->getModulesCount());
+    if (m_petri->getPetriID()==0) {
+
+    } else { // Create server service for firing sync transitions
+
+    }
 }
 
 void SMBuilder::run() {

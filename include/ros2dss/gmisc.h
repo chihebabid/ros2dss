@@ -8,15 +8,16 @@
 #include "std_msgs/msg/string.hpp"
 #include "ros2dss_project/msg/command.hpp"
 #include "ros2dss_project/srv/sync_transition.hpp"
+#include "ros2dss_project/srv/firing_sync_transition.hpp"
 
 namespace ros2dss {
     using SyncTransition=ros2dss_project::srv::SyncTransition;
+    using FiringSyncTransition=ros2dss_project::srv::FiringSyncTransition;
     using Command=ros2dss_project::msg::Command;
 }
 
 
 #include "misc.h"
-
 #include "SyncTransitionService.h"
 #include "DSSSubscriber.h"
 #include "DSSPublisher.h"
