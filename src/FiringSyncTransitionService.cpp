@@ -7,8 +7,6 @@ using std::placeholders::_1;
 using std::placeholders::_2;
 
 FiringSyncTransitionService::FiringSyncTransitionService(dss::PetriNet  *petri):Node("firing_sync_transitions"),m_petri(petri) {
-  {
-
      if (m_petri->getPetriID()!=0) {
         std::string service_name {"firing_sync_transitions_service"+std::to_string(m_petri->getPetriID())};
         m_server_firing_service=create_service<ros2dss::FiringSyncTransition>(std::move(service_name),std::bind(&FiringSyncTransitionService::firingSyncTransitionsService,this,_1,_2));
