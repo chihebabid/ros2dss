@@ -7,7 +7,7 @@
 class FiringSyncTransitionService : public rclcpp::Node {
 public:
     FiringSyncTransitionService(dss::PetriNet  *);
-
+    void executeRequest(const string &transition);
 
 private:
     void firingSyncTransitionsService(const std::shared_ptr<ros2dss::FiringSyncTransition::Request>,std::shared_ptr<ros2dss::FiringSyncTransition::Response> );

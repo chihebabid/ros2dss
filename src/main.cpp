@@ -38,9 +38,11 @@ int main(int argc, char * argv[]) {
 
     auto  pubNode {std::make_shared<DSSPublisher>(petri)};
     auto  subNode {std::make_shared<DSSSubscriber>(petri)};
+    auto fireSyncTransitionNode {std::make_shared<FiringSyncTransitionService>(petri)};
 
     executor.add_node(pubNode);
     executor.add_node(subNode);
+    executor.add_node(fireSyncTransitionNode);
 
 
 
