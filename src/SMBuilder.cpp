@@ -15,11 +15,7 @@ SMBuilder::SMBuilder(dss::PetriNet *petri, std::shared_ptr<DSSPublisher> &publis
     }
     (*_ptr_modules)[m_petri->getPetriID()] = 1;
     m_module_ss = new dss::ModuleSS(m_petri->getModulesCount());
-    if (m_petri->getPetriID()==0) {
 
-    } else { // Create server service for firing sync transitions
-
-    }
 }
 
 void SMBuilder::run() {

@@ -22,7 +22,7 @@ private:
     std::stack<dss::MetaState*> m_meta_states_stack;
     std::vector<std::string> ml_enabled_fusion_sets;
 
-    rclcpp::Service<ros2dss::FiringSyncTransition>::SharedPtr m_server_firing_service {};
+
 };
 
 

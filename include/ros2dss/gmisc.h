@@ -18,6 +18,7 @@ namespace ros2dss {
 
 
 #include "misc.h"
+#include "FiringSyncTransitionService.h"
 #include "SyncTransitionService.h"
 #include "DSSSubscriber.h"
 #include "DSSPublisher.h"
