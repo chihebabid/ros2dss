@@ -123,6 +123,7 @@ void SMBuilder::run() {
             }
             if (m_petri->getPetriID()==0  && _received_sync_count==m_petri->getModulesCount()-1) {
                 auto manage {m_petri->getManageTransitionFusionSet()};
+
                 ml_enabled_fusion_sets=manage->getEnabledFusionSets();
                 for (auto & elt : ml_enabled_fusion_sets) {
                     RCLCPP_INFO(m_publisher->get_logger(),"enabled fusion %s\n",elt.c_str());
@@ -158,7 +159,10 @@ void SMBuilder::run() {
                     RCLCPP_INFO(m_publisher->get_logger(),"Dest metastate %s",t.getDestSCC()->getMetaState()->toString().c_str());
                 }
                 for (uint32_t i {1};i<m_petri->getModulesCount();++i) {
-                    m_firing_sync_transition_service->executeRequest(i,transition);
+                    // Send request only to modules synced on transition
+                    if (m_petri->getManageTransitionFusionSet()->isFusionSetSyncedOnModule(transition,i)) {
+                        m_firing_sync_transition_service->executeRequest(i,transition);
+                    }
                 }
                 /*
                 if (m_petri->getPetriID()!=0) {

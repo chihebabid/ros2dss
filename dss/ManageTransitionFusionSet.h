@@ -27,6 +27,7 @@ namespace dss {
         void enableFusion(const std::string &,uint32_t);
         void enableSetFusion(const set<string> &,uint32_t);
         void reset();
+        bool isFusionSetSyncedOnModule(const std::string &name,uint32_t module) const;
         /*
          * For debugging
          */

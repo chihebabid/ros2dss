@@ -65,4 +65,11 @@ namespace dss {
             }
         }
     }
+
+    bool ManageTransitionFusionSet::isFusionSetSyncedOnModule(const std::string &name,uint32_t module) const {
+        auto it {ml_fusion_sets.find(name)};
+        auto & _set {it->second};
+        auto it_res {std::find_if(_set.begin(),_set.end(),[module](const fusion_set_t &fusion_set){return  fusion_set.module==module;})};
+        return it_res!=_set.end();
+    }
 }
