@@ -165,7 +165,7 @@ bool SMBuilder::fireSyncTransition() {
         RCLCPP_INFO(m_publisher->get_logger(),"No enabled fusion set...");
         return false;
      }
-    // Participate in the fusion
+    // Pop a transition fusion set
     string transition {ml_enabled_fusion_sets[ml_enabled_fusion_sets.size()-1]};
     ml_enabled_fusion_sets.pop_back();
     RCLCPP_INFO(m_publisher->get_logger(),"Transition to sync fire: %s",transition.c_str());

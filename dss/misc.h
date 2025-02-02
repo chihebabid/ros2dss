@@ -5,6 +5,14 @@
 #ifndef MISC_H
 #define MISC_H
 #include <string>
+namespace dss {
+
+
+    struct firing_sync_t {
+        std::string source;
+        std::string target;
+    };
+}
 #include <cstring>
 #include <vector>
 #include <iostream>
@@ -47,10 +55,6 @@ namespace dss {
         vector<Transition *> liste_transitions;
     };
 
-    struct firing_sync_t {
-        string source;
-        string target;
-    };
 }
 
 #endif //MISC_H
