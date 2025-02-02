@@ -36,3 +36,7 @@ void FiringSyncTransitionService::executeRequest(const uint32_t id_server, const
         RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Failed to fire transition %s\n",transition.c_str());
     }
 }
+
+void FiringSyncTransitionService::setSMBuilder(SMBuilder *sm_builder) {
+    m_sm_builder=sm_builder;
+}

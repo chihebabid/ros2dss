@@ -13,6 +13,7 @@ public:
     SMBuilder(dss::PetriNet *petri, std::shared_ptr<DSSPublisher> publisher,std::shared_ptr<FiringSyncTransitionService>);
     ~SMBuilder() = default;
     void run();
+    dss::MetaState* getCurrentMetaState() const {return m_current_meta_state;}
 private:
     dss::PetriNet *m_petri;
     state_t m_current_state {state_t::INIT};
