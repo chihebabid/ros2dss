@@ -34,7 +34,8 @@ void FiringSyncTransitionService::firingSyncTransitionsService(const std::shared
     }
 }
 
-void FiringSyncTransitionService::executeRequest(const uint32_t id_server, const string &transition) {
+std::vector<dss::firing_sync_t> FiringSyncTransitionService::executeRequest(const uint32_t id_server, const string &transition) {
+    std::vector<dss::firing_sync_t> res;
     RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "executeRequest\n");
     auto client_firing_service {create_client<ros2dss::FiringSyncTransitionSrv>("firing_sync_transitions_service"+std::to_string(id_server))};
     auto request {std::make_shared<ros2dss::FiringSyncTransitionSrv::Request>()};
@@ -42,15 +43,20 @@ void FiringSyncTransitionService::executeRequest(const uint32_t id_server, const
     while (!client_firing_service->wait_for_service(1s)) {
         if (!rclcpp::ok()) {
             RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Interrupted while waiting...");
-            return;
+            return res;
         }
     }
     auto result {client_firing_service->async_send_request(request)};
     if (rclcpp::spin_until_future_complete(this->get_node_base_interface(),result) == rclcpp::FutureReturnCode::SUCCESS) {
+        auto response {result.get()};
+        for (const auto & f : response->lfiring) {
+            res.push_back({f.source,f.target});
+        }
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Firing transition %s\n",transition.c_str());
     } else {
         RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Failed to fire transition %s\n",transition.c_str());
     }
+    return res;
 }
 
 void FiringSyncTransitionService::setSMBuilder(SMBuilder *sm_builder) {

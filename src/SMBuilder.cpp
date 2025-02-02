@@ -162,7 +162,12 @@ void SMBuilder::run() {
                 for (uint32_t i {1};i<m_petri->getModulesCount();++i) {
                     // Send request only to modules synced on transition
                     if (m_petri->getManageTransitionFusionSet()->isFusionSetSyncedOnModule(transition,i)) {
-                        m_firing_sync_transition_service->executeRequest(i,transition);
+                        RCLCPP_INFO(m_publisher->get_logger(),"Received ");
+                        auto res {m_firing_sync_transition_service->executeRequest(i,transition)};
+                        for (auto e : res) {
+                            RCLCPP_INFO(m_publisher->get_logger(),"Received (%s,%s) ",e.source.c_str(),e.target.c_str());
+                        }
+                        RCLCPP_INFO(m_publisher->get_logger(),"\n");
                     }
                 }
                 /*

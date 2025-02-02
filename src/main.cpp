@@ -18,7 +18,6 @@ int main(int argc, char * argv[]) {
     rclcpp::init(argc, argv);
     rclcpp::WallRate loop_rate(500ms);
 
-
     auto syncNode {std::make_shared<SyncTransitionService>(petri)};
     rclcpp::executors::MultiThreadedExecutor executor;
     executor.add_node(syncNode);

@@ -8,7 +8,7 @@ class SMBuilder;
 class FiringSyncTransitionService : public rclcpp::Node {
 public:
     FiringSyncTransitionService(dss::PetriNet  *);
-    void executeRequest(const uint32_t id_server,const string &transition);
+    std::vector<dss::firing_sync_t> executeRequest(const uint32_t id_server,const string &transition);
     void setSMBuilder(SMBuilder *);
 private:
     void firingSyncTransitionsService(const std::shared_ptr<ros2dss::FiringSyncTransitionSrv::Request>,std::shared_ptr<ros2dss::FiringSyncTransitionSrv::Response> );

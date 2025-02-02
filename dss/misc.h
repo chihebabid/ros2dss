@@ -47,7 +47,10 @@ namespace dss {
         vector<Transition *> liste_transitions;
     };
 
-
+    struct firing_sync_t {
+        string source;
+        string target;
+    };
 }
 
 #endif //MISC_H
