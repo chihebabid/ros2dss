@@ -26,7 +26,12 @@ void FiringSyncTransitionService::firingSyncTransitionsService(const std::shared
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"Dest metastate %s",t.getDestSCC()->getMetaState()->toString().c_str());
     }
 
-
+    for (const auto & t : res) {
+      ros2dss::Firing f;
+      f.source=t.getSCCSource()->getName(m_petri);
+      f.target=t.getDestSCC()->getName(m_petri);
+      resp->lfiring.emplace_back(f);
+    }
 }
 
 void FiringSyncTransitionService::executeRequest(const uint32_t id_server, const string &transition) {

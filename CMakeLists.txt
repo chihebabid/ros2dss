@@ -15,7 +15,7 @@ find_package(std_msgs REQUIRED)
 
 find_package(rosidl_default_generators REQUIRED)
 
-set(msg_files	"msg/Firing.msg" "msg/Command.msg" "srv/SyncTransition.srv" "srv/FiringSyncTransitionSrv.srv")
+set(msg_files "msg/Command.msg" "srv/SyncTransition.srv" "msg/Firing.msg" "srv/FiringSyncTransitionSrv.srv")
 
 rosidl_generate_interfaces(${PROJECT_NAME}
         ${msg_files}
