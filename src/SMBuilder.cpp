@@ -103,7 +103,7 @@ void SMBuilder::run() {
             m_current_state=state_t::COMPUTE_SYNC;
             break ;
 
-        case state_t::COMPUTE_SYNC: // Determine enabled sync transitions
+        case state_t::COMPUTE_SYNC: // Determine enabled fusion sets
             if (m_petri->getPetriID()==0  && _received_sync_count==m_petri->getModulesCount()-1) {
                 auto manage {m_petri->getManageTransitionFusionSet()};
                 ml_enabled_fusion_sets=manage->getEnabledFusionSets();
@@ -119,50 +119,13 @@ void SMBuilder::run() {
 
         case state_t::FIRE_SYNC:
             if (m_petri->getPetriID()==0) {
+               if (!fireSyncTransition()) {
+                     // No more fusion set is enabled
+               }
+               else {
+                   // There are still non processed fusion sets
+               }
 
-                if (ml_enabled_fusion_sets.empty()) {
-                    RCLCPP_INFO(m_publisher->get_logger(),"ml_enabled_fusion_sets: Set is empty");
-                    break;
-                }
-                else {
-                    RCLCPP_INFO(m_publisher->get_logger(),"ml_enabled_fusion_sets: Set is not empty");
-                }
-                // Participate in the fusion
-                string transition {ml_enabled_fusion_sets[ml_enabled_fusion_sets.size()-1]};
-                ml_enabled_fusion_sets.pop_back();
-
-                RCLCPP_INFO(m_publisher->get_logger(),"Transition to sync fire: %s",transition.c_str());
-                auto res = m_petri->fireSync(transition,m_current_meta_state);
-                if (res.empty()) RCLCPP_INFO(m_publisher->get_logger(),"res: is empty");
-                else RCLCPP_INFO(m_publisher->get_logger(),"res: is not empty");
-                for (const auto & t : res) {
-                    RCLCPP_INFO(m_publisher->get_logger(),"Source metastate: %s",t.getSCCSource()->getMetaState()->toString().c_str());
-                    RCLCPP_INFO(m_publisher->get_logger(),"Transition nfusion name: %s",t.getTransition().c_str());
-                    RCLCPP_INFO(m_publisher->get_logger(),"Dest metastate %s",t.getDestSCC()->getMetaState()->toString().c_str());
-                }
-                for (uint32_t i {1};i<m_petri->getModulesCount();++i) {
-                    // Send request only to modules synced on transition
-                    if (m_petri->getManageTransitionFusionSet()->isFusionSetSyncedOnModule(transition,i)) {
-                        RCLCPP_INFO(m_publisher->get_logger(),"Received ");
-                        auto res {m_firing_sync_transition_service->executeRequest(i,transition)};
-                        for (auto e : res) {
-                            RCLCPP_INFO(m_publisher->get_logger(),"Received (%s,%s) ",e.source.c_str(),e.target.c_str());
-                        }
-                        RCLCPP_INFO(m_publisher->get_logger(),"\n");
-                    }
-                }
-                /*
-                if (m_petri->getPetriID()!=0) {
-                    command.cmd = "NEW_METSTATE";
-                    command.param=m_petri->getPetriID();
-                    for (const auto &elt: res) {
-                        auto firing {ros2dss_project::msg::Firing{}};
-                        firing.source=elt.getSCCSource()->getName(m_petri);
-                        firing.target=elt.getDestSCC()->getName(m_petri);
-                        command.lfiring.emplace_back(firing);
-                        m_publisher->publishCommand(command);
-                    }
-                }*/
             }
             m_current_state=state_t::TERMINATE_BUILDING;
             break;
@@ -195,4 +158,35 @@ void SMBuilder::computeEnabledSyncTransitions() {
         RCLCPP_INFO(m_publisher->get_logger(), "COMPUTE_SYNC: Send enabled sync transitions");
         m_publisher->publishCommand(m_command);
     }
+}
+
+bool SMBuilder::fireSyncTransition() {
+     if (ml_enabled_fusion_sets.empty()) {
+        RCLCPP_INFO(m_publisher->get_logger(),"No enabled fusion set...");
+        return false;
+     }
+    // Participate in the fusion
+    string transition {ml_enabled_fusion_sets[ml_enabled_fusion_sets.size()-1]};
+    ml_enabled_fusion_sets.pop_back();
+    RCLCPP_INFO(m_publisher->get_logger(),"Transition to sync fire: %s",transition.c_str());
+    auto res = m_petri->fireSync(transition,m_current_meta_state);
+    if (res.empty()) RCLCPP_INFO(m_publisher->get_logger(),"res: is empty");
+    else RCLCPP_INFO(m_publisher->get_logger(),"res: is not empty");
+    for (const auto & t : res) {
+        RCLCPP_INFO(m_publisher->get_logger(),"Source metastate: %s",t.getSCCSource()->getMetaState()->toString().c_str());
+        RCLCPP_INFO(m_publisher->get_logger(),"Transition nfusion name: %s",t.getTransition().c_str());
+        RCLCPP_INFO(m_publisher->get_logger(),"Dest metastate %s",t.getDestSCC()->getMetaState()->toString().c_str());
+    }
+    for (uint32_t i {1};i<m_petri->getModulesCount();++i) {
+        // Send request only to modules synced on transition
+        if (m_petri->getManageTransitionFusionSet()->isFusionSetSyncedOnModule(transition,i)) {
+            RCLCPP_INFO(m_publisher->get_logger(),"Received ");
+            auto res {m_firing_sync_transition_service->executeRequest(i,transition)};
+            for (auto e : res) {
+                RCLCPP_INFO(m_publisher->get_logger(),"Received (%s,%s) ",e.source.c_str(),e.target.c_str());
+            }
+            RCLCPP_INFO(m_publisher->get_logger(),"\n");
+        }
+    }
+    return true;
 }

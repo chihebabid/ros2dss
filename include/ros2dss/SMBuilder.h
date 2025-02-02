@@ -27,7 +27,7 @@ private:
 
     void buildInitialMetaState();
     void computeEnabledSyncTransitions();
-
+    bool fireSyncTransition();
 };
 
 
