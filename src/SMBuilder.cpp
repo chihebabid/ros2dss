@@ -20,21 +20,21 @@ SMBuilder::SMBuilder(dss::PetriNet *petri, std::shared_ptr<DSSPublisher> publish
 }
 
 void SMBuilder::run() {
-    auto command{ros2dss_project::msg::Command{}};
+
     static bool once_execution{false};
 
     switch (m_current_state) {
         case state_t::GET_SYNC_FUSION :
             m_current_state=state_t::INIT;
             break;
+
         case state_t::INIT:
             if (m_publisher->getCommandSubscribersCount() == m_petri->getModulesCount()) {
-                m_current_state = state_t::BUILD_META_STATE;
-                command.cmd = "INIT";
-                command.param = m_petri->getPetriID();
-                m_publisher->publishCommand(command);
+                m_current_state = state_t::BUILD_INITIAL_META_STATE;
+                m_command.cmd = "INIT";
+                m_command.param = m_petri->getPetriID();
+                m_publisher->publishCommand(m_command);
                 for (uint32_t i{}; i < m_petri->getModulesCount(); ++i) {
-                    // std::cout<<static_cast<int>((*_ptr_modules)[i])<<" ";
                     if ((*_ptr_modules)[i] != 1) {
                         m_current_state = state_t::INIT;
                         break;
@@ -44,19 +44,16 @@ void SMBuilder::run() {
             RCLCPP_INFO(m_publisher->get_logger(), "INIT STATE\n");
             break;
 
+        case state_t::BUILD_INITIAL_META_STATE:
+            buildInitialMetaState();
+            m_current_state=state_t::BUILD_META_STATE;
+            break;
+
         case state_t::BUILD_META_STATE:
-            if (!once_execution) {
-                RCLCPP_INFO(m_publisher->get_logger(), "Enter\n");
-                once_execution = true;
-                m_current_meta_state = m_petri->getMetaState(m_petri->getMarquage());
-                _ptr_metastate_name = std::make_unique<dss::ArrayModel<std::string> >(m_petri->getModulesCount());
-                _ptr_metastate_name->operator[](m_petri->getPetriID()) = m_petri->getSCCName(
-                    m_current_meta_state->getInitialSCC());
-            }
-            command.cmd = "METASTATE";
-            command.param = m_petri->getPetriID();
-            command.scc = (*_ptr_metastate_name)[m_petri->getPetriID()];
-            m_publisher->publishCommand(command);
+            m_command.cmd = "METASTATE";
+            m_command.param = m_petri->getPetriID();
+            m_command.scc = (*_ptr_metastate_name)[m_petri->getPetriID()];
+            m_publisher->publishCommand(m_command);
             m_current_state = state_t::POP_METASTATE;
             for (size_t i{}; i < _ptr_metastate_name->size(); ++i) {
                 if (_ptr_metastate_name->operator[](i).empty()) {
@@ -83,9 +80,9 @@ void SMBuilder::run() {
                 } else {
                     m_current_meta_state = m_meta_states_stack.top();
                     m_meta_states_stack.pop();
-                    command.cmd = "MOVE_TO_METASTATE";
-                    command.scc = m_current_meta_state->toString();
-                    m_publisher->publishCommand(command);
+                    m_command.cmd = "MOVE_TO_METASTATE";
+                    m_command.scc = m_current_meta_state->toString();
+                    m_publisher->publishCommand(m_command);
                     RCLCPP_INFO(m_publisher->get_logger(), "POP_METASTATE\n");
                     m_current_state = state_t::COMPUTE_SYNC;
                 }
@@ -106,25 +103,10 @@ void SMBuilder::run() {
         case state_t::COMPUTE_SYNC: // Determine enabled sync transitions
             if (!once_execution) {
                 once_execution=true;
-                auto enabled_sync_trans {m_petri->getSyncEnabled(m_current_meta_state)};
-                auto manageFusion {m_petri->getManageTransitionFusionSet()};
-                if (m_petri->getPetriID()==0) {
-                    manageFusion->reset();
-                    manageFusion->enableSetFusion(enabled_sync_trans,m_petri->getPetriID());
-                }
-                else {
-                    command.cmd = "SYNC_TRANSITION";
-                    command.param=m_petri->getPetriID();
-                    std::vector <std::string> _vec {enabled_sync_trans.begin(),enabled_sync_trans.end()};
-                    command.sync=_vec;
-                    RCLCPP_INFO(m_publisher->get_logger(), "COMPUTE_SYNC: Send enabled sync transitions");
-                    m_publisher->publishCommand(command);
-                    m_current_state=state_t::FIRE_SYNC;
-                }
+                computeEnabledSyncTransitions();
             }
             if (m_petri->getPetriID()==0  && _received_sync_count==m_petri->getModulesCount()-1) {
                 auto manage {m_petri->getManageTransitionFusionSet()};
-
                 ml_enabled_fusion_sets=manage->getEnabledFusionSets();
                 for (auto & elt : ml_enabled_fusion_sets) {
                     RCLCPP_INFO(m_publisher->get_logger(),"enabled fusion %s\n",elt.c_str());
@@ -188,5 +170,30 @@ void SMBuilder::run() {
         case state_t::TERMINATE_BUILDING:
             RCLCPP_INFO(m_publisher->get_logger(), "TERMINATE_BUILDING\n");
             break;
+    }
+}
+
+void SMBuilder::buildInitialMetaState() {
+    m_current_meta_state = m_petri->getMetaState(m_petri->getMarquage());
+    _ptr_metastate_name = std::make_unique<dss::ArrayModel<std::string> >(m_petri->getModulesCount());
+    _ptr_metastate_name->operator[](m_petri->getPetriID()) = m_petri->getSCCName(
+        m_current_meta_state->getInitialSCC());
+}
+
+void SMBuilder::computeEnabledSyncTransitions() {
+    auto enabled_sync_trans {m_petri->getSyncEnabled(m_current_meta_state)};
+    auto manageFusion {m_petri->getManageTransitionFusionSet()};
+    if (m_petri->getPetriID()==0) {
+        manageFusion->reset();
+        manageFusion->enableSetFusion(enabled_sync_trans,m_petri->getPetriID());
+    }
+    else {
+        m_command.cmd = "SYNC_TRANSITION";
+        m_command.param=m_petri->getPetriID();
+        std::vector <std::string> _vec {enabled_sync_trans.begin(),enabled_sync_trans.end()};
+        m_command.sync=_vec;
+        RCLCPP_INFO(m_publisher->get_logger(), "COMPUTE_SYNC: Send enabled sync transitions");
+        m_publisher->publishCommand(m_command);
+        m_current_state=state_t::FIRE_SYNC;
     }
 }
