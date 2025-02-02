@@ -9,6 +9,7 @@
 
 SMBuilder::SMBuilder(dss::PetriNet *petri, std::shared_ptr<DSSPublisher> publisher,std::shared_ptr<FiringSyncTransitionService> firing_service): m_petri(petri),
     m_publisher(publisher),m_firing_sync_transition_service(firing_service) {
+    m_firing_sync_transition_service->setSMBuilder(this);
     _ptr_modules = std::make_unique<dss::MarkingArray>(m_petri->getModulesCount());
     for (uint32_t i{}; i < m_petri->getModulesCount(); ++i) {
         (*_ptr_modules)[i] = 0;

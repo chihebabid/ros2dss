@@ -16,6 +16,17 @@ FiringSyncTransitionService::FiringSyncTransitionService(dss::PetriNet  *petri):
 void FiringSyncTransitionService::firingSyncTransitionsService(const std::shared_ptr<ros2dss::FiringSyncTransitionSrv::Request> req,
                                   std::shared_ptr<ros2dss::FiringSyncTransitionSrv::Response> resp) {
     RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Request firing transition %s\n",req->transition.c_str());
+
+    auto res = m_petri->fireSync(req->transition,m_sm_builder->getCurrentMetaState());
+    if (res.empty()) RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"res: is empty");
+    else RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"res: is not empty");
+    for (const auto & t : res) {
+        RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"Source metastate: %s",t.getSCCSource()->getMetaState()->toString().c_str());
+        RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"Transition nfusion name: %s",t.getTransition().c_str());
+        RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"Dest metastate %s",t.getDestSCC()->getMetaState()->toString().c_str());
+    }
+
+
 }
 
 void FiringSyncTransitionService::executeRequest(const uint32_t id_server, const string &transition) {
