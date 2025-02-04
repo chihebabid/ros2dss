@@ -25,7 +25,7 @@ private:
 
     std::shared_ptr<FiringSyncTransitionService> m_firing_sync_transition_service;
 
-    dss::MarkingArray m_ack_modules; // Used to check that all ACK are received
+    AckManage m_ack_modules; // Used to check that all ACK are received
 };
 
 

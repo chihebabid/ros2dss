@@ -33,16 +33,10 @@ auto MasterNode::run()->void {
         case state_t::INIT:
             RCLCPP_INFO(get_logger(), "Current SM: INIT");
             if (m_command_pub->get_subscription_count() == m_petri->getModulesCount()-1) {
-                m_current_state = state_t::BUILD_INITIAL_META_STATE;
                 m_command.cmd = "INIT";
                 m_command.param = m_petri->getPetriID();
                 m_command_pub->publish(m_command);
-                for (uint32_t i{}; i < m_petri->getModulesCount(); ++i) {
-                    if (m_ack_modules[i] != 1) {
-                        m_current_state = state_t::INIT;
-                        break;
-                    }
-                }
+                m_current_state=m_ack_modules.all()?state_t::BUILD_INITIAL_META_STATE:state_t::INIT;
             }
         break;
 
