@@ -6,5 +6,5 @@
 
 
 BaseNode::BaseNode(dss::PetriNet  *petri,const string &name):Node(name),m_petri(petri) {
-
+    m_module_ss = new dss::ModuleSS(m_petri->getModulesCount());
 }

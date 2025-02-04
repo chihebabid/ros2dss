@@ -17,7 +17,7 @@ MasterNode::MasterNode(dss::PetriNet  *petri):BaseNode(petri,"dss_master") {
                 response_receiver(msg);
             });
 
-    m_module_ss = new dss::ModuleSS(m_petri->getModulesCount());
+
 }
 
 

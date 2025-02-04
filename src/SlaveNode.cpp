@@ -8,7 +8,12 @@ SlaveNode::SlaveNode(dss::PetriNet  *petri):BaseNode(petri, "dss_slave") {
     rclcpp::QoS qos(rclcpp::KeepLast(petri->getModulesCount()));
     qos.durability(RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL);
 
+}
 
 
-    m_module_ss = new dss::ModuleSS(m_petri->getModulesCount());
+void SlaveNode::run() {
+}
+
+void SlaveNode::command_receiver(const ros2dss::Command & msg) const {
+
 }

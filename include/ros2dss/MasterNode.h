@@ -12,16 +12,14 @@ class MasterNode : public BaseNode {
 public:
     MasterNode(dss::PetriNet  *petri);
 private:
-    void run();
+    void run() override;
     void response_receiver(const ros2dss::Response & msg) const;
-
 
     rclcpp::Publisher<ros2dss::Command>::SharedPtr m_command_pub;
     ros2dss_project::msg::Command m_command;
 
     rclcpp::Subscription<ros2dss::Response>::SharedPtr m_response_sub;
     state_t m_current_state {state_t::INIT};
-
 };
 
 
