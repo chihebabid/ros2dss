@@ -26,7 +26,9 @@ namespace ros2dss {
 #include "SyncTransitionService.h"
 #include "DSSSubscriber.h"
 #include "DSSPublisher.h"
+#include "BaseNode.h"
 #include "MasterNode.h"
+#include "SlaveNode.h"
 #include "SMBuilder.h"
 
 
