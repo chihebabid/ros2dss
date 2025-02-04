@@ -2,7 +2,7 @@
 // Created by chiheb on 22/12/24.
 //
 #include "gmisc.h"
-
+#include "SyncTransitionService.h"
 using std::placeholders::_1;
 using std::placeholders::_2;
 
