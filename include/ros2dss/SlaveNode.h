@@ -10,8 +10,8 @@
 class SlaveNode : public BaseNode {
 public:
     SlaveNode(dss::PetriNet  *petri);
-private:
     void run() override;
+private:
     void command_receiver(const ros2dss::Command & msg) const;
 
     rclcpp::Publisher<ros2dss::Response>::SharedPtr m_response_pub;

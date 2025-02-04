@@ -4,7 +4,7 @@
 
 #include "gmisc.h"
 
-MasterNode::MasterNode(dss::PetriNet  *petri):BaseNode(petri,"dss_master") {
+MasterNode::MasterNode(dss::PetriNet  *petri,std::shared_ptr<FiringSyncTransitionService> firing_service):BaseNode(petri,"dss_master"),m_ack_modules(petri->getModulesCount()) {
     rclcpp::QoS qos(rclcpp::KeepLast(petri->getModulesCount()));
     qos.durability(RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL);
 
@@ -16,14 +16,17 @@ MasterNode::MasterNode(dss::PetriNet  *petri):BaseNode(petri,"dss_master") {
             "/dss/response", qos, [this](const ros2dss::Response & msg) {
                 response_receiver(msg);
             });
-
-
+    for (uint32_t i{}; i < m_petri->getModulesCount(); ++i) {
+        m_ack_modules[i] = 0;
+    }
+    m_ack_modules[m_petri->getPetriID()] = 1;
 }
 
 
 auto MasterNode::run()->void {
     switch (m_current_state) {
         case state_t::GET_SYNC_FUSION :
+            RCLCPP_INFO(get_logger(), "Current SM: INIT");
             m_current_state=state_t::INIT;
         break;
 
@@ -34,17 +37,32 @@ auto MasterNode::run()->void {
                 m_command.cmd = "INIT";
                 m_command.param = m_petri->getPetriID();
                 m_command_pub->publish(m_command);
-                /*for (uint32_t i{}; i < m_petri->getModulesCount(); ++i) {
-                    if ((*_ptr_modules)[i] != 1) {
+                for (uint32_t i{}; i < m_petri->getModulesCount(); ++i) {
+                    if (m_ack_modules[i] != 1) {
                         m_current_state = state_t::INIT;
                         break;
                     }
-                }*/
+                }
             }
         break;
+
+        case state_t::BUILD_INITIAL_META_STATE:
+            RCLCPP_INFO(get_logger(), "Current SM: BUILD_INITIAL_META_STATE");
+            buildInitialMetaState();
+            m_current_state=state_t::BUILD_META_STATE;
+            break;
     }
 
 }
 
-auto MasterNode::response_receiver(const ros2dss::Response & msg) const -> void{
+auto MasterNode::response_receiver(const ros2dss::Response & msg) -> void {
+    if (msg.cmd=="ACK") {
+        m_ack_modules[msg.param]=1;
+    }
+}
+
+auto MasterNode::buildInitialMetaState() -> void {
+    m_current_meta_state = m_petri->getMetaState(m_petri->getMarquage());
+    // _ptr_metastate_name = std::make_unique<dss::ArrayModel<std::string> >(m_petri->getModulesCount());
+    // _ptr_metastate_name->operator[](m_petri->getPetriID()) = m_petri->getSCCName(m_current_meta_state->getInitialSCC());
 }

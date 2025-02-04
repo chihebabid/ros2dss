@@ -35,21 +35,28 @@ int main(int argc, char * argv[]) {
     executor.remove_node(syncNode);
     syncNode.reset();
 
-    auto  pubNode {std::make_shared<DSSPublisher>(petri)};
-    auto  subNode {std::make_shared<DSSSubscriber>(petri)};
+    /*auto  pubNode {std::make_shared<DSSPublisher>(petri)};
+    auto  subNode {std::make_shared<DSSSubscriber>(petri)};*/
+
     auto fireSyncTransitionNode {std::make_shared<FiringSyncTransitionService>(petri)};
 
-    executor.add_node(pubNode);
-    executor.add_node(subNode);
+    /* executor.add_node(pubNode);
+    executor.add_node(subNode);*/
     if (petri->getPetriID()) {
         executor.add_node(fireSyncTransitionNode);
     }
-
-    SMBuilder sm_builder {petri,pubNode,fireSyncTransitionNode};
+    std::shared_ptr<BaseNode> base_node{};
+    if (petri->getPetriID()==0) {
+        base_node=std::make_shared<MasterNode>(petri,fireSyncTransitionNode);
+    }
+    else {
+        base_node=std::make_shared<SlaveNode>(petri);
+    }
+    // SMBuilder sm_builder {petri,pubNode,fireSyncTransitionNode};
     while (rclcpp::ok() )
     {
         try {
-            sm_builder.run();
+            base_node->run();
             executor.spin_all(0ns);
         } catch (const rclcpp::exceptions::RCLError & e)
         {

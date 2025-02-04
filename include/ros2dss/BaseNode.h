@@ -10,8 +10,8 @@
 class BaseNode : public rclcpp::Node {
 public:
   BaseNode(dss::PetriNet  *petri,const string &);
-protected:
   virtual void run()=0;
+protected:
   dss::PetriNet  *m_petri;
   dss::ModuleSS  *m_module_ss {};
   dss::MetaState* m_current_meta_state {};
