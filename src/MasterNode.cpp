@@ -55,9 +55,9 @@ auto MasterNode::run()->void {
 
 }
 
-auto MasterNode::response_receiver(const ros2dss::Response & msg) -> void {
-    if (msg.cmd=="ACK") {
-        m_ack_modules[msg.param]=1;
+auto MasterNode::response_receiver(const ros2dss::Response & resp) -> void {
+    if (resp.msg=="ACK") {
+        m_ack_modules[resp.id]=1;
     }
 }
 

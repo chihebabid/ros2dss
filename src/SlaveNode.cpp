@@ -20,9 +20,13 @@ SlaveNode::SlaveNode(dss::PetriNet  *petri):BaseNode(petri, "dss_slave") {
 }
 
 
-void SlaveNode::run() {
+auto SlaveNode::run() -> void {
 }
 
-void SlaveNode::command_receiver(const ros2dss::Command & msg) const {
-
+auto SlaveNode::command_receiver(const ros2dss::Command & msg) -> void {
+    if (msg.cmd=="INIT") {
+        m_response.msg="ACK";
+        m_response.id=m_petri->getPetriID();
+        m_response_pub->publish(m_response);
+    }
 }

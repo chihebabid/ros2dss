@@ -1,5 +1,5 @@
-string cmd
-uint32 param
+string msg 
+uint32 id
 string scc
 string[] sync
 
