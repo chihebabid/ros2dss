@@ -46,6 +46,18 @@ auto SlaveNode::command_receiver(const ros2dss::Command & msg) -> void {
         m_response_pub->publish(m_response);
         RCLCPP_INFO(get_logger(), "Send ACK_SET_METASTATE_NAME");
     }
+    else if (msg.cmd=="MOVE_TO_METASTATE") {
+        m_current_meta_state = m_module_ss->findMetaState(msg.scc);
+        if (!m_current_meta_state) {
+            RCLCPP_ERROR(get_logger(), "Didn\'t find requested metastate %s !",msg.scc.c_str());
+        }
+        else {
+            m_response.msg="ACK_MOVE_TO_METASTATE";
+            m_response.id=m_petri->getPetriID();
+            m_response_pub->publish(m_response);
+            RCLCPP_INFO(get_logger(), "Send ACK_MOVE_TO_METASTATE");
+        }
+    }
 
 
 }
