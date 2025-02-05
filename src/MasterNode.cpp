@@ -55,7 +55,17 @@ auto MasterNode::run()->void {
                 RCLCPP_INFO(get_logger(),"Built Metastate: %s",m_current_meta_state->toString().c_str());
                 m_module_ss->insertMS(m_current_meta_state);
                 m_meta_states_stack.push(m_current_meta_state);
-            	m_current_state = state_t::POP_METASTATE;
+                m_ack_modules.reset();
+            	m_current_state = state_t::SEND_METASTATE_NAME;
+            }
+            break;
+        case state_t::SEND_METASTATE_NAME:
+          	m_command.cmd = "SET_METASTATE_NAME";
+            m_command.sync = m_metastate_building_name;
+            m_command_pub->publish(m_command);
+          	if (m_ack_modules.all()) {
+                m_ack_modules.reset();
+          		m_current_state = state_t::POP_METASTATE;
             }
             break;
         case state_t::POP_METASTATE:

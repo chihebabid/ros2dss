@@ -38,5 +38,14 @@ auto SlaveNode::command_receiver(const ros2dss::Command & msg) -> void {
         m_response_pub->publish(m_response);
         RCLCPP_INFO(get_logger(), "Send ACK_GET_METASTATE: %s",m_response.scc.c_str());
     }
+    else if (msg.cmd=="SET_METASTATE_NAME") {
+        m_current_meta_state->setName(msg.sync);
+        m_module_ss->insertMS(m_current_meta_state);
+        m_response.msg="ACK_SET_METASTATE_NAME";
+        m_response.id=m_petri->getPetriID();
+        m_response_pub->publish(m_response);
+        RCLCPP_INFO(get_logger(), "Send ACK_SET_METASTATE_NAME");
+    }
+
 
 }

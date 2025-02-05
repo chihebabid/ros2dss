@@ -24,6 +24,8 @@ namespace dss {
 
         bool operator==(const ArrayModel &) const;
 
+        operator std::vector<T>() const;
+
         size_t size() const;
 
         ~ArrayModel();
@@ -97,6 +99,15 @@ namespace dss {
         other.m_data=nullptr;
         other.m_size=0;
         return *this;
+    }
+
+    template <typename T>
+    ArrayModel<T>::operator std::vector<T>() const {
+        std::vector<T> res;
+        for (size_t i{};i<m_size;++i) {
+            res.emplace_back(m_data[i]);
+        }
+        return res;
     }
 }
 

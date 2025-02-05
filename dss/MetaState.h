@@ -41,6 +41,7 @@ public:
     void setSCCName(const string &name,const int pos);
     std::string& getSCCName(const int pos);
     void setName(const ArrayModel<string> &);
+    void setName(const std::vector<string> &);
     ArrayModel<string> getName() const;
     std::string toString();
     Marking* getInitialMarking() const ;

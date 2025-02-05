@@ -146,6 +146,12 @@ namespace dss {
         m_metastate_name = name;
     }
 
+    void MetaState::setName(const std::vector<std::string> &name) {
+        for (size_t i{};i<name.size();++i) {
+            m_metastate_name[i]=name[i];
+        }
+    }
+
     /*
      * @brief getName
      * @return the name of a metastate
