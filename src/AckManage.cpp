@@ -6,18 +6,19 @@
 
 
 AckManage::AckManage(const size_t modules_count):m_ack_modules(modules_count) {
+  	RCLCPP_INFO(rclcpp::get_logger("AckManage"), ": %d ",modules_count);
     reset();
 }
 
 auto AckManage::reset() -> void {
-    for (uint32_t i{}; i < m_ack_modules.size(); ++i) {
+    for (size_t i{}; i < m_ack_modules.size(); ++i) {
         m_ack_modules[i] = 0;
     }
 }
 
-auto AckManage::operator[](const size_t index) -> AckManage & {
+auto AckManage::operator[](const size_t index) -> byte_t & {
     m_ack_modules[index] = 1;
-    return *this;
+    return m_ack_modules[index];
 }
 
 auto AckManage::all() -> bool {

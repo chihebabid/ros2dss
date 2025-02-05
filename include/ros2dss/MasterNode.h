@@ -8,7 +8,7 @@
 
 
 class MasterNode : public BaseNode {
-    enum class state_t {GET_SYNC_FUSION, INIT,BUILD_INITIAL_META_STATE,BUILD_META_STATE,POP_METASTATE,PREPARE_COMPUTE_SYNC,COMPUTE_SYNC, FIRE_SYNC,TERMINATE_BUILDING};
+    enum class state_t {GET_SYNC_FUSION, INIT,BUILD_INITIAL_META_STATE,BUILD_META_STATE,POP_METASTATE};
 public:
     MasterNode(dss::PetriNet  *petri,std::shared_ptr<FiringSyncTransitionService> firing_service);
     auto run() -> void override;
@@ -26,6 +26,9 @@ private:
     std::shared_ptr<FiringSyncTransitionService> m_firing_sync_transition_service;
 
     AckManage m_ack_modules; // Used to check that all ACK are received
+
+    dss::ArrayModel<std::string> m_metastate_building_name; // Used to store the name of the metastate being built
+    std::stack<dss::MetaState*> m_meta_states_stack; // Used to store the metastates
 };
 
 

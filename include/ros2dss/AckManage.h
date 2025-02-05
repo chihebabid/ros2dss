@@ -11,7 +11,7 @@ class AckManage {
 public:
     AckManage(const size_t);
     auto reset() -> void;
-    auto operator[](const size_t) -> AckManage &;
+    auto operator[](const size_t) -> byte_t &;
     auto all() -> bool;
 private:
       dss::ArrayModel<byte_t> m_ack_modules;

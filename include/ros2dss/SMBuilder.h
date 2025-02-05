@@ -6,7 +6,7 @@
 #define SMBUILER_H
 #include "DSSPublisher.h"
 #include "misc.h"
-#include "ros2dss_project/srv/firing_sync_transition.hpp"
+
 class SMBuilder {
     enum class state_t {GET_SYNC_FUSION, INIT,BUILD_INITIAL_META_STATE,BUILD_META_STATE,POP_METASTATE,PREPARE_COMPUTE_SYNC,COMPUTE_SYNC, FIRE_SYNC,TERMINATE_BUILDING};
 public:
