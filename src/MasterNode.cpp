@@ -94,12 +94,12 @@ auto MasterNode::run()->void {
 }
 
 auto MasterNode::response_receiver(const ros2dss::Response & resp) -> void {
-    RCLCPP_INFO(get_logger(), "Received: %s\nc",resp.msg.c_str());
-    if (resp.msg=="ACK") {
+    RCLCPP_INFO(get_logger(), "Received: %s",resp.msg.c_str());
+    if (resp.msg=="ACK" and m_current_state==state_t::INIT) {
         m_ack_modules[resp.id]=1;
     }
-    else if (resp.msg=="ACK_GET_METASTATE") {
-      RCLCPP_INFO(get_logger(), "Received: %s %s",resp.msg.c_str(),resp.scc.c_str());
+    else if (resp.msg=="ACK_GET_METASTATE" and m_current_state==state_t::BUILD_META_STATE) {
+        RCLCPP_INFO(get_logger(), "Received: %s %s",resp.msg.c_str(),resp.scc.c_str());
       	m_metastate_building_name[resp.id]=resp.scc;
         m_ack_modules[resp.id]=1;
     }

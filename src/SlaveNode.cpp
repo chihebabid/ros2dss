@@ -58,6 +58,4 @@ auto SlaveNode::command_receiver(const ros2dss::Command & msg) -> void {
             RCLCPP_INFO(get_logger(), "Send ACK_MOVE_TO_METASTATE");
         }
     }
-
-
 }
