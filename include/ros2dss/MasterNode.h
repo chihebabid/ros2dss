@@ -10,7 +10,7 @@
 class MasterNode : public BaseNode {
     enum class state_t {
         GET_SYNC_FUSION, INIT,BUILD_INITIAL_META_STATE,BUILD_META_STATE,SEND_METASTATE_NAME,POP_METASTATE,PREPARE_COMPUTE_SYNC,
-        TERMINATE_BUILDING
+        COMPUTE_SYNC, TERMINATE_BUILDING
     };
 public:
     MasterNode(dss::PetriNet  *petri,std::shared_ptr<FiringSyncTransitionService> firing_service);
