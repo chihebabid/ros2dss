@@ -19,6 +19,7 @@ private:
     auto response_receiver(const ros2dss::Response & msg) ->void;
 
     auto buildInitialMetaState() -> void;
+    auto computeEnabledSyncTransitions() -> void;
 
     rclcpp::Publisher<ros2dss::Command>::SharedPtr m_command_pub;
     ros2dss_project::msg::Command m_command;

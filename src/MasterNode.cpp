@@ -84,6 +84,7 @@ auto MasterNode::run()->void {
 
         case state_t::PREPARE_COMPUTE_SYNC:
           RCLCPP_INFO(get_logger(), "Current SM: PREPARE_COMPUTE_SYNC");
+          computeEnabledSyncTransitions();
           break;
           
         case state_t::TERMINATE_BUILDING:
@@ -110,4 +111,11 @@ auto MasterNode::buildInitialMetaState() -> void {
     m_metastate_building_name[m_petri->getPetriID()] = m_petri->getSCCName(m_current_meta_state->getInitialSCC());
     m_command.cmd = "GET_METASTATE";
     m_command_pub->publish(m_command);
+}
+
+auto MasterNode::computeEnabledSyncTransitions() -> void {
+    auto enabled_sync_trans {m_petri->getSyncEnabled(m_current_meta_state)};
+    auto manageFusion {m_petri->getManageTransitionFusionSet()};
+    manageFusion->reset();
+    manageFusion->enableSetFusion(enabled_sync_trans,m_petri->getPetriID());
 }
