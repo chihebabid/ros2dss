@@ -56,12 +56,15 @@ auto MasterNode::run()->void {
             	m_current_state = state_t::SEND_METASTATE_NAME;
             }
             break;
+
         case state_t::SEND_METASTATE_NAME:
+            RCLCPP_INFO(get_logger(), "Current SM: SEND_METASTATE_NAME");
           	m_command.cmd = "SET_METASTATE_NAME";
             m_command.sync = m_metastate_building_name;
             m_command_pub->publish(m_command);
             statemachineMoveToState(state_t::POP_METASTATE);
             break;
+
         case state_t::POP_METASTATE:
             RCLCPP_INFO(get_logger(), "Current SM: POP_METASTATE");
             if (m_meta_states_stack.empty()) {
@@ -102,6 +105,10 @@ auto MasterNode::response_receiver(const ros2dss::Response & resp) -> void {
     else if (resp.msg=="ACK_GET_METASTATE" and m_current_state==state_t::BUILD_META_STATE) {
         RCLCPP_INFO(get_logger(), "Received: %s %s",resp.msg.c_str(),resp.scc.c_str());
       	m_metastate_building_name[resp.id]=resp.scc;
+        m_ack_modules[resp.id]=1;
+    }
+    else if (resp.msg=="ACK_SET_METASTATE_NAME" and m_current_state==state_t::SEND_METASTATE_NAME) {
+        RCLCPP_INFO(get_logger(), "Received: %s",resp.msg.c_str());
         m_ack_modules[resp.id]=1;
     }
     else if (resp.msg=="ACK_MOVE_TO_METASTATE"  and m_current_state==state_t::PREPARE_COMPUTE_SYNC) {
