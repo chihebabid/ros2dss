@@ -35,9 +35,7 @@ auto MasterNode::run()->void {
             if (m_command_pub->get_subscription_count() == m_petri->getModulesCount()-1) {
                 m_command.cmd = "INIT";
                 m_command_pub->publish(m_command);
-                if (m_ack_modules.all()) {
-                	m_current_state=state_t::BUILD_INITIAL_META_STATE;
-                }
+                statemachineMoveToState(state_t::BUILD_INITIAL_META_STATE);
             }
         break;
 
@@ -63,10 +61,7 @@ auto MasterNode::run()->void {
           	m_command.cmd = "SET_METASTATE_NAME";
             m_command.sync = m_metastate_building_name;
             m_command_pub->publish(m_command);
-          	if (m_ack_modules.all()) {
-                m_ack_modules.reset();
-          		m_current_state = state_t::POP_METASTATE;
-            }
+            statemachineMoveToState(state_t::POP_METASTATE);
             break;
         case state_t::POP_METASTATE:
             RCLCPP_INFO(get_logger(), "Current SM: POP_METASTATE");
@@ -83,9 +78,13 @@ auto MasterNode::run()->void {
             break;
 
         case state_t::PREPARE_COMPUTE_SYNC:
-          RCLCPP_INFO(get_logger(), "Current SM: PREPARE_COMPUTE_SYNC");
-          computeEnabledSyncTransitions();
-          break;
+            RCLCPP_INFO(get_logger(), "Current SM: PREPARE_COMPUTE_SYNC");
+            computeEnabledSyncTransitions();
+            if (m_ack_modules.all()) {
+                m_ack_modules.reset();
+                m_current_state = state_t::POP_METASTATE;
+            }
+            break;
           
         case state_t::TERMINATE_BUILDING:
           RCLCPP_INFO(get_logger(), "Current SM: TERMINATE_BUILDING");
@@ -118,4 +117,11 @@ auto MasterNode::computeEnabledSyncTransitions() -> void {
     auto manageFusion {m_petri->getManageTransitionFusionSet()};
     manageFusion->reset();
     manageFusion->enableSetFusion(enabled_sync_trans,m_petri->getPetriID());
+}
+
+auto MasterNode::statemachineMoveToState(const state_t state) -> void {
+    if (m_ack_modules.all()) {
+        m_ack_modules.reset();
+        m_current_state = state;
+    }
 }

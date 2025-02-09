@@ -53,8 +53,6 @@ auto SlaveNode::command_receiver(const ros2dss::Command & msg) -> void {
         }
         else {
             auto enabled_sync_trans {m_petri->getSyncEnabled(m_current_meta_state)};
-            auto manageFusion {m_petri->getManageTransitionFusionSet()};
-
             m_response.msg = "ACK_MOVE_TO_METASTATE";
             m_response.id=m_petri->getPetriID();
             std::vector <std::string> _vec {enabled_sync_trans.begin(),enabled_sync_trans.end()};
