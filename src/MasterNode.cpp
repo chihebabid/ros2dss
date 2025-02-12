@@ -160,3 +160,34 @@ auto MasterNode::statemachineMoveToState(const state_t state) -> void {
         m_current_state = state;
     }
 }
+
+auto MasterNode::fireSyncTransition() -> bool {
+     if (ml_enabled_fusion_sets.empty()) {
+        RCLCPP_INFO(get_logger(),"No enabled fusion set...");
+        return false;
+     }
+    // Pop a transition fusion set
+    string transition {ml_enabled_fusion_sets[ml_enabled_fusion_sets.size()-1]};
+    ml_enabled_fusion_sets.pop_back();
+    RCLCPP_INFO(get_logger(),"Transition to sync fire: %s",transition.c_str());
+    auto res = m_petri->fireSync(transition,m_current_meta_state);
+    if (res.empty()) RCLCPP_INFO(get_logger(),"res: is empty");
+    else RCLCPP_INFO(get_logger(),"res: is not empty");
+    for (const auto & t : res) {
+        RCLCPP_INFO(get_logger(),"Source metastate: %s",t.getSCCSource()->getMetaState()->toString().c_str());
+        RCLCPP_INFO(get_logger(),"Transition nfusion name: %s",t.getTransition().c_str());
+        RCLCPP_INFO(get_logger(),"Dest metastate %s",t.getDestSCC()->getMetaState()->toString().c_str());
+    }
+    for (uint32_t i {1};i<m_petri->getModulesCount();++i) {
+        // Send request only to modules synced on transition
+        if (m_petri->getManageTransitionFusionSet()->isFusionSetSyncedOnModule(transition,i)) {
+            RCLCPP_INFO(get_logger(),"Received ");
+            auto res {m_firing_sync_transition_service->executeRequest(i,transition)};
+            for (auto e : res) {
+                RCLCPP_INFO(get_logger(),"Received (%s,%s) ",e.source.c_str(),e.target.c_str());
+            }
+            RCLCPP_INFO(get_logger(),"\n");
+        }
+    }
+    return true;
+}

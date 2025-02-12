@@ -21,6 +21,7 @@ private:
     auto buildInitialMetaState() -> void;
     auto computeEnabledSyncTransitions() -> void;
     auto statemachineMoveToState(const state_t state) -> void;
+    auto fireSyncTransition() -> bool ;
 
     rclcpp::Publisher<ros2dss::Command>::SharedPtr m_command_pub;
     ros2dss_project::msg::Command m_command;
