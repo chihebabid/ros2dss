@@ -10,7 +10,7 @@
 class MasterNode : public BaseNode {
     enum class state_t {
         GET_SYNC_FUSION, INIT,BUILD_INITIAL_META_STATE,BUILD_META_STATE,SEND_METASTATE_NAME,POP_METASTATE,PREPARE_COMPUTE_SYNC,
-        COMPUTE_SYNC, TERMINATE_BUILDING
+        COMPUTE_SYNC, FIRE_SYNC, TERMINATE_BUILDING
     };
 public:
     MasterNode(dss::PetriNet  *petri,std::shared_ptr<FiringSyncTransitionService> firing_service);
@@ -34,6 +34,7 @@ private:
 
     dss::ArrayModel<std::string> m_metastate_building_name; // Used to store the name of the metastate being built
     std::stack<dss::MetaState*> m_meta_states_stack; // Used to store the metastates
+    std::vector<std::string> ml_enabled_fusion_sets; // Used to store the enabled fusion sets
 };
 
 

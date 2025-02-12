@@ -52,7 +52,6 @@ auto MasterNode::run()->void {
                 RCLCPP_INFO(get_logger(),"Built Metastate: %s",m_current_meta_state->toString().c_str());
                 m_module_ss->insertMS(m_current_meta_state);
                 m_meta_states_stack.push(m_current_meta_state);
-                m_ack_modules.reset();
             	m_current_state = state_t::SEND_METASTATE_NAME;
             }
             break;
@@ -85,9 +84,21 @@ auto MasterNode::run()->void {
             statemachineMoveToState(state_t::COMPUTE_SYNC);
             break;
 
-	     case state_t::COMPUTE_SYNC:
+	    case state_t::COMPUTE_SYNC:
             RCLCPP_INFO(get_logger(), "Current SM: COMPUTE_SYNC");
+            {
+              	auto manage {m_petri->getManageTransitionFusionSet()};
+            	ml_enabled_fusion_sets=manage->getEnabledFusionSets();
+            	for (auto & elt : ml_enabled_fusion_sets) {
+                	RCLCPP_INFO(get_logger(),"enabled fusion %s\n",elt.c_str());
+            	}
+            	manage->display();
+			}
+            m_current_state=state_t::FIRE_SYNC;
+            break;
 
+        case state_t::FIRE_SYNC:
+            RCLCPP_INFO(get_logger(), "Current SM: FIRE_SYNC");
             break;
           
         case state_t::TERMINATE_BUILDING:
@@ -111,12 +122,14 @@ auto MasterNode::response_receiver(const ros2dss::Response & resp) -> void {
         RCLCPP_INFO(get_logger(), "Received: %s",resp.msg.c_str());
         m_ack_modules[resp.id]=1;
     }
-    else if (resp.msg=="ACK_MOVE_TO_METASTATE"  and m_current_state==state_t::PREPARE_COMPUTE_SYNC) {
+    else if (resp.msg=="ACK_MOVE_TO_METASTATE" ) {
         RCLCPP_INFO(get_logger(), "Received: %s",resp.msg.c_str());
         m_ack_modules[resp.id]=1;
         std::set<std::string> enabled_sync_trans {resp.sync.begin(),resp.sync.end()};
         m_petri->getManageTransitionFusionSet()->enableSetFusion(enabled_sync_trans,resp.id);
     }
+
+
 }
 
 auto MasterNode::buildInitialMetaState() -> void {
