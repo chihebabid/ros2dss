@@ -71,6 +71,8 @@ auto MasterNode::run()->void {
             } else {
                     m_current_meta_state = m_meta_states_stack.top();
                     m_meta_states_stack.pop();
+                    auto manageFusion {m_petri->getManageTransitionFusionSet()};
+    				manageFusion->reset();
                     m_command.cmd = "MOVE_TO_METASTATE";
                     m_command.scc = m_current_meta_state->toString();
                     m_command_pub->publish(m_command);
@@ -126,6 +128,9 @@ auto MasterNode::response_receiver(const ros2dss::Response & resp) -> void {
         RCLCPP_INFO(get_logger(), "Received: %s",resp.msg.c_str());
         m_ack_modules[resp.id]=1;
         std::set<std::string> enabled_sync_trans {resp.sync.begin(),resp.sync.end()};
+        for (auto & elt : enabled_sync_trans) {
+                	RCLCPP_INFO(get_logger(),"ACK_MOVE_TO_METASTAT received %s from %d\n",elt.c_str(),resp.id);
+        }
         m_petri->getManageTransitionFusionSet()->enableSetFusion(enabled_sync_trans,resp.id);
     }
 
@@ -141,8 +146,11 @@ auto MasterNode::buildInitialMetaState() -> void {
 
 auto MasterNode::computeEnabledSyncTransitions() -> void {
     auto enabled_sync_trans {m_petri->getSyncEnabled(m_current_meta_state)};
+    for (auto & elt : enabled_sync_trans) {
+        RCLCPP_INFO(get_logger(),"locally enabled sync %s\n",elt.c_str());
+    }
     auto manageFusion {m_petri->getManageTransitionFusionSet()};
-    manageFusion->reset();
+    //manageFusion->reset();
     manageFusion->enableSetFusion(enabled_sync_trans,m_petri->getPetriID());
 }
 
