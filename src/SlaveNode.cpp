@@ -4,7 +4,7 @@
 
 #include "gmisc.h"
 
-SlaveNode::SlaveNode(dss::PetriNet  *petri,std::shared_ptr<FiringSyncTransitionService> firing_service):BaseNode(petri, "dss_slave") {
+SlaveNode::SlaveNode(dss::PetriNet  *petri,std::shared_ptr<FiringSyncTransitionService> firing_service):BaseNode(petri, "dss_slave"),m_firing_sync_transition_service(firing_service) {
     rclcpp::QoS qos(rclcpp::KeepLast(petri->getModulesCount()));
     qos.durability(RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL);
 
@@ -16,6 +16,8 @@ SlaveNode::SlaveNode(dss::PetriNet  *petri,std::shared_ptr<FiringSyncTransitionS
             "/dss/command", qos, [this](const ros2dss::Command & msg) {
                 command_receiver(msg);
             });
+
+    m_firing_sync_transition_service->setNode(this);
 }
 
 

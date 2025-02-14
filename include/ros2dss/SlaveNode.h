@@ -17,6 +17,7 @@ private:
 
     rclcpp::Publisher<ros2dss::Response>::SharedPtr m_response_pub;
     ros2dss_project::msg::Response m_response;
+    shared_ptr<FiringSyncTransitionService> m_firing_sync_transition_service;
 
     rclcpp::Subscription<ros2dss::Command>::SharedPtr m_command_sub;
 };
