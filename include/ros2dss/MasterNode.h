@@ -13,7 +13,7 @@ class MasterNode : public BaseNode {
         COMPUTE_SYNC, FIRE_SYNC, TERMINATE_BUILDING
     };
 public:
-    MasterNode(dss::PetriNet  *petri,std::shared_ptr<FiringSyncTransitionService> firing_service);
+    MasterNode(dss::PetriNet  *petri);
     auto run() -> void override;
 private:
     auto response_receiver(const ros2dss::Response & msg) ->void;
@@ -30,7 +30,6 @@ private:
     rclcpp::Subscription<ros2dss::Response>::SharedPtr m_response_sub;
     state_t m_current_state {state_t::INIT};
 
-    std::shared_ptr<FiringSyncTransitionService> m_firing_sync_transition_service;
 
     AckManage m_ack_modules; // Used to check that all ACK are received
 

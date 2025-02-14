@@ -9,8 +9,9 @@
 
 class SlaveNode : public BaseNode {
 public:
-    SlaveNode(dss::PetriNet  *petri);
+    SlaveNode(dss::PetriNet  *petri,std::shared_ptr<FiringSyncTransitionService> firing_service);
     auto run() -> void override;
+    auto getCurrentMetaState() const -> dss::MetaState *;
 private:
     auto command_receiver(const ros2dss::Command & msg) -> void;
 

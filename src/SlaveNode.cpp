@@ -4,7 +4,7 @@
 
 #include "gmisc.h"
 
-SlaveNode::SlaveNode(dss::PetriNet  *petri):BaseNode(petri, "dss_slave") {
+SlaveNode::SlaveNode(dss::PetriNet  *petri,std::shared_ptr<FiringSyncTransitionService> firing_service):BaseNode(petri, "dss_slave") {
     rclcpp::QoS qos(rclcpp::KeepLast(petri->getModulesCount()));
     qos.durability(RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL);
 
@@ -16,7 +16,6 @@ SlaveNode::SlaveNode(dss::PetriNet  *petri):BaseNode(petri, "dss_slave") {
             "/dss/command", qos, [this](const ros2dss::Command & msg) {
                 command_receiver(msg);
             });
-
 }
 
 
@@ -64,4 +63,8 @@ auto SlaveNode::command_receiver(const ros2dss::Command & msg) -> void {
             RCLCPP_INFO(get_logger(), "Send ACK_MOVE_TO_METASTATE with enabled sync transitions");
         }
     }
+}
+
+auto SlaveNode::getCurrentMetaState() const -> dss::MetaState * {
+    return m_current_meta_state;
 }

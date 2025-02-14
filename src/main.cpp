@@ -47,10 +47,10 @@ int main(int argc, char * argv[]) {
     }
     std::shared_ptr<BaseNode> base_node{};
     if (petri->getPetriID()==0) {
-        base_node=std::make_shared<MasterNode>(petri,fireSyncTransitionNode);
+        base_node=std::make_shared<MasterNode>(petri);
     }
     else {
-        base_node=std::make_shared<SlaveNode>(petri);
+        base_node=std::make_shared<SlaveNode>(petri,fireSyncTransitionNode);
     }
     executor.add_node(base_node);
     // SMBuilder sm_builder {petri,pubNode,fireSyncTransitionNode};
