@@ -22,6 +22,7 @@ private:
     auto computeEnabledSyncTransitions() -> void;
     auto statemachineMoveToState(const state_t state) -> void;
     auto fireSyncTransition() -> bool ;
+    auto executeFireSyncTransitionRequest(const uint32_t id_server, const string &transition) -> std::vector<dss::firing_sync_t> ;
 
     rclcpp::Publisher<ros2dss::Command>::SharedPtr m_command_pub;
     ros2dss_project::msg::Command m_command;
