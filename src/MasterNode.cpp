@@ -4,7 +4,7 @@
 
 #include "gmisc.h"
 
-MasterNode::MasterNode(dss::PetriNet  *petri):BaseNode(petri,"dss_master"),m_ack_modules(petri->getModulesCount()),m_metastate_building_name(petri->getModulesCount()) {
+MasterNode::MasterNode(dss::PetriNet  *petri,std::shared_ptr<rclcpp::executors::MultiThreadedExecutor> _executor):BaseNode(petri,"dss_master"),m_executor(_executor),m_ack_modules(petri->getModulesCount()),m_metastate_building_name(petri->getModulesCount()) {
     rclcpp::QoS qos(rclcpp::KeepLast(petri->getModulesCount()));
     qos.durability(RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL);
 
@@ -200,25 +200,52 @@ auto MasterNode::fireSyncTransition() -> bool {
 
 auto MasterNode::executeFireSyncTransitionRequest(const uint32_t id_server, const string &transition) -> std::vector<dss::firing_sync_t> {
     std::vector<dss::firing_sync_t> res;
-    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "executeRequest\n");
-    auto client_firing_service {create_client<ros2dss::FiringSyncTransitionSrv>("firing_sync_transitions_service"+std::to_string(id_server))};
+    RCLCPP_INFO(get_logger(), "Execute fire sync service request...");
+    static auto client_firing_service {create_client<ros2dss::FiringSyncTransitionSrv>("firing_sync_transitions_service"+std::to_string(id_server))};
     auto request {std::make_shared<ros2dss::FiringSyncTransitionSrv::Request>()};
     request->transition=transition;
     while (!client_firing_service->wait_for_service(1s)) {
         if (!rclcpp::ok()) {
-            RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Interrupted while waiting...");
+            RCLCPP_ERROR(get_logger(), "Interrupted while waiting...");
             return res;
         }
     }
-    auto result {client_firing_service->async_send_request(request)};
-    if (rclcpp::spin_until_future_complete(this->get_node_base_interface(),result) == rclcpp::FutureReturnCode::SUCCESS) {
-        auto response {result.get()};
-        for (const auto & f : response->lfiring) {
-            res.push_back({f.source,f.target});
+    RCLCPP_INFO(get_logger(), "Ok1....");
+    auto future {client_firing_service->async_send_request(request)};
+				/*,
+                                                [this](rclcpp::Client<ros2dss::FiringSyncTransitionSrv>::SharedFuture response){
+                                                  RCLCPP_INFO(this->get_logger(), "Service response: %ld", response.get()->lfiring.size());
+                                                })};*/
+
+
+    /*while (1) {
+        if (future.wait_for(1s) == std::future_status::ready) {
+
+            break;
         }
-        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Firing transition %s\n",transition.c_str());
-    } else {
-        RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Failed to fire transition %s\n",transition.c_str());
-    }
+        RCLCPP_INFO(get_logger(), "Waiting for response...");
+    }*/
+	while (1) {
+		m_executor->spin_some();
+		if(future.wait_for(1s) == std::future_status::ready) {
+            break;
+        }
+	}
+	RCLCPP_INFO(get_logger(), "Ok2....");
+
+
+
+
+
+//    if (spin_until_future_complete(result) == rclcpp::FutureReturnCode::SUCCESS) {
+//        auto response {result.get()};
+//        for (const auto & f : response->lfiring) {
+//            res.push_back({f.source,f.target});
+//        }
+//        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Firing transition %s\n",transition.c_str());
+//    } else {
+//        RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Failed to fire transition %s\n",transition.c_str());
+//    }
+    RCLCPP_INFO(get_logger(), "Ok2....");
     return res;
 }

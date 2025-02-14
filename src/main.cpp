@@ -19,12 +19,12 @@ int main(int argc, char * argv[]) {
     rclcpp::WallRate loop_rate(500ms);
 
     auto syncNode {std::make_shared<SyncTransitionService>(petri)};
-    rclcpp::executors::SingleThreadedExecutor executor;
-    executor.add_node(syncNode);
+    auto executor {std::make_shared<rclcpp::executors::MultiThreadedExecutor>()};
+    executor->add_node(syncNode);
     while (rclcpp::ok()  && !syncNode->shouldShutdown())
     {
         try {
-            executor.spin_all(0ns);
+            executor->spin_all(0ns);
         } catch (const rclcpp::exceptions::RCLError & e)
         {
             RCLCPP_ERROR(rclcpp::get_logger("Main"), "Error in spin: %s", e.what());
@@ -32,33 +32,28 @@ int main(int argc, char * argv[]) {
         loop_rate.sleep();
     }
 
-    executor.remove_node(syncNode);
+    executor->remove_node(syncNode);
     syncNode.reset();
 
     /*auto  pubNode {std::make_shared<DSSPublisher>(petri)};
     auto  subNode {std::make_shared<DSSSubscriber>(petri)};*/
 
-    auto fireSyncTransitionNode {std::make_shared<FiringSyncTransitionService>(petri)};
-
-    /* executor.add_node(pubNode);
-    executor.add_node(subNode);*/
-    if (petri->getPetriID()) {
-        executor.add_node(fireSyncTransitionNode);
-    }
     std::shared_ptr<BaseNode> base_node{};
     if (petri->getPetriID()==0) {
-        base_node=std::make_shared<MasterNode>(petri);
+        base_node=std::make_shared<MasterNode>(petri,executor);
     }
     else {
-        base_node=std::make_shared<SlaveNode>(petri,fireSyncTransitionNode);
+        auto fireSyncTransitionNodeService {std::make_shared<FiringSyncTransitionService>(petri)};
+        executor->add_node(fireSyncTransitionNodeService);
+        base_node=std::make_shared<SlaveNode>(petri,fireSyncTransitionNodeService);
     }
-    executor.add_node(base_node);
+    executor->add_node(base_node);
     // SMBuilder sm_builder {petri,pubNode,fireSyncTransitionNode};
     while (rclcpp::ok() )
     {
         try {
             base_node->run();
-            executor.spin_all(0ms);
+            executor->spin_all(0ms);
         } catch (const rclcpp::exceptions::RCLError & e)
         {
 

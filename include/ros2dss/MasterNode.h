@@ -13,7 +13,7 @@ class MasterNode : public BaseNode {
         COMPUTE_SYNC, FIRE_SYNC, TERMINATE_BUILDING
     };
 public:
-    MasterNode(dss::PetriNet  *petri);
+    MasterNode(dss::PetriNet  *petri,std::shared_ptr<rclcpp::executors::MultiThreadedExecutor> _executor);
     auto run() -> void override;
 private:
     auto response_receiver(const ros2dss::Response & msg) ->void;
@@ -25,6 +25,8 @@ private:
     auto executeFireSyncTransitionRequest(const uint32_t id_server, const string &transition) -> std::vector<dss::firing_sync_t> ;
 
     rclcpp::Publisher<ros2dss::Command>::SharedPtr m_command_pub;
+    std::shared_ptr<rclcpp::executors::MultiThreadedExecutor> m_executor;
+
     ros2dss_project::msg::Command m_command;
 
     rclcpp::Subscription<ros2dss::Response>::SharedPtr m_response_sub;
