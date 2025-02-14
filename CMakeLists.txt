@@ -36,7 +36,7 @@ file(GLOB_RECURSE SOURCES
 )
 
 #message(WARNING ${SOURCES})
-add_executable(ros2dss src/main.cpp src/DSSPublisher.cpp src/DSSSubscriber.cpp src/SMBuilder.cpp src/SyncTransitionService.cpp
+add_executable(ros2dss src/main.cpp src/SyncTransitionService.cpp
         src/FiringSyncTransitionService.cpp src/AckManage.cpp src/BaseNode.cpp src/MasterNode.cpp src/SlaveNode.cpp ${SOURCES})
 target_include_directories(ros2dss PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/ros2dss dss)
 ament_target_dependencies(ros2dss ${dependencies})

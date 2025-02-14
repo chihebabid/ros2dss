@@ -17,21 +17,21 @@ void FiringSyncTransitionService::firingSyncTransitionsService(const std::shared
                                   std::shared_ptr<ros2dss::FiringSyncTransitionSrv::Response> resp) {
     RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Request firing transition %s\n",req->transition.c_str());
 
-    auto res = m_petri->fireSync(req->transition,m_sm_builder->getCurrentMetaState());
-    if (res.empty()) RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"res: is empty");
-    else RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"res: is not empty");
-    for (const auto & t : res) {
-        RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"Source metastate: %s",t.getSCCSource()->getMetaState()->toString().c_str());
-        RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"Transition nfusion name: %s",t.getTransition().c_str());
-        RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"Dest metastate %s",t.getDestSCC()->getMetaState()->toString().c_str());
-    }
-
-    for (const auto & t : res) {
-      ros2dss::Firing f;
-      f.source=t.getSCCSource()->getName(m_petri);
-      f.target=t.getDestSCC()->getName(m_petri);
-      resp->lfiring.emplace_back(f);
-    }
+    // auto res = m_petri->fireSync(req->transition,m_sm_builder->getCurrentMetaState());
+    // if (res.empty()) RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"res: is empty");
+//    else RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"res: is not empty");
+//    for (const auto & t : res) {
+//        RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"Source metastate: %s",t.getSCCSource()->getMetaState()->toString().c_str());
+//        RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"Transition nfusion name: %s",t.getTransition().c_str());
+//        RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"Dest metastate %s",t.getDestSCC()->getMetaState()->toString().c_str());
+//    }
+//
+//    for (const auto & t : res) {
+//      ros2dss::Firing f;
+//      f.source=t.getSCCSource()->getName(m_petri);
+//      f.target=t.getDestSCC()->getName(m_petri);
+//      resp->lfiring.emplace_back(f);
+//    }
 }
 
 std::vector<dss::firing_sync_t> FiringSyncTransitionService::executeRequest(const uint32_t id_server, const string &transition) {
@@ -59,6 +59,6 @@ std::vector<dss::firing_sync_t> FiringSyncTransitionService::executeRequest(cons
     return res;
 }
 
-void FiringSyncTransitionService::setSMBuilder(SMBuilder *sm_builder) {
-    m_sm_builder=sm_builder;
-}
+//void FiringSyncTransitionService::setSMBuilder(SMBuilder *sm_builder) {
+//    m_sm_builder=sm_builder;
+//}

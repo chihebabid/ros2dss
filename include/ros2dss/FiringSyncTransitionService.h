@@ -9,12 +9,12 @@ class FiringSyncTransitionService : public rclcpp::Node {
 public:
     FiringSyncTransitionService(dss::PetriNet  *);
     std::vector<dss::firing_sync_t> executeRequest(const uint32_t id_server,const string &transition);
-    void setSMBuilder(SMBuilder *);
+    //void setSMBuilder(SMBuilder *);
 private:
     void firingSyncTransitionsService(const std::shared_ptr<ros2dss::FiringSyncTransitionSrv::Request>,std::shared_ptr<ros2dss::FiringSyncTransitionSrv::Response> );
     bool m_should_shutdown {false};
     dss::PetriNet *m_petri;
     rclcpp::Service<ros2dss::FiringSyncTransitionSrv>::SharedPtr m_server_firing_service {};
-    SMBuilder *m_sm_builder {};
+    //SMBuilder *m_sm_builder {};
 };
 #endif //FIRINGSYNCTRANSITIONSERVICE_H
