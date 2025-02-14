@@ -56,7 +56,7 @@ int main(int argc, char * argv[]) {
             executor->spin_all(0ms);
         } catch (const rclcpp::exceptions::RCLError & e)
         {
-
+            RCLCPP_ERROR(rclcpp::get_logger("Main"), "Error in spin: %s", e.what());
         }
         loop_rate.sleep();
     }
