@@ -101,6 +101,13 @@ auto MasterNode::run()->void {
 
         case state_t::FIRE_SYNC:
             RCLCPP_INFO(get_logger(), "Current SM: FIRE_SYNC");
+            if (!fireSyncTransition()) {
+                // No more fusion set is enabled
+                m_current_state=state_t::POP_METASTATE;
+            }
+            else {
+                // There are still non processed fusion sets
+            }
             break;
           
         case state_t::TERMINATE_BUILDING:
