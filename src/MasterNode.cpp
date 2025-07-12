@@ -184,6 +184,13 @@ auto MasterNode::fireSyncTransition() -> bool {
         RCLCPP_INFO(get_logger(),"Transition nfusion name: %s",t.getTransition().c_str());
         RCLCPP_INFO(get_logger(),"Dest metastate %s",t.getDestSCC()->getMetaState()->toString().c_str());
     }
+    vector<vector<dss::firing_sync_t>> received_scc;
+    received_scc.resize(m_petri->getModulesCount());
+    for (const auto & t : res) {
+        received_scc[0].push_back(dss::firing_sync_t{t.getSCCSource()->getMetaState()->toString(),t.getDestSCC()->getMetaState()->toString()});
+    }
+    // SCCs of master module
+
     for (uint32_t i {1};i<m_petri->getModulesCount();++i) {
         // Send request only to modules synced on transition
         if (m_petri->getManageTransitionFusionSet()->isFusionSetSyncedOnModule(transition,i)) {
@@ -191,10 +198,15 @@ auto MasterNode::fireSyncTransition() -> bool {
             auto res {executeFireSyncTransitionRequest(i,transition)};
             for (auto e : res) {
                 RCLCPP_INFO(get_logger(),"Received (%s,%s) ",e.source.c_str(),e.target.c_str());
+                received_scc[i].push_back(dss::firing_sync_t{e.source,e.target});
             }
             RCLCPP_INFO(get_logger(),"\n");
         }
+        else {
+            // We have to put component of source metastate, as destination as well
+        }
     }
+    // Build edges and destination metastate for transition t
     return true;
 }
 
@@ -210,42 +222,19 @@ auto MasterNode::executeFireSyncTransitionRequest(const uint32_t id_server, cons
             return res;
         }
     }
-    RCLCPP_INFO(get_logger(), "Ok1....");
+
     auto future {client_firing_service->async_send_request(request)};
-				/*,
-                                                [this](rclcpp::Client<ros2dss::FiringSyncTransitionSrv>::SharedFuture response){
-                                                  RCLCPP_INFO(this->get_logger(), "Service response: %ld", response.get()->lfiring.size());
-                                                })};*/
-
-
-    /*while (1) {
-        if (future.wait_for(1s) == std::future_status::ready) {
-
-            break;
-        }
-        RCLCPP_INFO(get_logger(), "Waiting for response...");
-    }*/
 	while (1) {
 		m_executor->spin_some();
 		if(future.wait_for(1s) == std::future_status::ready) {
             break;
         }
 	}
-	RCLCPP_INFO(get_logger(), "Ok2....");
-
-
-
-
-
-//    if (spin_until_future_complete(result) == rclcpp::FutureReturnCode::SUCCESS) {
-//        auto response {result.get()};
-//        for (const auto & f : response->lfiring) {
-//            res.push_back({f.source,f.target});
-//        }
-//        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Firing transition %s\n",transition.c_str());
-//    } else {
-//        RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Failed to fire transition %s\n",transition.c_str());
-//    }
-    RCLCPP_INFO(get_logger(), "Ok2....");
+	RCLCPP_INFO(get_logger(), "Received response from server #%d....",id_server);
+	auto response {future.get()};
+    for (const auto & f : response->lfiring) {
+        res.push_back({f.source,f.target});
+    }
+    RCLCPP_INFO(get_logger(), "Firing transition %s\n",transition.c_str());
     return res;
 }
