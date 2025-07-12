@@ -5,14 +5,8 @@
 #ifndef MISC_H
 #define MISC_H
 #include <string>
-namespace dss {
+#include <vector>
 
-
-    struct firing_sync_t {
-        std::string source;
-        std::string target;
-    };
-}
 #include <cstring>
 #include <vector>
 #include <iostream>
@@ -34,6 +28,7 @@ namespace dss {
 #include "Transition.h"
 #include "ManageTransitionFusionSet.h"
 #include "MetaState.h"
+
 #include "FiringSyncTransition.h"
 #include "PetriNet.h"
 #include "BuildPetri.h"
@@ -43,7 +38,15 @@ namespace dss {
 #include "MetaStateName.h"
 #include "ModuleSS.h"
 
+
 namespace dss {
+
+    struct firing_sync_t {
+        std::string source;
+        std::string target;
+    };
+
+
     struct element_t {
         Marking marquage;
         vector<Transition *> liste_transitions;
@@ -54,6 +57,8 @@ namespace dss {
         Marking *marquage;
         vector<Transition *> liste_transitions;
     };
+
+    std::vector<ArrayModel<std::string>> buildMetaStatesNames(std::vector<std::vector<firing_sync_t>> &l_scc);
 
 }
 

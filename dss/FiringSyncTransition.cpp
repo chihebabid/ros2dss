@@ -31,8 +31,5 @@ namespace dss {
         return m_transition;
     }
 
-    FiringSyncTransition::operator firing_sync_t() const {
-        // TODO: Implement the conversion
-        return {"ok1","ok2"};
-    }
+
 }
