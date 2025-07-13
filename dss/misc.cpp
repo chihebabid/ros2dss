@@ -25,8 +25,25 @@ namespace dss {
             return true;
         };
 
+        auto add1=[](std::vector<int> &v,const std::vector<int> &v_max) -> void {
+            for (size_t i{v.size()-1};i=0;--i) {
+                if (v[i] < v_max[i]-1) {
+                    ++v[i];
+                    return;
+                } else {
+                    v[i]=0; // Reset the current counter and carry over to the next
+                }
+            }
+        };
+        // Compute the product
         while (isLittleThan(_counters,_counters_max)) {
-
+            // source_name : product enabling transition, ms_name : product destination metastate
+            ArrayModel<std::string> source_name(l_scc.size()),ms_name(l_scc.size());
+            for (size_t i{};i<l_scc.size();++i) {
+                source_name[i]= l_scc[i][_counters[i]].source;
+                ms_name[i]= l_scc[i][_counters[i]].target;
+            }
+            add1(_counters,_counters_max);
         }
         return l_metastates_names;
     }
