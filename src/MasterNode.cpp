@@ -219,6 +219,9 @@ auto MasterNode::fireSyncTransition() -> bool {
             auto new_ms {std::get<2>(e_tuple)->getMetaState()};
             new_ms->setName(std::get<1>(e_tuple));
             m_module_ss->insertMS(new_ms);
+            m_current_meta_state->addSyncArc(new dss::ArcSync{std::get<0>(e_tuple), new_ms,nullptr});
+
+            m_meta_states_stack.push(new_ms);
             RCLCPP_INFO(get_logger(), "Meta state: %s is new!", dss::arrayModelToStdString(new_ms->getName()).c_str());
         }
     }

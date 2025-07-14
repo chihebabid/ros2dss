@@ -31,4 +31,10 @@ namespace dss {
     ArrayModel<string> *ArcSync::getStartProduct() {
         return &m_source;
     }
+
+
+    ArcSync::ArcSync(ArrayModel<string> source_product, MetaState *destination, std::string *transition):m_source(source_product), m_fusion(transition), m_destination(destination) {
+
+
+    }
 }

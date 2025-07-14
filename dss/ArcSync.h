@@ -13,6 +13,8 @@ namespace dss {
 
 class ArcSync {
 public:
+    ArcSync(ArrayModel<string>, MetaState *destination, std::string *transition);
+
     ArcSync()=default;
     virtual ~ArcSync()=default;
 
@@ -26,9 +28,9 @@ public:
 
     ArrayModel<string> *getStartProduct();
 private:
-    std::string *m_fusion;
+    std::string *m_fusion{};
     ArrayModel<string> m_source;
-    MetaState *m_destination;
+    MetaState *m_destination{};
 };
 
 }
