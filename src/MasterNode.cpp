@@ -204,9 +204,15 @@ auto MasterNode::fireSyncTransition() -> bool {
         }
         else {
             // We have to put component of source metastate, as destination as well
+            received_scc[i].push_back({m_current_meta_state->getSCCName(i),m_current_meta_state->getSCCName(i)});
         }
     }
     // Build edges and destination metastate for transition t
+    auto l_pair_source_ms {dss::buildMetaStatesNames(received_scc)};
+    for (auto & pair : l_pair_source_ms) {
+        RCLCPP_INFO(get_logger(),"Source product: %s, Destination metastate: %s",dss::arrayModelToStdString(pair.first).c_str(),dss::arrayModelToStdString(pair.second).c_str());
+
+    }
     return true;
 }
 

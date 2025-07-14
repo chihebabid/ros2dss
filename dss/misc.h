@@ -58,7 +58,10 @@ namespace dss {
         vector<Transition *> liste_transitions;
     };
 
-    std::vector<ArrayModel<std::string>> buildMetaStatesNames(std::vector<std::vector<firing_sync_t>> &l_scc);
+    std::vector<std::pair<ArrayModel<std::string>,ArrayModel<std::string>>> buildMetaStatesNames(std::vector<std::vector<firing_sync_t>> &l_scc);
+
+
+    std::string arrayModelToStdString(ArrayModel<std::string>& model, const std::string& delimiter = " ");
 
 }
 
