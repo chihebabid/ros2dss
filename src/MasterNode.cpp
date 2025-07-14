@@ -187,14 +187,13 @@ auto MasterNode::fireSyncTransition() -> bool {
     vector<vector<dss::firing_sync_t>> received_scc;
     received_scc.resize(m_petri->getModulesCount());
     for (const auto & t : res) {
-        received_scc[0].push_back(dss::firing_sync_t{t.getSCCSource()->getMetaState()->toString(),t.getDestSCC()->getMetaState()->toString()});
+        received_scc[0].push_back(dss::firing_sync_t{t.getSCCSource()->getName(m_petri),t.getDestSCC()->getName(m_petri)});
     }
     // SCCs of master module
 
     for (uint32_t i {1};i<m_petri->getModulesCount();++i) {
         // Send request only to modules synced on transition
         if (m_petri->getManageTransitionFusionSet()->isFusionSetSyncedOnModule(transition,i)) {
-            RCLCPP_INFO(get_logger(),"Received ");
             auto res {executeFireSyncTransitionRequest(i,transition)};
             for (auto e : res) {
                 RCLCPP_INFO(get_logger(),"Received (%s,%s) ",e.source.c_str(),e.target.c_str());
@@ -211,8 +210,19 @@ auto MasterNode::fireSyncTransition() -> bool {
     auto l_pair_source_ms {dss::buildMetaStatesNames(received_scc)};
     for (auto & pair : l_pair_source_ms) {
         RCLCPP_INFO(get_logger(),"Source product: %s, Destination metastate: %s",dss::arrayModelToStdString(pair.first).c_str(),dss::arrayModelToStdString(pair.second).c_str());
+        if  (auto dest_ms {m_module_ss->findMetaState(pair.second)};dest_ms) {
+            RCLCPP_INFO(get_logger(),"Meta state: %s is already inserted!",dss::arrayModelToStdString(pair.second).c_str());
+            // Insert just the edge
+        }
+        else {
+            // Insert the new metastate
+            RCLCPP_INFO(get_logger(),"Meta state: %s is new!",dss::arrayModelToStdString(pair.second).c_str());
+        }
 
     }
+
+
+
     return true;
 }
 
