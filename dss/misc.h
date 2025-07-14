@@ -44,6 +44,7 @@ namespace dss {
     struct firing_sync_t {
         std::string source;
         std::string target;
+        SCC* scc_target {};
     };
 
 
@@ -58,10 +59,10 @@ namespace dss {
         vector<Transition *> liste_transitions;
     };
 
-    std::vector<std::pair<ArrayModel<std::string>,ArrayModel<std::string>>> buildMetaStatesNames(std::vector<std::vector<firing_sync_t>> &l_scc);
+    std::vector<std::tuple<ArrayModel<std::string>,ArrayModel<std::string>,SCC*>>  buildMetaStatesNames(std::vector<std::vector<firing_sync_t>> &l_scc);
 
 
-    std::string arrayModelToStdString(ArrayModel<std::string>& model, const std::string& delimiter = " ");
+    std::string arrayModelToStdString(const ArrayModel<std::string>& model, const std::string& delimiter = " ");
 
 }
 

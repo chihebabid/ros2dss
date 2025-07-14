@@ -22,6 +22,8 @@ namespace dss {
 
         T &operator[](const size_t index);
 
+        const T &operator[](const size_t index) const;
+
         bool operator==(const ArrayModel &) const;
 
         operator std::vector<T>() const;
@@ -47,6 +49,11 @@ namespace dss {
 
     template <typename T>
     T& ArrayModel<T>::operator[](const size_t index) {
+        return m_data[index];
+    }
+
+    template <typename T>
+    const T &ArrayModel<T>::operator[](const size_t index) const {
         return m_data[index];
     }
 

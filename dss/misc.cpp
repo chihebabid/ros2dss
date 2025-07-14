@@ -7,8 +7,8 @@ namespace dss {
      * @brief This function builds the metastates names from the firing sync transitions
      * @return a pair of vectors containing the source and destination metastates names
      */
-    std::vector<std::pair<ArrayModel<std::string>,ArrayModel<std::string>>>  buildMetaStatesNames(std::vector<std::vector<firing_sync_t>> &l_scc) {
-        std::vector<std::pair<ArrayModel<std::string>,ArrayModel<std::string>>> l_source_metastates_names;
+    std::vector<std::tuple<ArrayModel<std::string>,ArrayModel<std::string>,SCC*>>  buildMetaStatesNames(std::vector<std::vector<firing_sync_t>> &l_scc) {
+        std::vector<std::tuple<ArrayModel<std::string>,ArrayModel<std::string>,SCC*>> l_source_metastates_names;
         std::vector<int> _counters(l_scc.size(),0),_counters_max(l_scc.size());
         for (size_t i{};i<_counters_max.size();++i) {
             _counters_max[i]=l_scc[i].size();
@@ -46,7 +46,7 @@ namespace dss {
                 source_name[i]= l_scc[i][_counters[i]].source;
                 ms_name[i]= l_scc[i][_counters[i]].target;
             }
-            l_source_metastates_names.push_back({source_name,ms_name});
+            l_source_metastates_names.push_back({source_name,ms_name,l_scc[0][_counters[0]].scc_target});
             add1(_counters,_counters_max);
         }
         ArrayModel<std::string> source_name(l_scc.size()),ms_name(l_scc.size());
@@ -54,11 +54,11 @@ namespace dss {
             source_name[i]= l_scc[i][_counters[i]].source;
             ms_name[i]= l_scc[i][_counters[i]].target;
         }
-        l_source_metastates_names.push_back({source_name,ms_name});
+        l_source_metastates_names.push_back({source_name,ms_name,l_scc[0][_counters[0]].scc_target});
         return l_source_metastates_names;
     }
 
-    std::string arrayModelToStdString(ArrayModel<std::string>& model, const std::string& delimiter ) {
+    std::string arrayModelToStdString(const ArrayModel<std::string>& model, const std::string& delimiter ) {
         if (model.size() == 0) {
             return "";
         }
