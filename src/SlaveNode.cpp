@@ -68,6 +68,18 @@ auto SlaveNode::command_receiver(const ros2dss::Command & msg) -> void {
     else if (msg.cmd=="ADD_NEW_METASTATE") {
         //msg.target_ms
         RCLCPP_INFO(get_logger(), "Received command to add new metastate: %s", dss::vectorToStdString(msg.target_ms).c_str());
+        auto& scc_name {msg.target_ms[m_petri->getPetriID()]};
+        auto find_ms {std::find_if(m_firing_sync_transition_service->getFiringSyncTransitions().begin(),
+                                 m_firing_sync_transition_service->getFiringSyncTransitions().end(),
+                                 [this,&scc_name](const dss::FiringSyncTransition & elt)-> bool {
+                                     if (elt.getDestSCC()->getName(m_petri)==scc_name) {
+                                         return true;
+                                     }
+                                     return false;
+                                 })};
+        if (find_ms!=m_firing_sync_transition_service->getFiringSyncTransitions().end()) {
+            RCLCPP_INFO(get_logger(), "FOUND!!!!!!");
+        }
 
     }
 }

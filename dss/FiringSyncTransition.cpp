@@ -31,5 +31,12 @@ namespace dss {
         return m_transition;
     }
 
+    /*
+     * returns whether desitination metastate is inserted into the graph
+     */
+    bool FiringSyncTransition::isInserted() const {
+        return m_inserted;
+    }
+
 
 }

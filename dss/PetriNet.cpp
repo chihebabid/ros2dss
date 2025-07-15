@@ -186,7 +186,6 @@ namespace dss {
         elt.liste_transitions = getListeTransitionsFranchissables();
         pstack.push_back(elt);
 
-
         ms->insertMarking(elt.marquage);
 
         while (pstack.size() > 0) {

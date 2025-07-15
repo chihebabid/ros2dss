@@ -15,16 +15,16 @@ void FiringSyncTransitionService::firingSyncTransitionsService(const std::shared
                                   std::shared_ptr<ros2dss::FiringSyncTransitionSrv::Response> resp) {
     RCLCPP_INFO(rclcpp::get_logger("Service firing sync: "), "Service request firing transition %s",req->transition.c_str());
 
-    auto res = m_petri->fireSync(req->transition,m_slave_node->getCurrentMetaState());
-    if (res.empty()) RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"res: is empty");
+    ml_firing_sync_transitions = m_petri->fireSync(req->transition,m_slave_node->getCurrentMetaState());
+    if (ml_firing_sync_transitions.empty()) RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"res: is empty");
     else RCLCPP_INFO(rclcpp::get_logger("Service firing sync: "),"res: is not empty");
-    for (const auto & t : res) {
+    for (const auto & t : ml_firing_sync_transitions) {
         RCLCPP_INFO(rclcpp::get_logger("Service firing sync: "),"Source metastate: %s",t.getSCCSource()->getMetaState()->toString().c_str());
         RCLCPP_INFO(rclcpp::get_logger("Service firing sync: "),"Transition nfusion name: %s",t.getTransition().c_str());
         RCLCPP_INFO(rclcpp::get_logger("Service firing sync: "),"Dest metastate %s",t.getDestSCC()->getMetaState()->toString().c_str());
     }
 
-    for (const auto & t : res) {
+    for (const auto & t : ml_firing_sync_transitions) {
       ros2dss::Firing f;
       f.source=t.getSCCSource()->getName(m_petri);
       f.target=t.getDestSCC()->getName(m_petri);
@@ -36,3 +36,16 @@ void FiringSyncTransitionService::firingSyncTransitionsService(const std::shared
 void FiringSyncTransitionService::setNode(SlaveNode *node) {
     m_slave_node=node;
 }
+
+const std::set<dss::FiringSyncTransition>& FiringSyncTransitionService::getFiringSyncTransitions() const {
+    return ml_firing_sync_transitions;
+}
+
+void FiringSyncTransitionService::cleanSCCs() {
+    for (auto & elt : ml_firing_sync_transitions) {
+        delete elt.getDestSCC()->getMetaState();
+        delete elt.getDestSCC();
+    }
+}
+
+

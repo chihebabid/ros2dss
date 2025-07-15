@@ -33,8 +33,6 @@ namespace dss {
 
         int addPlacesEntrees(string nom_transition, vector<string> liste_places_entrees, vector<int> liste_poids);
 
-
-
         uint32_t getPetriID() const;
 
         void setPetriID(const uint32_t index);
