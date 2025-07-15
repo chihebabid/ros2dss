@@ -66,19 +66,37 @@ auto SlaveNode::command_receiver(const ros2dss::Command & msg) -> void {
         }
     }
     else if (msg.cmd=="ADD_NEW_METASTATE") {
+
         //msg.target_ms
         RCLCPP_INFO(get_logger(), "Received command to add new metastate: %s", dss::vectorToStdString(msg.target_ms).c_str());
         auto& scc_name {msg.target_ms[m_petri->getPetriID()]};
+        RCLCPP_INFO(get_logger(), "Searching for SCC: %s",scc_name.c_str());
         auto find_ms {std::find_if(m_firing_sync_transition_service->getFiringSyncTransitions().begin(),
                                  m_firing_sync_transition_service->getFiringSyncTransitions().end(),
                                  [this,&scc_name](const dss::FiringSyncTransition & elt)-> bool {
+                                     RCLCPP_INFO(get_logger(), "item for SCC: %s",elt.getDestSCC()->getName(m_petri).c_str());
                                      if (elt.getDestSCC()->getName(m_petri)==scc_name) {
                                          return true;
                                      }
                                      return false;
                                  })};
-        if (find_ms!=m_firing_sync_transition_service->getFiringSyncTransitions().end()) {
-            RCLCPP_INFO(get_logger(), "FOUND!!!!!!");
+        // Check if the transition is found (the module is synchronized on it)
+        if (m_petri->getTransitionPtr(msg.transition)) {
+            if (find_ms!=m_firing_sync_transition_service->getFiringSyncTransitions().end()) {
+                RCLCPP_INFO(get_logger(), "The module is synchronized on transition %s",msg.transition.c_str());
+                dss::Marking *p_marking {find_ms->getDestSCC()->getMetaState()->getInitialMarking()};
+                dss::MetaState* new_ms {m_petri->getMetaState(*p_marking)};
+                new_ms->setName(msg.target_ms);
+                m_module_ss->insertMS(new_ms);
+
+            }
+        }
+        else {
+            RCLCPP_INFO(get_logger(), "The module is not synchronized on transition %s",msg.transition.c_str());
+            dss::Marking *p_marking {m_current_meta_state->getInitialMarking()};
+            dss::MetaState* new_ms {m_petri->getMetaState(*p_marking)};
+            new_ms->setName(msg.target_ms);
+            m_module_ss->insertMS(new_ms);
         }
 
     }

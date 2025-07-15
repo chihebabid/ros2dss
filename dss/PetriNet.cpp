@@ -159,9 +159,6 @@ namespace dss {
     }
 
 
-    ///////////////////////////////////
-    // Sp�cifier le num�ro du module //
-    ///////////////////////////////////
     void PetriNet::setPetriID(const uint32_t index) {
         m_petri_id = index;
     }
@@ -174,7 +171,9 @@ namespace dss {
     }
 
 
-    // Construction de Meta-graphe
+    /*
+     * Build a metastat from a marking
+     */
 
     MetaState *PetriNet::getMetaState(Marking marquage) {
         //vector<Marquage> list_marq_inserted;
@@ -203,15 +202,7 @@ namespace dss {
 
                 Marking *new_state;
                 new_state = new Marking(getMarquage());
-                // Indiquer si le marquage en question est récemment inséré
-                //if (!state_graph->existMarking(new_state)) list_marq_inserted.push_back(*new_state);
-                //cout<<"\n The old  marquage="<<current_elt.marquage.get8BitsValue()<<endl;
-                //cout<<"firing of "<<(*transition).getName()<<endl;
-                //cout<<"\n The new  marquage="<<getMarquageName(*new_state)<<endl;
                 Marking *old_state = ms->insertMarking(new_state);
-                //if (old_state) cout<<"\n The found  marquage="<<getMarquageName(*old_state)<<endl;
-
-                //cout<<"\n The current  marquage (old)="<<getMarquageName(*current_elt.marquage)<<endl;
                 if (!old_state) current_elt.marquage->addSucc(transition, new_state);
                 else {
                     delete new_state;
