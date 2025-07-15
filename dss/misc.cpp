@@ -71,4 +71,20 @@ namespace dss {
         }
         return result;
     }
+
+
+    // Convert std::vector<std::string> to std::string with a delimiter
+    std::string vectorToStdString(const std::vector<std::string>& vec, const std::string& delimiter) {
+        if (vec.empty()) {
+            return "";
+        }
+        std::string result;
+        for (size_t i = 0; i < vec.size(); ++i) {
+            result += vec[i];
+            if (i < vec.size() - 1) {
+                result += delimiter;
+            }
+        }
+        return result;
+    }
 }

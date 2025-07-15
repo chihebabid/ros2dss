@@ -221,8 +221,13 @@ auto MasterNode::fireSyncTransition() -> bool {
             new_ms->setName(std::get<1>(e_tuple));
             m_module_ss->insertMS(new_ms);
             m_current_meta_state->addSyncArc(new dss::ArcSync{std::get<0>(e_tuple), new_ms,transition});
-
             m_meta_states_stack.push(new_ms);
+            // Publish the command to add new metastate
+            m_command.cmd = "ADD_NEW_METASTATE";
+            m_command.source_product=std::get<0>(e_tuple);
+            m_command.target_ms=std::get<1>(e_tuple);
+            m_command.transition=transition;
+            m_command_pub->publish(m_command);
             RCLCPP_INFO(get_logger(), "Meta state: %s is new!", dss::arrayModelToStdString(new_ms->getName()).c_str());
         }
     }

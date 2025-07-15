@@ -63,6 +63,8 @@ namespace dss {
 
 
     std::string arrayModelToStdString(const ArrayModel<std::string>& model, const std::string& delimiter = " ");
+    // Convert std::vector<std::string> to std::string with a delimiter
+    std::string vectorToStdString(const std::vector<std::string>& vec, const std::string& delimiter = " ");
 
 }
 

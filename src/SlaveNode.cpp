@@ -65,6 +65,11 @@ auto SlaveNode::command_receiver(const ros2dss::Command & msg) -> void {
             RCLCPP_INFO(get_logger(), "Send ACK_MOVE_TO_METASTATE with enabled sync transitions");
         }
     }
+    else if (msg.cmd=="ADD_NEW_METASTATE") {
+        //msg.target_ms
+        RCLCPP_INFO(get_logger(), "Received command to add new metastate: %s", dss::vectorToStdString(msg.target_ms).c_str());
+
+    }
 }
 
 auto SlaveNode::getCurrentMetaState() const -> dss::MetaState * {
