@@ -20,8 +20,8 @@ void FiringSyncTransitionService::firingSyncTransitionsService(const std::shared
     else RCLCPP_INFO(rclcpp::get_logger("Service firing sync: "),"res: is not empty");
     for (const auto & t : ml_firing_sync_transitions) {
         RCLCPP_INFO(rclcpp::get_logger("Service firing sync: "),"Source metastate: %s",t.getSCCSource()->getMetaState()->toString().c_str());
-        RCLCPP_INFO(rclcpp::get_logger("Service firing sync: "),"Transition nfusion name: %s",t.getTransition().c_str());
-        RCLCPP_INFO(rclcpp::get_logger("Service firing sync: "),"Dest metastate %s",t.getDestSCC()->getMetaState()->toString().c_str());
+        RCLCPP_INFO(rclcpp::get_logger("Service firing sync: "),"Transition fusion name: %s",t.getTransition().c_str());
+        RCLCPP_INFO(rclcpp::get_logger("Service firing sync: "),"Dest metastate: %s",t.getDestSCC()->getMetaState()->toString().c_str());
     }
 
     for (const auto & t : ml_firing_sync_transitions) {
@@ -46,6 +46,7 @@ void FiringSyncTransitionService::cleanSCCs() {
         delete elt.getDestSCC()->getMetaState();
         delete elt.getDestSCC();
     }
+    ml_firing_sync_transitions.clear();
 }
 
 

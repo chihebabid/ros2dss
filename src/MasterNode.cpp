@@ -152,7 +152,7 @@ auto MasterNode::computeEnabledSyncTransitions() -> void {
         RCLCPP_INFO(get_logger(), "locally enabled sync %s\n", elt.c_str());
     }
     auto manageFusion{m_petri->getManageTransitionFusionSet()};
-    //manageFusion->reset();
+    // manageFusion->reset();
     manageFusion->enableSetFusion(enabled_sync_trans, m_petri->getPetriID());
 }
 
@@ -239,7 +239,7 @@ auto MasterNode::executeFireSyncTransitionRequest(const uint32_t id_server,
                                                   const string &transition) -> std::vector<dss::firing_sync_t> {
     std::vector<dss::firing_sync_t> res;
     RCLCPP_INFO(get_logger(), "Execute fire sync service request...");
-    static auto client_firing_service{
+    auto client_firing_service{
         create_client<ros2dss::FiringSyncTransitionSrv>("firing_sync_transitions_service" + std::to_string(id_server))
     };
     auto request{std::make_shared<ros2dss::FiringSyncTransitionSrv::Request>()};
