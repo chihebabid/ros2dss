@@ -12,7 +12,7 @@ namespace dss {
         std::vector<int> _counters(l_scc.size(),0),_counters_max(l_scc.size());
         for (size_t i{};i<_counters_max.size();++i) {
             _counters_max[i]=l_scc[i].size();
-            std::cout<<"Module i: "<<i<<" has "<<_counters_max[i]<<" SCCs\n";
+            // std::cout<<"Module i: "<<i<<" has "<<_counters_max[i]<<" SCCs\n";
         }
 
 

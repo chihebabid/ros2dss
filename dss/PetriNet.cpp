@@ -317,7 +317,6 @@ namespace dss {
            setMarquage(*marking);
             auto source_SCC {marking->getSCCContainer()};
             MetaState* dest_ms {nullptr};
-            printf("@transition %.8x\n",transition);
             if (transition->isLocallyFirable()) {
                 printf("Fired!!!\n");
                 transition->fire();
