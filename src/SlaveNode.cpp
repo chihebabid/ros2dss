@@ -84,7 +84,7 @@ auto SlaveNode::command_receiver(const ros2dss::Command & msg) -> void {
         // Check if the transition is found (the module is synchronized on it)
         if (m_petri->getTransitionPtr(msg.transition)) {
             if (find_ms!=m_firing_sync_transition_service->getFiringSyncTransitions().end()) {
-                RCLCPP_INFO(get_logger(), "The module is synchronized on transition %s",msg.transition.c_str());
+                //RCLCPP_INFO(get_logger(), "The module is synchronized on transition %s",msg.transition.c_str());
                 dss::Marking *p_marking {find_ms->getDestSCC()->getMetaState()->getInitialMarking()};
                 dss::MetaState* new_ms {m_petri->getMetaState(*p_marking)};
                 new_ms->setName(msg.target_ms);
@@ -92,7 +92,7 @@ auto SlaveNode::command_receiver(const ros2dss::Command & msg) -> void {
             }
         }
         else {
-            RCLCPP_INFO(get_logger(), "The module is not synchronized on transition %s",msg.transition.c_str());
+            // RCLCPP_INFO(get_logger(), "The module is not synchronized on transition %s",msg.transition.c_str());
             dss::Marking *p_marking {m_current_meta_state->getInitialMarking()};
             dss::MetaState* new_ms {m_petri->getMetaState(*p_marking)};
             new_ms->setName(msg.target_ms);

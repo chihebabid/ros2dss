@@ -294,28 +294,13 @@ namespace dss {
         for (const auto & marking : l_markings) {
             setMarquage(*marking);
             for (const auto & t : ml_transitions) {
-                if (t.isLocallyFirable()) res.insert(t.getName());
+                if (t.isSync() and t.isLocallyFirable()) res.insert(t.getName());
             }
         }
         return res;
     }
 
-   /* std::pair<set<SCC*>,set<SCC*>> PetriNet::fireSync(const MetaState *ms, const string &name) {
-        set<SCC*> source_scc,dest_scc;
-        auto l_markings {ms->getListMarkings()};
-            for (const auto & marking : l_markings) {
-                setMarquage(*marking);
-                auto t {getTransitionPtr(name)};
-                if (t->isLocallyFirable()) {
-                    t->fire();
-                    for (const auto & succ : marking->getListSucc()) {
-                        auto scc {succ.second->getSCCContainer()};
-                        if (scc) source_scc.insert(scc);
-                    }
-                }
-            }
-        return std::make_pair(source_scc,dest_scc);
-    }*/
+
 
     std::set<FiringSyncTransition> PetriNet::fireSync(const string &name, const MetaState *ms) {
         std::set<FiringSyncTransition> res;

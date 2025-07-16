@@ -68,11 +68,12 @@ auto MasterNode::run() -> void {
             break;
 
         case state_t::POP_METASTATE:
-            RCLCPP_INFO(get_logger(), "Current SM: POP_METASTATE");
+            RCLCPP_INFO(get_logger(), "POP_METASTATE: Stack size: %d",m_meta_states_stack.size());
             if (m_meta_states_stack.empty()) {
                 m_current_state = state_t::TERMINATE_BUILDING;
             } else {
                 m_current_meta_state = m_meta_states_stack.top();
+                RCLCPP_INFO(get_logger(), "POP_METASTATE: Popped MS: %s",m_current_meta_state->toString().c_str());
                 m_meta_states_stack.pop();
                 auto manageFusion{m_petri->getManageTransitionFusionSet()};
                 manageFusion->reset();
@@ -96,7 +97,7 @@ auto MasterNode::run() -> void {
                 for (auto &elt: ml_enabled_fusion_sets) {
                     RCLCPP_INFO(get_logger(), "enabled fusion %s\n", elt.c_str());
                 }
-                manage->display();
+                //manage->display();
             }
             m_current_state = state_t::FIRE_SYNC;
             break;
@@ -147,13 +148,14 @@ auto MasterNode::buildInitialMetaState() -> void {
 }
 
 auto MasterNode::computeEnabledSyncTransitions() -> void {
+
     auto enabled_sync_trans{m_petri->getSyncEnabled(m_current_meta_state)};
     for (auto &elt: enabled_sync_trans) {
         RCLCPP_INFO(get_logger(), "locally enabled sync %s\n", elt.c_str());
     }
     auto manageFusion{m_petri->getManageTransitionFusionSet()};
-    // manageFusion->reset();
     manageFusion->enableSetFusion(enabled_sync_trans, m_petri->getPetriID());
+
 }
 
 auto MasterNode::statemachineMoveToState(const state_t state) -> void {
@@ -171,9 +173,9 @@ auto MasterNode::fireSyncTransition() -> bool {
     // Pop a transition fusion set
     string transition{ml_enabled_fusion_sets[ml_enabled_fusion_sets.size() - 1]};
     ml_enabled_fusion_sets.pop_back();
-    RCLCPP_INFO(get_logger(), "Transition to sync fire: %s", transition.c_str());
+    RCLCPP_INFO(get_logger(), "Sync transition to fire: %s", transition.c_str());
     auto res = m_petri->fireSync(transition, m_current_meta_state);
-    if (res.empty())
+    /*if (res.empty())
         RCLCPP_INFO(get_logger(), "res: is empty");
     else
         RCLCPP_INFO(get_logger(), "res: is not empty");
@@ -181,7 +183,7 @@ auto MasterNode::fireSyncTransition() -> bool {
         RCLCPP_INFO(get_logger(), "Source metastate: %s", t.getSCCSource()->getMetaState()->toString().c_str());
         RCLCPP_INFO(get_logger(), "Transition nfusion name: %s", t.getTransition().c_str());
         RCLCPP_INFO(get_logger(), "Dest metastate %s", t.getDestSCC()->getMetaState()->toString().c_str());
-    }
+    }*/
     vector<vector<dss::firing_sync_t> > received_scc;
     received_scc.resize(m_petri->getModulesCount());
     for (const auto &t: res) {

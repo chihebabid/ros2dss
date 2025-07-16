@@ -2,6 +2,8 @@
 // Created by chiheb on 23/12/24.
 //
 
+#include <cassert>
+
 #include "misc.h"
 
 namespace dss {
@@ -46,6 +48,7 @@ namespace dss {
 
     void ManageTransitionFusionSet::enableFusion(const std::string &name,uint32_t module) {
         auto it {ml_fusion_sets.find(name)};
+        assert(it!=ml_fusion_sets.end() && "Fusion set not found!!!" );
         auto & _set {it->second};
         auto it_res {std::find_if(_set.begin(),_set.end(),[module](const fusion_set_t &fusion_set){return  fusion_set.module==module;})};
         it_res->enabled=true;
