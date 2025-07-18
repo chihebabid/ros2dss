@@ -68,7 +68,7 @@ auto MasterNode::run() -> void {
             break;
 
         case state_t::POP_METASTATE:
-            RCLCPP_INFO(get_logger(), "POP_METASTATE: Stack size: %d",m_meta_states_stack.size());
+            RCLCPP_INFO(get_logger(), "POP_METASTATE: Stack size: %ld",m_meta_states_stack.size());
             if (m_meta_states_stack.empty()) {
                 m_current_state = state_t::TERMINATE_BUILDING;
             } else {

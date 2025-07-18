@@ -127,13 +127,13 @@ namespace dss {
         }
         if (indice != -1) {
             // Ajout de places de sortie
-            for (int j = 0; j < liste_places_sorties.size(); j++) {
+            for (size_t j {}; j < liste_places_sorties.size(); ++j) {
                 ml_transitions[indice].addPlaceSortie(getPlaceAdresse(liste_places_sorties[j]), liste_poids[j]);
                 //printf("%s, ",liste_places_sorties[j].mot.c_str());
             }
             return 0;
         }
-        printf("ERREUR : relation erron�e!\n");
+        printf("ERROR : bad relation!\n");
         return -1;
     }
 
@@ -143,7 +143,7 @@ namespace dss {
     string PetriNet::getMarquageName(Marking marquage) const {
         string resultat = "(";
         char chaine[100] = "\0";
-        for (int j = 0; j < getPlacesCount(); j++) {
+        for (size_t j {}; j < getPlacesCount(); ++j) {
             if (marquage.get8BitsValue(j) != 0) {
                 if (marquage.get8BitsValue(j) != 1) {
                     sprintf(chaine, "%d", (int) marquage.get8BitsValue(j));
@@ -248,14 +248,11 @@ namespace dss {
 
 
     string PetriNet::getSCCName(const SCC *scc) const {
-        auto name {getMarquageName(*(scc->getListStates())->at(0))};
+        auto name {getMarquageName(*(*(scc->getListStates()))[0])};
         for (auto & c : name)
             c=std::toupper(c);
         return name;
     }
-
-
-
 
     uint32_t PetriNet::getModulesCount() const {
         return m_modules_count;
@@ -318,7 +315,6 @@ namespace dss {
             auto source_SCC {marking->getSCCContainer()};
             MetaState* dest_ms {nullptr};
             if (transition->isLocallyFirable()) {
-                printf("Fired!!!\n");
                 transition->fire();
                 dest_ms=getMetaState(getMarquage());
                 dest_ms->setSCCName(getSCCName(dest_ms->getInitialSCC()),getPetriID());

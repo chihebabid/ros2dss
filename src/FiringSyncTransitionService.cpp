@@ -14,15 +14,20 @@ FiringSyncTransitionService::FiringSyncTransitionService(dss::PetriNet  *petri):
 void FiringSyncTransitionService::firingSyncTransitionsService(const std::shared_ptr<ros2dss::FiringSyncTransitionSrv::Request> req,
                                   std::shared_ptr<ros2dss::FiringSyncTransitionSrv::Response> resp) {
     RCLCPP_INFO(rclcpp::get_logger("Service firing sync: "), "Service request firing transition %s",req->transition.c_str());
-
-    ml_firing_sync_transitions = m_petri->fireSync(req->transition,m_slave_node->getCurrentMetaState());
-    if (ml_firing_sync_transitions.empty()) RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"res: is empty");
+    auto _result {m_petri->fireSync(req->transition, m_slave_node->getCurrentMetaState())};
+    ml_firing_sync_transitions.insert(
+    _result.begin(),
+    _result.end()
+);
+    /*
+     if (ml_firing_sync_transitions.empty()) RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"res: is empty");
     else RCLCPP_INFO(rclcpp::get_logger("Service firing sync: "),"res: is not empty");
     for (const auto & t : ml_firing_sync_transitions) {
         RCLCPP_INFO(rclcpp::get_logger("Service firing sync: "),"Source metastate: %s",t.getSCCSource()->getMetaState()->toString().c_str());
         RCLCPP_INFO(rclcpp::get_logger("Service firing sync: "),"Transition fusion name: %s",t.getTransition().c_str());
         RCLCPP_INFO(rclcpp::get_logger("Service firing sync: "),"Dest metastate: %s",t.getDestSCC()->getMetaState()->toString().c_str());
     }
+    */
 
     for (const auto & t : ml_firing_sync_transitions) {
       ros2dss::Firing f;
