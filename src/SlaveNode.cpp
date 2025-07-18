@@ -75,11 +75,11 @@ auto SlaveNode::command_receiver(const ros2dss::Command & msg) -> void {
         }
         RCLCPP_WARN(get_logger(), "Set of firings: %s",_chaine.c_str());*/
         auto& scc_name {msg.target_ms[m_petri->getPetriID()]};
-        /*RCLCPP_INFO(get_logger(), "Searching for SCC: %s",scc_name.c_str());*/
+        RCLCPP_INFO(get_logger(), "Searching for SCC: %s",scc_name.c_str());
         auto find_ms {std::find_if(m_firing_sync_transition_service->getFiringSyncTransitions().begin(),
                                  m_firing_sync_transition_service->getFiringSyncTransitions().end(),
                                  [this,&scc_name](const dss::FiringSyncTransition & elt)-> bool {
-                                     // RCLCPP_INFO(get_logger(), "item for SCC: %s",elt.getDestSCC()->getName(m_petri).c_str());
+                                     RCLCPP_INFO(get_logger(), "item for SCC: %s",elt.getDestSCC()->getName(m_petri).c_str());
                                      if (elt.getDestSCC()->getName(m_petri)==scc_name) {
                                          return true;
                                      }

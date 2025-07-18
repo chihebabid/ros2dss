@@ -79,6 +79,9 @@ auto MasterNode::run() -> void {
                 manageFusion->reset();
                 m_command.cmd = "MOVE_TO_METASTATE";
                 m_command.scc = m_current_meta_state->toString();
+                m_command.transition="";
+                m_command.target_ms.clear();
+                m_command.source_product.clear();
                 m_command_pub->publish(m_command);
                 m_current_state = state_t::PREPARE_COMPUTE_SYNC;
             }
@@ -216,6 +219,7 @@ auto MasterNode::fireSyncTransition() -> bool {
             m_meta_states_stack.push(new_ms);
             // Publish the command to add new metastate
             m_command.cmd = "ADD_NEW_METASTATE";
+            m_command.scc.clear();
             m_command.source_product=std::get<0>(e_tuple);
             m_command.target_ms=std::get<1>(e_tuple);
             m_command.transition=transition;

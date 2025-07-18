@@ -15,10 +15,8 @@ void FiringSyncTransitionService::firingSyncTransitionsService(const std::shared
                                   std::shared_ptr<ros2dss::FiringSyncTransitionSrv::Response> resp) {
     RCLCPP_INFO(rclcpp::get_logger("Service firing sync: "), "Service request firing transition %s",req->transition.c_str());
     auto _result {m_petri->fireSync(req->transition, m_slave_node->getCurrentMetaState())};
-    ml_firing_sync_transitions.insert(
-    _result.begin(),
-    _result.end()
-);
+    //ml_firing_sync_transitions.insert(_result.begin(),_result.end());
+    ml_firing_sync_transitions=_result;
     /*
      if (ml_firing_sync_transitions.empty()) RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"res: is empty");
     else RCLCPP_INFO(rclcpp::get_logger("Service firing sync: "),"res: is not empty");
