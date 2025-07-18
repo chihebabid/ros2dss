@@ -19,6 +19,8 @@ bool ModuleSS::insertMS(MetaState *ms) {
 
 MetaState *ModuleSS::findMetaState(ArrayModel<string> &productscc) {
     for (const auto &elt: mlMetaState) {
+        std::cout<< "Searching for " << dss::arrayModelToStdString(productscc) << " in " << dss::arrayModelToStdString(elt->getName()) << endl;
+
         if ((elt->getName()) == productscc) return elt;
     }
     return nullptr;

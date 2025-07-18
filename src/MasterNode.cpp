@@ -108,6 +108,17 @@ auto MasterNode::run() -> void {
 
         case state_t::TERMINATE_BUILDING:
             RCLCPP_INFO(get_logger(), "Current SM: TERMINATE_BUILDING");
+            m_command.cmd = "TERMINATE";
+            RCLCPP_INFO(get_logger(), "#Metastates: %d",m_module_ss->getMetaStateCount());
+            for (size_t i{};i<m_module_ss->getMetaStateCount();++i) {
+                dss::MetaState *ms {(m_module_ss->getLMetaState())[i]};
+                RCLCPP_INFO(get_logger(), "#Metastates: %s",ms->toString().c_str());
+                for (const auto &arc: ms->getSyncSucc()) {
+                    RCLCPP_INFO(get_logger(), "Arc: %s -> %s (%s)", dss::arrayModelToStdString(*(arc->getStartProduct())).c_str(),
+                                dss::arrayModelToStdString((arc->getMetaStateDest()->getName())).c_str(), arc->getTransitionName().c_str());
+                }
+            }
+            rclcpp::shutdown();
             break;
     }
 }
@@ -117,14 +128,14 @@ auto MasterNode::response_receiver(const ros2dss::Response &resp) -> void {
     if (resp.msg == "ACK" and m_current_state == state_t::INIT) {
         m_ack_modules[resp.id] = 1;
     } else if (resp.msg == "ACK_GET_METASTATE" and m_current_state == state_t::BUILD_META_STATE) {
-        RCLCPP_INFO(get_logger(), "Received: %s %s", resp.msg.c_str(), resp.scc.c_str());
+        // RCLCPP_INFO(get_logger(), "Received: %s %s", resp.msg.c_str(), resp.scc.c_str());
         m_metastate_building_name[resp.id] = resp.scc;
         m_ack_modules[resp.id] = 1;
     } else if (resp.msg == "ACK_SET_METASTATE_NAME" and m_current_state == state_t::SEND_METASTATE_NAME) {
-        RCLCPP_INFO(get_logger(), "Received: %s", resp.msg.c_str());
+        //RCLCPP_INFO(get_logger(), "Received: %s", resp.msg.c_str());
         m_ack_modules[resp.id] = 1;
     } else if (resp.msg == "ACK_MOVE_TO_METASTATE") {
-        RCLCPP_INFO(get_logger(), "Received: %s", resp.msg.c_str());
+        // RCLCPP_INFO(get_logger(), "Received: %s", resp.msg.c_str());
         m_ack_modules[resp.id] = 1;
         std::set<std::string> enabled_sync_trans{resp.sync.begin(), resp.sync.end()};
         m_petri->getManageTransitionFusionSet()->enableSetFusion(enabled_sync_trans, resp.id);
@@ -198,7 +209,7 @@ auto MasterNode::fireSyncTransition() -> bool {
             m_current_meta_state->addSyncArc(new dss::ArcSync{std::get<0>(e_tuple), dest_ms,transition});
         } else {
             // Insert the new metastate
-            auto new_ms {std::get<2>(e_tuple)->getMetaState()};
+            auto new_ms {new dss::MetaState(*std::get<2>(e_tuple)->getMetaState())};
             new_ms->setName(std::get<1>(e_tuple));
             m_module_ss->insertMS(new_ms);
             m_current_meta_state->addSyncArc(new dss::ArcSync{std::get<0>(e_tuple), new_ms,transition});
@@ -225,7 +236,7 @@ auto MasterNode::executeFireSyncTransitionRequest(const uint32_t id_server,
     };
     auto request{std::make_shared<ros2dss::FiringSyncTransitionSrv::Request>()};
     request->transition = transition;
-    while (!client_firing_service->wait_for_service(1s)) {
+    while (!client_firing_service->wait_for_service(10ms)) {
         if (!rclcpp::ok()) {
             RCLCPP_ERROR(get_logger(), "Interrupted while waiting...");
             return res;
@@ -235,7 +246,7 @@ auto MasterNode::executeFireSyncTransitionRequest(const uint32_t id_server,
     auto future{client_firing_service->async_send_request(request)};
     while (1) {
         m_executor->spin_some();
-        if (future.wait_for(1s) == std::future_status::ready) {
+        if (future.wait_for(10ms) == std::future_status::ready) {
             break;
         }
     }
