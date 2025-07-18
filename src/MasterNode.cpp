@@ -94,10 +94,6 @@ auto MasterNode::run() -> void {
             RCLCPP_INFO(get_logger(), "Current SM: COMPUTE_SYNC"); {
                 auto manage{m_petri->getManageTransitionFusionSet()};
                 ml_enabled_fusion_sets = manage->getEnabledFusionSets();
-                for (auto &elt: ml_enabled_fusion_sets) {
-                    RCLCPP_INFO(get_logger(), "enabled fusion %s\n", elt.c_str());
-                }
-                //manage->display();
             }
             m_current_state = state_t::FIRE_SYNC;
             break;
@@ -107,8 +103,6 @@ auto MasterNode::run() -> void {
             if (!fireSyncTransition()) {
                 // No more fusion set is enabled
                 m_current_state = state_t::POP_METASTATE;
-            } else {
-                // There are still non processed fusion sets
             }
             break;
 
@@ -133,9 +127,6 @@ auto MasterNode::response_receiver(const ros2dss::Response &resp) -> void {
         RCLCPP_INFO(get_logger(), "Received: %s", resp.msg.c_str());
         m_ack_modules[resp.id] = 1;
         std::set<std::string> enabled_sync_trans{resp.sync.begin(), resp.sync.end()};
-        for (auto &elt: enabled_sync_trans) {
-            RCLCPP_INFO(get_logger(), "ACK_MOVE_TO_METASTAT received %s from %d\n", elt.c_str(), resp.id);
-        }
         m_petri->getManageTransitionFusionSet()->enableSetFusion(enabled_sync_trans, resp.id);
     }
 }
@@ -150,9 +141,6 @@ auto MasterNode::buildInitialMetaState() -> void {
 auto MasterNode::computeEnabledSyncTransitions() -> void {
 
     auto enabled_sync_trans{m_petri->getSyncEnabled(m_current_meta_state)};
-    for (auto &elt: enabled_sync_trans) {
-        RCLCPP_INFO(get_logger(), "locally enabled sync %s\n", elt.c_str());
-    }
     auto manageFusion{m_petri->getManageTransitionFusionSet()};
     manageFusion->enableSetFusion(enabled_sync_trans, m_petri->getPetriID());
 
@@ -173,17 +161,9 @@ auto MasterNode::fireSyncTransition() -> bool {
     // Pop a transition fusion set
     string transition{ml_enabled_fusion_sets[ml_enabled_fusion_sets.size() - 1]};
     ml_enabled_fusion_sets.pop_back();
-    RCLCPP_INFO(get_logger(), "Sync transition to fire: %s", transition.c_str());
+
     auto res = m_petri->fireSync(transition, m_current_meta_state);
-    /*if (res.empty())
-        RCLCPP_INFO(get_logger(), "res: is empty");
-    else
-        RCLCPP_INFO(get_logger(), "res: is not empty");
-    for (const auto &t: res) {
-        RCLCPP_INFO(get_logger(), "Source metastate: %s", t.getSCCSource()->getMetaState()->toString().c_str());
-        RCLCPP_INFO(get_logger(), "Transition nfusion name: %s", t.getTransition().c_str());
-        RCLCPP_INFO(get_logger(), "Dest metastate %s", t.getDestSCC()->getMetaState()->toString().c_str());
-    }*/
+
     vector<vector<dss::firing_sync_t> > received_scc;
     received_scc.resize(m_petri->getModulesCount());
     for (const auto &t: res) {
@@ -201,7 +181,6 @@ auto MasterNode::fireSyncTransition() -> bool {
                 RCLCPP_INFO(get_logger(), "Received (%s,%s) ", e.source.c_str(), e.target.c_str());
                 received_scc[i].push_back(dss::firing_sync_t{e.source, e.target});
             }
-            RCLCPP_INFO(get_logger(), "\n");
         } else {
             // We have to put component of source metastate, as destination as well
             received_scc[i].push_back({m_current_meta_state->getSCCName(i), m_current_meta_state->getSCCName(i)});
@@ -240,7 +219,7 @@ auto MasterNode::fireSyncTransition() -> bool {
 auto MasterNode::executeFireSyncTransitionRequest(const uint32_t id_server,
                                                   const string &transition) -> std::vector<dss::firing_sync_t> {
     std::vector<dss::firing_sync_t> res;
-    RCLCPP_INFO(get_logger(), "Execute fire sync service request...");
+
     auto client_firing_service{
         create_client<ros2dss::FiringSyncTransitionSrv>("firing_sync_transitions_service" + std::to_string(id_server))
     };
@@ -260,7 +239,7 @@ auto MasterNode::executeFireSyncTransitionRequest(const uint32_t id_server,
             break;
         }
     }
-    RCLCPP_INFO(get_logger(), "Received response from server #%d....", id_server);
+
     auto response{future.get()};
     for (const auto &f: response->lfiring) {
         res.push_back({f.source, f.target});
