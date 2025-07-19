@@ -20,7 +20,7 @@ SlaveNode::SlaveNode(dss::PetriNet  *petri,std::shared_ptr<FiringSyncTransitionS
     m_firing_sync_transition_service->setNode(this);
 
     // Creates services for adding info about firing sync transitions
-    std::string service_name {"firing_sync_transitions_service"+std::to_string(m_petri->getPetriID())};
+    std::string service_name {"adding_info_sync_service"+std::to_string(m_petri->getPetriID())};
     m_server_service=create_service<ros2dss::InfoFiring>(std::move(service_name),std::bind(&SlaveNode::executeService,this, placeholders::_1,placeholders::_2));
 }
 
