@@ -11,6 +11,7 @@
 #include "ros2dss_project/srv/sync_transition.hpp"
 #include "ros2dss_project/msg/firing.hpp"
 #include "ros2dss_project/srv/firing_sync_transition_srv.hpp"
+#include "ros2dss_project/srv/firing_info.hpp"
 
 namespace ros2dss {
     using SyncTransition=ros2dss_project::srv::SyncTransition;
@@ -18,6 +19,7 @@ namespace ros2dss {
     using Command=ros2dss_project::msg::Command;
     using Response=ros2dss_project::msg::Response;
     using Firing=ros2dss_project::msg::Firing;
+    using InfoFiring=ros2dss_project::srv::FiringInfo;
 }
 
 

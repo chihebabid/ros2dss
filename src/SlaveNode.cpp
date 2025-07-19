@@ -108,6 +108,12 @@ auto SlaveNode::command_receiver(const ros2dss::Command & msg) -> void {
             m_module_ss->insertMS(new_ms);
         }
     }
+    else if (msg.cmd=="PROCESS_FIRE_SYNC_FINISH") {
+        m_response.msg = "ACK_PROCESS_NODE";
+        m_response.id=m_petri->getPetriID();
+        m_response.sync.clear();
+        m_response_pub->publish(m_response);
+    }
 }
 
 auto SlaveNode::getCurrentMetaState() const -> dss::MetaState * {

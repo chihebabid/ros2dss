@@ -23,6 +23,19 @@ MasterNode::MasterNode(dss::PetriNet *petri,
     m_ack_modules.reset();
     m_ack_modules[m_petri->getPetriID()] = 1;
     RCLCPP_INFO(get_logger(), "Modules count: %d", m_petri->getModulesCount());
+
+    ml_clients_firing_info.resize(m_petri->getModulesCount());
+    for (size_t i {1}; i < m_petri->getModulesCount(); ++i) {
+        std::string client_name = "firing_sync_transitions_service" + std::to_string(i);
+        ml_clients_firing_info[i] = create_client<ros2dss::InfoFiring>(client_name);
+        RCLCPP_INFO(get_logger(), "Created client for firing info: %s", client_name.c_str());
+        while (!ml_clients_firing_info[i]->wait_for_service(10ms)) {
+            if (!rclcpp::ok()) {
+                RCLCPP_ERROR(get_logger(), "Service Info: interrupted while waiting...");
+                // return res;
+            }
+        }
+    }
 }
 
 
@@ -104,7 +117,18 @@ auto MasterNode::run() -> void {
         case state_t::FIRE_SYNC:
             RCLCPP_INFO(get_logger(), "Current SM: FIRE_SYNC");
             if (!fireSyncTransition()) {
-                // No more fusion set is enabled
+                m_command.cmd= "PROCESS_FIRE_SYNC_FINISH";
+                m_command.target_ms.clear();
+                m_command.source_product.clear();
+                m_command.transition.clear();
+                m_command_pub->publish(m_command);
+                m_current_state = state_t::PROCESS_FIRE_SYNC_FINISH;
+            }
+            break;
+        case state_t::PROCESS_FIRE_SYNC_FINISH:
+            RCLCPP_INFO(get_logger(), "Current SM: PROCESS_FIRE_SYNC_FINISH");
+            if (m_ack_modules.all()) {
+                m_ack_modules.reset();
                 m_current_state = state_t::POP_METASTATE;
             }
             break;
@@ -143,6 +167,9 @@ auto MasterNode::response_receiver(const ros2dss::Response &resp) -> void {
         m_ack_modules[resp.id] = 1;
         std::set<std::string> enabled_sync_trans{resp.sync.begin(), resp.sync.end()};
         m_petri->getManageTransitionFusionSet()->enableSetFusion(enabled_sync_trans, resp.id);
+    }
+    else if (resp.msg == "ACK_PROCESS_NODE") {
+        m_ack_modules[resp.id] = 1;
     }
 }
 

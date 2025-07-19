@@ -15,7 +15,8 @@ find_package(std_msgs REQUIRED)
 
 find_package(rosidl_default_generators REQUIRED)
 
-set(msg_files "msg/Command.msg" "srv/SyncTransition.srv" "msg/Firing.msg" "msg/Response.msg" "srv/FiringSyncTransitionSrv.srv")
+set(msg_files "msg/Command.msg" "srv/SyncTransition.srv" "msg/Firing.msg" "msg/Response.msg" "srv/FiringSyncTransitionSrv.srv"
+            "srv/FiringInfo.srv")
 
 rosidl_generate_interfaces(${PROJECT_NAME}
         ${msg_files}
@@ -36,7 +37,7 @@ file(GLOB_RECURSE SOURCES
 )
 
 #message(WARNING ${SOURCES})
-add_executable(ros2dss src/main.cpp src/SyncTransitionService.cpp
+add_executable(ros2dss src/main.cpp src/AddingSyncFiringService.cpp src/SyncTransitionService.cpp
         src/FiringSyncTransitionService.cpp src/AckManage.cpp src/BaseNode.cpp src/MasterNode.cpp src/SlaveNode.cpp ${SOURCES})
 target_include_directories(ros2dss PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/ros2dss dss)
 ament_target_dependencies(ros2dss ${dependencies})
