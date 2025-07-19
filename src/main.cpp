@@ -50,10 +50,8 @@ int main(int argc, char * argv[]) {
         base_node=std::make_shared<SlaveNode>(petri,fireSyncTransitionNodeService);
     }
     executor->add_node(base_node);
-    // SMBuilder sm_builder {petri,pubNode,fireSyncTransitionNode};
-    while (rclcpp::ok() and !base_node->shouldShutdown() )
-    {
 
+    while (rclcpp::ok() and !base_node->shouldShutdown() )    {
         try {
             base_node->run();
             executor->spin_all(0ms);
