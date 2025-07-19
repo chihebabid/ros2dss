@@ -95,8 +95,8 @@ auto MasterNode::run() -> void {
 
         case state_t::COMPUTE_SYNC:
             RCLCPP_INFO(get_logger(), "Current SM: COMPUTE_SYNC"); {
-                auto manage{m_petri->getManageTransitionFusionSet()};
-                ml_enabled_fusion_sets = manage->getEnabledFusionSets();
+            auto manage{m_petri->getManageTransitionFusionSet()};
+            ml_enabled_fusion_sets = manage->getEnabledFusionSets();
             }
             m_current_state = state_t::FIRE_SYNC;
             break;
@@ -121,7 +121,8 @@ auto MasterNode::run() -> void {
                                 dss::arrayModelToStdString((arc->getMetaStateDest()->getName())).c_str(), arc->getTransitionName().c_str());
                 }
             }
-            rclcpp::shutdown();
+
+            requestShutdown();
             break;
     }
 }

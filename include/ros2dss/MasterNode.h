@@ -15,6 +15,8 @@ class MasterNode : public BaseNode {
 public:
     MasterNode(dss::PetriNet  *petri,std::shared_ptr<rclcpp::executors::MultiThreadedExecutor> _executor);
     auto run() -> void override;
+
+
 private:
     auto response_receiver(const ros2dss::Response & msg) ->void;
 
@@ -38,6 +40,8 @@ private:
     dss::ArrayModel<std::string> m_metastate_building_name; // Used to store the name of the metastate being built
     std::stack<dss::MetaState*> m_meta_states_stack; // Used to store the metastates
     std::vector<std::string> ml_enabled_fusion_sets; // Used to store the enabled fusion sets
+
+
 };
 
 

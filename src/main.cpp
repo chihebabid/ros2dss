@@ -21,7 +21,7 @@ int main(int argc, char * argv[]) {
     auto syncNode {std::make_shared<SyncTransitionService>(petri)};
     auto executor {std::make_shared<rclcpp::executors::MultiThreadedExecutor>()};
     executor->add_node(syncNode);
-    while (rclcpp::ok()  && !syncNode->shouldShutdown())
+    while (rclcpp::ok()  and !syncNode->shouldShutdown())
     {
         try {
             executor->spin_all(0ns);
@@ -51,8 +51,9 @@ int main(int argc, char * argv[]) {
     }
     executor->add_node(base_node);
     // SMBuilder sm_builder {petri,pubNode,fireSyncTransitionNode};
-    while (rclcpp::ok() )
+    while (rclcpp::ok() and !base_node->shouldShutdown() )
     {
+
         try {
             base_node->run();
             executor->spin_all(0ms);
