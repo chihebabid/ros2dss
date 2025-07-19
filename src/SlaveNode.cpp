@@ -18,6 +18,10 @@ SlaveNode::SlaveNode(dss::PetriNet  *petri,std::shared_ptr<FiringSyncTransitionS
             });
 
     m_firing_sync_transition_service->setNode(this);
+
+    // Creates services for adding info about firing sync transitions
+    std::string service_name {"firing_sync_transitions_service"+std::to_string(m_petri->getPetriID())};
+    m_server_service=create_service<ros2dss::InfoFiring>(std::move(service_name),std::bind(&SlaveNode::executeService,this, placeholders::_1,placeholders::_2));
 }
 
 
@@ -118,4 +122,51 @@ auto SlaveNode::command_receiver(const ros2dss::Command & msg) -> void {
 
 auto SlaveNode::getCurrentMetaState() const -> dss::MetaState * {
     return m_current_meta_state;
+}
+
+auto SlaveNode::executeService(const std::shared_ptr<ros2dss::InfoFiring::Request> req,std::shared_ptr<ros2dss::InfoFiring::Response> resp) ->void {
+    RCLCPP_INFO(get_logger(), "Received request for firing info");
+
+
+     //msg.target_ms
+        RCLCPP_INFO(get_logger(), "Received command to add new metastate: %s ===%s==> %s", dss::vectorToStdString(req->source_product).c_str(),req->transition.c_str(),dss::vectorToStdString(req->target_ms).c_str());
+        /*std::string _chaine;
+        for (const auto e: m_firing_sync_transition_service->getFiringSyncTransitions()) {
+            _chaine+="("+e.getSCCSource()->getName(m_petri)+","+e.getTransition()+","+e.getDestSCC()->getName(m_petri)+") ";
+        }
+        RCLCPP_WARN(get_logger(), "Set of firings: %s",_chaine.c_str());*/
+        auto& scc_name {req->target_ms[m_petri->getPetriID()]};
+        RCLCPP_INFO(get_logger(), "Searching for SCC: %s",scc_name.c_str());
+        auto find_ms {std::find_if(m_firing_sync_transition_service->getFiringSyncTransitions().begin(),
+                                 m_firing_sync_transition_service->getFiringSyncTransitions().end(),
+                                 [this,&scc_name](const dss::FiringSyncTransition & elt)-> bool {
+                                     RCLCPP_INFO(get_logger(), "item for SCC: %s",elt.getDestSCC()->getName(m_petri).c_str());
+                                     if (elt.getDestSCC()->getName(m_petri)==scc_name) {
+                                         return true;
+                                     }
+                                     return false;
+                                 })};
+
+        // Check if the transition is found (the module is synchronized on it)
+        if (m_petri->getTransitionPtr(req->transition)) {
+
+            if (find_ms!=m_firing_sync_transition_service->getFiringSyncTransitions().end()) {
+                //RCLCPP_INFO(get_logger(), "The module is synchronized on transition %s",msg.transition.c_str());
+                dss::Marking *p_marking {find_ms->getDestSCC()->getMetaState()->getInitialMarking()};
+                dss::MetaState* new_ms {m_petri->getMetaState(*p_marking)};
+                new_ms->setName(req->target_ms);
+                m_module_ss->insertMS(new_ms);
+            }
+            else {
+                RCLCPP_ERROR(get_logger(), "Destination SCC not found %s",scc_name.c_str());
+            }
+        }
+        else {
+            // RCLCPP_INFO(get_logger(), "The module is not synchronized on transition %s",msg.transition.c_str());
+            dss::Marking *p_marking {m_current_meta_state->getInitialMarking()};
+            dss::MetaState* new_ms {m_petri->getMetaState(*p_marking)};
+            new_ms->setName(req->target_ms);
+            m_module_ss->insertMS(new_ms);
+        }
+
 }

@@ -20,6 +20,10 @@ private:
     shared_ptr<FiringSyncTransitionService> m_firing_sync_transition_service;
 
     rclcpp::Subscription<ros2dss::Command>::SharedPtr m_command_sub;
+
+    rclcpp::Service<ros2dss::InfoFiring>::SharedPtr m_server_service {};
+
+    void executeService(const std::shared_ptr<ros2dss::InfoFiring::Request>,std::shared_ptr<ros2dss::InfoFiring::Response> );
 };
 
 
