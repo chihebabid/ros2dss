@@ -22,6 +22,7 @@ namespace dss {
         friend ostream &operator<<(ostream &os, const ModuleSS &ss);
 
         size_t getMetaStateCount() const;
+        size_t getStatesCount() const;
 
         MetaState *getMetaState(const int32_t &pos);
 
@@ -30,6 +31,8 @@ namespace dss {
         void removeMetaState(MetaState *ms);
 
         size_t getIDModule() const { return m_id_module; }
+
+        void stats() const;
 
     private:
         vector<MetaState *> mlMetaState;

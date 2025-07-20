@@ -137,16 +137,7 @@ auto MasterNode::run() -> void {
             RCLCPP_INFO(get_logger(), "Current SM: TERMINATE_BUILDING");
             m_command.cmd = "TERMINATE";
             m_command_pub->publish(m_command);
-            RCLCPP_INFO(get_logger(), "#Metastates: %d",m_module_ss->getMetaStateCount());
-            for (size_t i{};i<m_module_ss->getMetaStateCount();++i) {
-                dss::MetaState *ms {(m_module_ss->getLMetaState())[i]};
-                RCLCPP_INFO(get_logger(), "#Metastates: %s",ms->toString().c_str());
-                for (const auto &arc: ms->getSyncSucc()) {
-                    RCLCPP_INFO(get_logger(), "Arc: %s -> %s (%s)", dss::arrayModelToStdString(*(arc->getStartProduct())).c_str(),
-                                dss::arrayModelToStdString((arc->getMetaStateDest()->getName())).c_str(), arc->getTransitionName().c_str());
-                }
-            }
-
+            m_module_ss->stats();
             requestShutdown();
             break;
     }

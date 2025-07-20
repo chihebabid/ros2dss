@@ -120,7 +120,7 @@ auto SlaveNode::command_receiver(const ros2dss::Command & msg) -> void {
     }
     else if (msg.cmd=="TERMINATE") {
         RCLCPP_INFO(get_logger(), "Received command to terminate");
-        // m_firing_sync_transition_service->cleanSCCs();
+        m_module_ss->stats();
         requestShutdown();
     }
     else {
