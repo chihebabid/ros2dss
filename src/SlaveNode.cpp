@@ -185,5 +185,8 @@ auto SlaveNode::executeService(const std::shared_ptr<ros2dss::InfoFiring::Reques
         dss::MetaState *new_ms{m_petri->getMetaState(*p_marking)};
         new_ms->setName(req->target_ms);
         m_module_ss->insertMS(new_ms);
+        m_current_meta_state->addSyncArc(new dss::ArcSync{
+               dss::vectorStringToArrayModel(req->source_product), new_ms, req->transition
+           });
     }
 }
