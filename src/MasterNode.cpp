@@ -287,11 +287,12 @@ auto MasterNode::executeFireSyncTransitionRequest(const uint32_t id_server,
 /*
  * Execute service request to ask modules to add firing info for a transition
  */
-auto MasterNode::addFiringInfoRequest(const std::vector<std::string>& startProduct,const std::vector<std::string> &targetMS,const string &transition) -> void {
+auto MasterNode::addFiringInfoRequest(const std::vector<std::string>& startProduct,const std::vector<std::string> &targetMS,const string &transition, bool is_new) -> void {
     auto request{std::make_shared<ros2dss::InfoFiring::Request>()};
     request->source_product = startProduct;
     request->target_ms = targetMS;
     request->transition = transition;
+    request->is_new = is_new;
     for (size_t i {1};i<m_petri->getModulesCount();++i) {
         auto future{ml_clients_firing_info[i]->async_send_request(request)};
         while (1) {

@@ -1,4 +1,5 @@
 string[] source_product
 string[] target_ms
 string transition
+bool is_new
 ---

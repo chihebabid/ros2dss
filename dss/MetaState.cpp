@@ -48,8 +48,8 @@ namespace dss {
         return mArcs;
     }
 
-    uint32_t MetaState::getArcCount() {
-        u_int32_t res = 0;
+    size_t MetaState::getArcCount() const{
+        size_t res {};
         for (auto elt: m_nodes)
             res += elt->getListSucc().size();
         return res;

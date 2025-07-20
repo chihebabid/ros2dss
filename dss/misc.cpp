@@ -87,4 +87,16 @@ namespace dss {
         }
         return result;
     }
+
+
+    ArrayModel<std::string> vectorStringToArrayModel(const std::vector<std::string>& vec) {
+        ArrayModel<std::string> result(vec.size());
+
+        // Copy elements from the vector to the ArrayModel
+        for (size_t i = 0; i < vec.size(); ++i) {
+            result[i] = vec[i];
+        }
+
+        return result;
+    }
 }

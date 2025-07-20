@@ -30,7 +30,7 @@ public:
 
 
     void addSyncArc(ArcSync *sync_arc);
-    uint32_t getArcCount();
+    size_t getArcCount() const;
     bool operator==(MetaState &ms);
     [[nodiscard]] uint32_t getId() const;
     Marking *existMarking(Marking *marq);

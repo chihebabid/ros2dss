@@ -23,6 +23,7 @@ namespace dss {
 
         size_t getMetaStateCount() const;
         size_t getStatesCount() const;
+        size_t getSyncEdgesCount() const;
 
         MetaState *getMetaState(const int32_t &pos);
 

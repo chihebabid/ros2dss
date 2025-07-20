@@ -83,10 +83,19 @@ namespace dss {
         return res;
     }
 
+    size_t ModuleSS::getSyncEdgesCount() const {
+        size_t res {};
+        for (const auto &ms: mlMetaState) {
+            res+=ms->getSyncSucc().size();
+        }
+        return res;
+    }
+
     void ModuleSS::stats() const {
         auto my_logger{rclcpp::get_logger("STATS")};
         RCLCPP_INFO(my_logger, "#Metastates: %ld",getMetaStateCount());
         RCLCPP_INFO(my_logger, "#States: %ld",getStatesCount());
+        RCLCPP_INFO(my_logger, "#Edges: %ld",getSyncEdgesCount());
         for (size_t i{};i<getMetaStateCount();++i) {
             dss::MetaState *ms {mlMetaState[i]};
             RCLCPP_INFO(my_logger, "#Metastates: %s",ms->toString().c_str());
