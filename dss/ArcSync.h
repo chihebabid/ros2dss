@@ -19,7 +19,7 @@ public:
     virtual ~ArcSync()=default;
 
     std::string& getTransitionName();
-
+    bool operator==(const ArcSync &o) const;
     void setDestination(MetaState *destination);
 
     void setData(ArrayModel<string> source, const std::string& transition, MetaState *destination);

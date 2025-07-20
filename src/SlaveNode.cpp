@@ -143,6 +143,7 @@ auto SlaveNode::executeService(const std::shared_ptr<ros2dss::InfoFiring::Reques
         }
         m_current_meta_state->addSyncArc(new dss::ArcSync{
                 dss::vectorStringToArrayModel(req->source_product), ms, req->transition});
+        return;
     }
 
     //msg.target_ms

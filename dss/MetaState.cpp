@@ -41,6 +41,13 @@ namespace dss {
 
 
     void MetaState::addSyncArc(ArcSync *sync_arc) {
+        auto res {std::find_if(mArcs.begin(), mArcs.end(), [sync_arc](auto elt) {
+            return *elt== *sync_arc;
+        } )};
+        if (res!=mArcs.end()) {
+            delete sync_arc;
+            return;
+        }
         mArcs.push_back(sync_arc);
     }
 
