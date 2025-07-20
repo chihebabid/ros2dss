@@ -136,6 +136,7 @@ auto MasterNode::run() -> void {
         case state_t::TERMINATE_BUILDING:
             RCLCPP_INFO(get_logger(), "Current SM: TERMINATE_BUILDING");
             m_command.cmd = "TERMINATE";
+            m_command_pub->publish(m_command);
             RCLCPP_INFO(get_logger(), "#Metastates: %d",m_module_ss->getMetaStateCount());
             for (size_t i{};i<m_module_ss->getMetaStateCount();++i) {
                 dss::MetaState *ms {(m_module_ss->getLMetaState())[i]};
@@ -304,7 +305,7 @@ auto MasterNode::addFiringInfoRequest(const std::vector<std::string>& startProdu
         auto future{ml_clients_firing_info[i]->async_send_request(request)};
         while (1) {
             m_executor->spin_some();
-            if (future.wait_for(10ms) == std::future_status::ready) {
+            if (future.wait_for(2ms) == std::future_status::ready) {
                 break;
             }
         }

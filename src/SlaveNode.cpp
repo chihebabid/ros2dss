@@ -79,11 +79,11 @@ auto SlaveNode::command_receiver(const ros2dss::Command & msg) -> void {
         }
         RCLCPP_WARN(get_logger(), "Set of firings: %s",_chaine.c_str());*/
         auto& scc_name {msg.target_ms[m_petri->getPetriID()]};
-        RCLCPP_INFO(get_logger(), "Searching for SCC: %s",scc_name.c_str());
+        // RCLCPP_INFO(get_logger(), "Searching for SCC: %s",scc_name.c_str());
         auto find_ms {std::find_if(m_firing_sync_transition_service->getFiringSyncTransitions().begin(),
                                  m_firing_sync_transition_service->getFiringSyncTransitions().end(),
                                  [this,&scc_name](const dss::FiringSyncTransition & elt)-> bool {
-                                     RCLCPP_INFO(get_logger(), "item for SCC: %s",elt.getDestSCC()->getName(m_petri).c_str());
+                                     //RCLCPP_INFO(get_logger(), "item for SCC: %s",elt.getDestSCC()->getName(m_petri).c_str());
                                      if (elt.getDestSCC()->getName(m_petri)==scc_name) {
                                          return true;
                                      }
@@ -118,6 +118,14 @@ auto SlaveNode::command_receiver(const ros2dss::Command & msg) -> void {
         m_response.sync.clear();
         m_response_pub->publish(m_response);
     }
+    else if (msg.cmd=="TERMINATE") {
+        RCLCPP_INFO(get_logger(), "Received command to terminate");
+        // m_firing_sync_transition_service->cleanSCCs();
+        requestShutdown();
+    }
+    else {
+        RCLCPP_ERROR(get_logger(), "Unknown command: %s",msg.cmd.c_str());
+    }
 }
 
 auto SlaveNode::getCurrentMetaState() const -> dss::MetaState * {
@@ -136,11 +144,11 @@ auto SlaveNode::executeService(const std::shared_ptr<ros2dss::InfoFiring::Reques
         }
         RCLCPP_WARN(get_logger(), "Set of firings: %s",_chaine.c_str());*/
         auto& scc_name {req->target_ms[m_petri->getPetriID()]};
-        RCLCPP_INFO(get_logger(), "Searching for SCC: %s",scc_name.c_str());
+       //  RCLCPP_INFO(get_logger(), "Searching for SCC: %s",scc_name.c_str());
         auto find_ms {std::find_if(m_firing_sync_transition_service->getFiringSyncTransitions().begin(),
                                  m_firing_sync_transition_service->getFiringSyncTransitions().end(),
                                  [this,&scc_name](const dss::FiringSyncTransition & elt)-> bool {
-                                     RCLCPP_INFO(get_logger(), "item for SCC: %s",elt.getDestSCC()->getName(m_petri).c_str());
+                                     //RCLCPP_INFO(get_logger(), "item for SCC: %s",elt.getDestSCC()->getName(m_petri).c_str());
                                      if (elt.getDestSCC()->getName(m_petri)==scc_name) {
                                          return true;
                                      }
@@ -168,5 +176,4 @@ auto SlaveNode::executeService(const std::shared_ptr<ros2dss::InfoFiring::Reques
             new_ms->setName(req->target_ms);
             m_module_ss->insertMS(new_ms);
         }
-
 }
