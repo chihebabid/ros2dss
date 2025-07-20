@@ -230,6 +230,7 @@ auto MasterNode::fireSyncTransition() -> bool {
                         dss::arrayModelToStdString(std::get<1>(e_tuple)).c_str());
             // Insert just the edge
             m_current_meta_state->addSyncArc(new dss::ArcSync{std::get<0>(e_tuple), dest_ms,transition});
+            addFiringInfoRequest(std::get<0>(e_tuple), std::get<1>(e_tuple), transition,false);
         } else {
             // Insert the new metastate
             auto new_ms {new dss::MetaState(*std::get<2>(e_tuple)->getMetaState())};

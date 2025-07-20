@@ -135,7 +135,8 @@ auto SlaveNode::executeService(const std::shared_ptr<ros2dss::InfoFiring::Reques
                                std::shared_ptr<ros2dss::InfoFiring::Response> resp) -> void {
 
     if (!req->is_new) {
-        auto ms {m_module_ss->findMetaState(dss::vectorToStdString(req->target_ms))};
+        auto res {dss::vectorStringToArrayModel(req->target_ms)};
+        auto ms {m_module_ss->findMetaState(res)};
         if (!ms) {
             RCLCPP_ERROR(get_logger(), "Existant target MS not found %s", dss::vectorToStdString(req->target_ms).c_str());
             return;
