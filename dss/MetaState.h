@@ -8,6 +8,7 @@
 #ifndef METASTATE_H_
 #define METASTATE_H_
 
+#include "EquivalenceMS.h"
 #include "misc.h"
 
 namespace dss {
@@ -47,6 +48,7 @@ public:
     Marking* getInitialMarking() const ;
 private:
     ArrayModel<string> m_metastate_name;
+    EquivalenceMS m_equivalence;
     size_t m_id_module;
 
     vector<ArcSync *> mArcs;

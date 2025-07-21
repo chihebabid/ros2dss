@@ -37,6 +37,7 @@
 #include "ArcSync.h"
 #include "MetaStateName.h"
 #include "ModuleSS.h"
+#include "EquivalenceMS.h"
 
 
 namespace dss {

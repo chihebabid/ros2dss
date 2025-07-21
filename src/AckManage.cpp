@@ -6,7 +6,7 @@
 
 
 AckManage::AckManage(const size_t modules_count):m_ack_modules(modules_count) {
-  	RCLCPP_INFO(rclcpp::get_logger("AckManage"), ": %d ",modules_count);
+  	RCLCPP_INFO(rclcpp::get_logger("AckManage"), ": %ld ",modules_count);
     reset();
 }
 

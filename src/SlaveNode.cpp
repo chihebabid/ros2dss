@@ -133,7 +133,7 @@ auto SlaveNode::getCurrentMetaState() const -> dss::MetaState * {
  */
 auto SlaveNode::executeService(const std::shared_ptr<ros2dss::InfoFiring::Request> req,
                                std::shared_ptr<ros2dss::InfoFiring::Response> resp) -> void {
-
+    (void)resp;
     if (!req->is_new) {
         auto res {dss::vectorStringToArrayModel(req->target_ms)};
         auto ms {m_module_ss->findMetaState(res)};

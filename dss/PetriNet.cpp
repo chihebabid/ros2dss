@@ -8,19 +8,15 @@ namespace dss {
     typedef vector<PElement> PStack;
 
 
-    //////////////////////////////////
-    // Renvoyer le nombre de places
-    //////////////////////////////////
+    /*
+     * Return number of places
+     */
     size_t PetriNet::getPlacesCount() const {
         return m_places.size();
     }
 
-
-    //////////////////////////////////
-    // Ajouter une liste de places
-    //////////////////////////////////
     void PetriNet::addListPlaces(vector<Place> liste_places) {
-        for (int i = 0; i < liste_places.size(); i++)
+        for (size_t i {}; i < liste_places.size(); i++)
             m_places.push_back(liste_places[i]);
     }
 
@@ -37,7 +33,7 @@ namespace dss {
     ////////////////////////////////////////////
     Place *PetriNet::getPlaceAdresse(string placename) {
         int indice = -1;
-        for (int i = 0; i < m_places.size() && indice == -1; i++)
+        for (size_t i {}; i < m_places.size() && indice == -1; i++)
             if (placename == m_places[i].getName()) indice = i;
         if (indice == -1) printf("Place not found!\n");
         return &m_places[indice];
@@ -48,7 +44,7 @@ namespace dss {
     ///////////////////////////////////////////////////////////////////////////////
     Transition *PetriNet::getTransitionPtr(const int code) {
         int indice = -1;
-        for (int i = 0; i < ml_transitions.size() && indice == -1; i++) {
+        for (size_t i {}; i < ml_transitions.size() && indice == -1; i++) {
             if (code == ml_transitions[i].getCode()) indice = i;
         }
         return &ml_transitions[indice];
@@ -63,7 +59,7 @@ namespace dss {
     ////////////////////////////////
     Marking PetriNet::getMarquage() {
         Marking vecteur{m_places.size()};
-        for (int i = 0; i < m_places.size(); i++) {
+        for (size_t i {}; i < m_places.size(); i++) {
             vecteur.add8BitsValue(m_places[i].getTokens(), i);
         }
 
@@ -71,21 +67,20 @@ namespace dss {
     }
 
     void PetriNet::setMarquage(const Marking &marquage) {
-        for (int i = 0; i < m_places.size(); i++) {
+        for (size_t i {}; i < m_places.size(); i++) {
             m_places[i].setTokens(marquage.get8BitsValue(i));
         }
     }
 
-    ///////////////////////////////////////////////////////////////
-    // Renvoyer les libell�s des transitions franchissables
-    ///////////////////////////////////////////////////////////////
+    /*
+     * Return enabled transitions
+     */
     vector<Transition *> PetriNet::getListeTransitionsFranchissables() {
         vector<Transition *> liste_transitions;
-        for (int i = 0; i < ml_transitions.size(); i++)
+        for (size_t i {}; i < ml_transitions.size(); i++)
             if (ml_transitions[i].isFranchissable()) {
                 liste_transitions.push_back(&ml_transitions.at(i));
             }
-
         return liste_transitions;
     }
 
@@ -99,12 +94,12 @@ namespace dss {
                                    vector<int> liste_poids) {
         // Localisation de l'indice de la transition
         int indice = -1;
-        for (int i = 0; i < ml_transitions.size() && indice == -1; i++) {
+        for (size_t i {}; i < ml_transitions.size() && indice == -1; i++) {
             if (ml_transitions[i].getName() == nom_transition)
                 indice = i;
         }
         if (indice != -1) {
-            for (int i = 0; i < liste_places_entrees.size(); i++) {
+            for (size_t i {}; i < liste_places_entrees.size(); i++) {
                 ml_transitions[indice].addPlaceEntree(getPlaceAdresse(liste_places_entrees[i]), liste_poids[i]);
                 //printf("%s, ",liste_places_entrees[i].mot.c_str());
             }
@@ -121,7 +116,7 @@ namespace dss {
                                    vector<int> liste_poids) {
         // Localisation de l'indice de la transition
         int indice = -1;
-        for (int i = 0; i < ml_transitions.size() && indice == -1; i++) {
+        for (size_t i {}; i < ml_transitions.size() && indice == -1; i++) {
             if (ml_transitions[i].getName() == nom_transition)
                 indice = i;
         }

@@ -36,6 +36,7 @@ SyncTransitionService::SyncTransitionService(dss::PetriNet  *petri):Node("sync_t
 
 void SyncTransitionService::syncTransitionsService(const std::shared_ptr<ros2dss::SyncTransition::Request> request,
  std::shared_ptr<ros2dss::SyncTransition::Response> response)  {
+	(void)response;
 	++m_request_count;
 	RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Received transitions from %d:\n",request->id);
     auto manageFusion {m_petri->getManageTransitionFusionSet()};
@@ -44,7 +45,7 @@ void SyncTransitionService::syncTransitionsService(const std::shared_ptr<ros2dss
         manageFusion->add_fusion_set(t,request->id);
    	}
     if (m_request_count==m_petri->getModulesCount()-1) {
-        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Syncing is done...",request->id);
+        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Syncing is done...");
         // for (
     	m_should_shutdown=true;
     }
