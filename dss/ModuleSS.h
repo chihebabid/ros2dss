@@ -35,6 +35,8 @@ namespace dss {
 
         void stats() const;
 
+        MetaState *reduce(MetaState *ms, const int &module);
+
     private:
         vector<MetaState *> mlMetaState;
         size_t m_id_module;

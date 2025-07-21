@@ -106,6 +106,38 @@ namespace dss {
         }
         RCLCPP_INFO(my_logger, "End stats...");
     }
+
+
+    /*
+ * @brief Check whether a metastate can be fused with another
+ * @param ms a Metastate
+ * @param module Module index
+ * @return true if *ms can be fusedm else false
+ */
+    MetaState *ModuleSS::reduce(MetaState *ms, const int &module) {
+        for (const auto &elt: mlMetaState) {
+            if (elt != ms && *elt == *ms) {
+                //Compare out edges
+                auto lEdges1 = ms->getSyncSucc();
+                auto lEdges2 = elt->getSyncSucc();
+                if (lEdges1.size() == lEdges2.size()) { // Check that all edges are the same
+                    bool areSame = true;
+                    for (const auto &edge1: lEdges1) {
+                        auto compare = [&edge1](ArcSync *arc) {
+                            return edge1->getTransitionName() == arc->getTransitionName() && edge1->getMetaStateDest() == arc->getMetaStateDest();
+                        };
+                        auto res = std::find_if(lEdges2.begin(), lEdges2.end(), compare);
+                        if (res == lEdges2.end()) {
+                            areSame = false;
+                            break;
+                        }
+                    }
+                    if (areSame) return elt;
+                }
+            }
+        }
+        return nullptr;
+    }
 }
 
 ostream &operator<<(ostream &os, const dss::ModuleSS &ss) {
