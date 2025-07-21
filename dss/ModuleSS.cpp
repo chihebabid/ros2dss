@@ -138,6 +138,14 @@ namespace dss {
         }
         return nullptr;
     }
+
+    MetaState *ModuleSS::findExtendedMetaState(const ArrayModel<std::string> &productscc) {
+        for (const auto &elt: mlMetaState) {
+            if ((elt->getName()) == productscc || elt->getEquivalence().findMetaState(productscc)) return elt;
+        }
+        return nullptr;
+
+    }
 }
 
 ostream &operator<<(ostream &os, const dss::ModuleSS &ss) {

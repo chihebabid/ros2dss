@@ -181,4 +181,20 @@ namespace dss {
         return m_nodes[0];
     }
 
+    bool MetaState::isEquivalent(const ArrayModel<string>& name)  const {
+        return m_equivalence.findMetaState(name);
+    }
+
+
+    EquivalenceMS &MetaState::getEquivalence() {
+        return m_equivalence;
+    }
+
+    bool MetaState::getProcessedReduction() const {
+        return m_processed_reduction;
+    }
+
+    void MetaState::setProcessedReduction(const bool v) {
+        m_processed_reduction=v;
+    }
 }

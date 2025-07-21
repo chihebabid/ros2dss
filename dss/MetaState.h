@@ -17,6 +17,7 @@ using namespace std;
 
 class ArcSync;
 class ProductSCC;
+
 class MetaState {
 public:
     MetaState();
@@ -46,6 +47,10 @@ public:
     ArrayModel<string> getName() const;
     std::string toString();
     Marking* getInitialMarking() const ;
+    bool isEquivalent(const ArrayModel<string>&) const;
+    EquivalenceMS &getEquivalence();
+    [[nodiscard]] bool getProcessedReduction() const;
+    void setProcessedReduction(const bool v);
 private:
     ArrayModel<string> m_metastate_name;
     EquivalenceMS m_equivalence;
@@ -61,6 +66,8 @@ private:
     unsigned int m_index; // Used in Tarjan algorithm
     vector<Marking *> m_stack;
     void computeStrongConnectedComponents(Marking *v);
+    bool m_processed_reduction {false};
+
 };
 }
 #endif /* METASTATE_H_ */

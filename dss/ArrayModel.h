@@ -4,7 +4,9 @@
 
 #ifndef ARRAYMODEL_H
 #define ARRAYMODEL_H
-
+#include <cstddef>
+#include <vector>
+#include <algorithm>
 
 namespace dss {
     template<typename T>

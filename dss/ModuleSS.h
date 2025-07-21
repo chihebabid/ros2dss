@@ -19,6 +19,8 @@ namespace dss {
 
         MetaState *findMetaState(ArrayModel<string> &productscc);
         MetaState *findMetaState(const string &);
+
+        MetaState *findExtendedMetaState(const ArrayModel<std::string> &productscc);
         friend ostream &operator<<(ostream &os, const ModuleSS &ss);
 
         size_t getMetaStateCount() const;

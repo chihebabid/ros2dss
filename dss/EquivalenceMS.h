@@ -4,11 +4,14 @@
 
 #ifndef EQUIVALENCEMS_H
 #define EQUIVALENCEMS_H
+#include "ArrayModel.h"
 #include <stdbool.h>
+#include <string>
+#include <vector>
 
-#include "misc.h"
 
 namespace dss {
+    using std::string;
     class EquivalenceMS {
     public:
         void insertMetaState(const ArrayModel<string> &ms);
