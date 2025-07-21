@@ -122,6 +122,7 @@ auto MasterNode::run() -> void {
                 m_command.source_product.clear();
                 m_command.transition.clear();
                 m_command_pub->publish(m_command);
+                m_module_ss->reduce(m_current_meta_state);
                 m_current_state = state_t::PROCESS_FIRE_SYNC_FINISH;
             }
             break;

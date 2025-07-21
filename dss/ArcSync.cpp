@@ -41,4 +41,11 @@ namespace dss {
     bool ArcSync::operator==(const ArcSync &o) const {
         return (m_fusion == o.m_fusion) && (m_source == o.m_source) && (m_destination == o.m_destination);
     }
+
+    void ArcSync::setPred(MetaState *pred) {
+        m_pred=pred;
+    }
+    MetaState* ArcSync::getPred() const {
+        return m_pred;
+    }
 }

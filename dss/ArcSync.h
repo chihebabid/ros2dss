@@ -27,10 +27,14 @@ public:
     MetaState *getMetaStateDest();
 
     ArrayModel<string> *getStartProduct();
+
+    void setPred(MetaState *pred);
+    MetaState* getPred() const;
 private:
     std::string m_fusion;
     ArrayModel<string> m_source;
     MetaState *m_destination{};
+    MetaState *m_pred{};
 };
 
 }

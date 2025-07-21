@@ -37,9 +37,10 @@ namespace dss {
 
         void stats() const;
 
-        MetaState *reduce(MetaState *ms, const int &module);
+        void reduce(MetaState *ms);
 
     private:
+        MetaState *findEquivalentMS(MetaState *ms);
         vector<MetaState *> mlMetaState;
         size_t m_id_module;
     };

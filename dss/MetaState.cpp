@@ -48,6 +48,7 @@ namespace dss {
             delete sync_arc;
             return;
         }
+        sync_arc->setPred(this);
         mArcs.push_back(sync_arc);
     }
 

@@ -76,7 +76,7 @@ namespace dss {
     }
 
     size_t ModuleSS::getStatesCount() const {
-        size_t res {};
+        size_t res{};
         for (const auto &ms: mlMetaState) {
             res += ms->getListMarkings().size();
         }
@@ -84,24 +84,26 @@ namespace dss {
     }
 
     size_t ModuleSS::getSyncEdgesCount() const {
-        size_t res {};
+        size_t res{};
         for (const auto &ms: mlMetaState) {
-            res+=ms->getSyncSucc().size();
+            res += ms->getSyncSucc().size();
         }
         return res;
     }
 
     void ModuleSS::stats() const {
         auto my_logger{rclcpp::get_logger("STATS")};
-        RCLCPP_INFO(my_logger, "#Metastates: %ld",getMetaStateCount());
-        RCLCPP_INFO(my_logger, "#States: %ld",getStatesCount());
-        RCLCPP_INFO(my_logger, "#Edges: %ld",getSyncEdgesCount());
-        for (size_t i{};i<getMetaStateCount();++i) {
-            dss::MetaState *ms {mlMetaState[i]};
-            RCLCPP_INFO(my_logger, "#Metastates: %s",ms->toString().c_str());
+        RCLCPP_INFO(my_logger, "#Metastates: %ld", getMetaStateCount());
+        RCLCPP_INFO(my_logger, "#States: %ld", getStatesCount());
+        RCLCPP_INFO(my_logger, "#Edges: %ld", getSyncEdgesCount());
+        for (size_t i{}; i < getMetaStateCount(); ++i) {
+            dss::MetaState *ms{mlMetaState[i]};
+            RCLCPP_INFO(my_logger, "#Metastates: %s", ms->toString().c_str());
             for (const auto &arc: ms->getSyncSucc()) {
-                RCLCPP_INFO(my_logger, "Arc: %s -> %s (%s)", dss::arrayModelToStdString(*(arc->getStartProduct())).c_str(),
-                            dss::arrayModelToStdString((arc->getMetaStateDest()->getName())).c_str(), arc->getTransitionName().c_str());
+                RCLCPP_INFO(my_logger, "Arc: %s -> %s (%s)",
+                            dss::arrayModelToStdString(*(arc->getStartProduct())).c_str(),
+                            dss::arrayModelToStdString((arc->getMetaStateDest()->getName())).c_str(),
+                            arc->getTransitionName().c_str());
             }
         }
         RCLCPP_INFO(my_logger, "End stats...");
@@ -114,17 +116,19 @@ namespace dss {
  * @param module Module index
  * @return true if *ms can be fusedm else false
  */
-    MetaState *ModuleSS::reduce(MetaState *ms, const int &module) {
+    MetaState *ModuleSS::findEquivalentMS(MetaState *ms) {
         for (const auto &elt: mlMetaState) {
             if (elt != ms && *elt == *ms) {
                 //Compare out edges
                 auto lEdges1 = ms->getSyncSucc();
                 auto lEdges2 = elt->getSyncSucc();
-                if (lEdges1.size() == lEdges2.size()) { // Check that all edges are the same
+                if (lEdges1.size() == lEdges2.size()) {
+                    // Check that all edges are the same
                     bool areSame = true;
                     for (const auto &edge1: lEdges1) {
                         auto compare = [&edge1](ArcSync *arc) {
-                            return edge1->getTransitionName() == arc->getTransitionName() && edge1->getMetaStateDest() == arc->getMetaStateDest();
+                            return edge1->getTransitionName() == arc->getTransitionName() && edge1->getMetaStateDest()
+                                   == arc->getMetaStateDest();
                         };
                         auto res = std::find_if(lEdges2.begin(), lEdges2.end(), compare);
                         if (res == lEdges2.end()) {
@@ -144,7 +148,20 @@ namespace dss {
             if ((elt->getName()) == productscc || elt->getEquivalence().findMetaState(productscc)) return elt;
         }
         return nullptr;
+    }
 
+    void ModuleSS::reduce(MetaState *ms) {
+        if (auto e_ms = findEquivalentMS(ms); e_ms) {
+            ms->getEquivalence().mergeMetaStates(e_ms->getEquivalence());
+            for (const auto &m: mlMetaState) {
+                for (const auto &edge: m->getSyncSucc()) {
+                    if (edge->getMetaStateDest() == e_ms) edge->setDestination(ms);
+                }
+            }
+            // Remove the metastate
+            RCLCPP_INFO(rclcpp::get_logger("ModuleSS"), "Removing equivalent metastate %s", e_ms->toString().c_str());
+            removeMetaState(e_ms);
+        }
     }
 }
 
