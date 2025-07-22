@@ -70,7 +70,7 @@ auto SlaveNode::command_receiver(const ros2dss::Command &msg) -> void {
         }
     } else if (msg.cmd == "ADD_NEW_METASTATE") {
         //msg.target_ms
-        RCLCPP_INFO(get_logger(), "Received command to add new metastate: %s ===%s==> %s",
+        RCLCPP_INFO(get_logger(), "!!!Received command to add new metastate: %s ===%s==> %s",
                     dss::vectorToStdString(msg.source_product).c_str(), msg.transition.c_str(),
                     dss::vectorToStdString(msg.target_ms).c_str());
         std::string _chaine;
@@ -111,6 +111,7 @@ auto SlaveNode::command_receiver(const ros2dss::Command &msg) -> void {
             m_module_ss->insertMS(new_ms);
         }
     } else if (msg.cmd == "PROCESS_FIRE_SYNC_FINISH") {
+        if (_enabled_reduction) m_module_ss->reduce(m_current_meta_state);
         m_response.msg = "ACK_PROCESS_NODE";
         m_response.id = m_petri->getPetriID();
         m_response.sync.clear();
@@ -135,8 +136,9 @@ auto SlaveNode::executeService(const std::shared_ptr<ros2dss::InfoFiring::Reques
                                std::shared_ptr<ros2dss::InfoFiring::Response> resp) -> void {
     (void)resp;
     if (!req->is_new) {
+        RCLCPP_INFO(get_logger(), "Not new : %s",dss::vectorToStdString(req->target_ms).c_str());
         auto res {dss::vectorStringToArrayModel(req->target_ms)};
-        auto ms {m_module_ss->findMetaState(res)};
+        auto ms {m_module_ss->findExtendedMetaState(res)};
         if (!ms) {
             RCLCPP_ERROR(get_logger(), "Existant target MS not found %s", dss::vectorToStdString(req->target_ms).c_str());
             return;

@@ -26,7 +26,7 @@ private:
     auto fireSyncTransition() -> bool ;
     auto executeFireSyncTransitionRequest(const uint32_t id_server, const string &transition) -> std::vector<dss::firing_sync_t> ;
 
-    auto addFiringInfoRequest(const std::vector<std::string>& startProduct,const std::vector<std::string> &targetMS,const string &transition,bool is_new=true) -> void;
+    auto addFiringInfoRequest(const std::vector<std::string>& startProduct,const std::vector<std::string> &targetMS,const string &transition,bool is_new) -> void;
 
     rclcpp::Publisher<ros2dss::Command>::SharedPtr m_command_pub;
     std::shared_ptr<rclcpp::executors::MultiThreadedExecutor> m_executor;

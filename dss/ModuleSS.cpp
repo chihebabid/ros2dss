@@ -126,7 +126,11 @@ namespace dss {
                     // Check that all edges are the same
                     bool areSame = true;
                     for (const auto &edge1: lEdges1) {
-                        auto compare = [&edge1](ArcSync *arc) {
+                        auto compare = [ms,elt,&edge1](ArcSync *arc) {
+                            if ((edge1->getMetaStateDest()==ms) and (edge1->getTransitionName() == arc->getTransitionName()) and
+                                       (elt == arc->getMetaStateDest())) {
+                                return true;
+                            }
                             return edge1->getTransitionName() == arc->getTransitionName() && edge1->getMetaStateDest()
                                    == arc->getMetaStateDest();
                         };
@@ -145,7 +149,7 @@ namespace dss {
 
     MetaState *ModuleSS::findExtendedMetaState(const ArrayModel<std::string> &productscc) {
         for (const auto &elt: mlMetaState) {
-            if ((elt->getName()) == productscc || elt->getEquivalence().findMetaState(productscc)) return elt;
+            if ((elt->getName() == productscc) || elt->getEquivalence().findMetaState(productscc)) return elt;
         }
         return nullptr;
     }
@@ -153,13 +157,14 @@ namespace dss {
     void ModuleSS::reduce(MetaState *ms) {
         if (auto e_ms = findEquivalentMS(ms); e_ms) {
             ms->getEquivalence().mergeMetaStates(e_ms->getEquivalence());
+            ms->getEquivalence().insertMetaState(e_ms->getName());
             for (const auto &m: mlMetaState) {
                 for (const auto &edge: m->getSyncSucc()) {
                     if (edge->getMetaStateDest() == e_ms) edge->setDestination(ms);
                 }
             }
             // Remove the metastate
-            RCLCPP_INFO(rclcpp::get_logger("ModuleSS"), "Removing equivalent metastate %s", e_ms->toString().c_str());
+            RCLCPP_INFO(rclcpp::get_logger("ModuleSS"), "Removing equivalent metastate %s equivalent to %s", e_ms->toString().c_str(),ms->toString().c_str());
             removeMetaState(e_ms);
         }
     }

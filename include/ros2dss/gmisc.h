@@ -36,6 +36,7 @@ namespace ros2dss {
 
 
 template class dss::ArrayModel<std::string>;
+inline bool _enabled_reduction {false};
 inline std::mutex _mutex;
 inline std::unique_ptr<dss::MarkingArray> _ptr_modules {};
 inline std::unique_ptr<dss::ArrayModel<std::string>> _ptr_metastate_name;

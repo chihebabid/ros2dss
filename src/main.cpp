@@ -9,11 +9,20 @@ using namespace chrono_literals;
 
 int main(int argc, char * argv[]) {
     dss::BuildPetri build;
-    if (argc!=2) {
-        std::cout<<"Usage: "<<argv[0]<<" <filename>\n";
+    if (argc<2) {
+        std::cout<<"Usage: "<<argv[0]<<" <filename> [-r] \n";
+        std::cout<<"-r: enable reduction of metastates\n";
         return -1;
     }
     build.setFileName(argv[1]);
+    if (argc>2 and strcmp(argv[2],"-r")==0) {
+        _enabled_reduction=true;
+        RCLCPP_INFO(rclcpp::get_logger("Main"), "Reduction enabled");
+    }
+    else {
+        _enabled_reduction=false;
+        RCLCPP_INFO(rclcpp::get_logger("Main"), "Reduction disabled");
+    }
     auto petri {build.getPetriNet()};
     rclcpp::init(argc, argv);
     rclcpp::WallRate loop_rate(500ms);

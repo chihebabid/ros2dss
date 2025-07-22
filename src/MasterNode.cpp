@@ -25,7 +25,7 @@ MasterNode::MasterNode(dss::PetriNet *petri,
     RCLCPP_INFO(get_logger(), "Modules count: %d", m_petri->getModulesCount());
 
     ml_clients_firing_info.resize(m_petri->getModulesCount());
-    for (size_t i {1}; i < m_petri->getModulesCount(); ++i) {
+    for (size_t i{1}; i < m_petri->getModulesCount(); ++i) {
         std::string client_name = "adding_info_sync_service" + std::to_string(i);
         ml_clients_firing_info[i] = create_client<ros2dss::InfoFiring>(client_name);
         RCLCPP_INFO(get_logger(), "Created client for firing info: %s", client_name.c_str());
@@ -81,18 +81,18 @@ auto MasterNode::run() -> void {
             break;
 
         case state_t::POP_METASTATE:
-            RCLCPP_INFO(get_logger(), "POP_METASTATE: Stack size: %ld",m_meta_states_stack.size());
+            RCLCPP_INFO(get_logger(), "POP_METASTATE: Stack size: %ld", m_meta_states_stack.size());
             if (m_meta_states_stack.empty()) {
                 m_current_state = state_t::TERMINATE_BUILDING;
             } else {
                 m_current_meta_state = m_meta_states_stack.top();
-                RCLCPP_INFO(get_logger(), "POP_METASTATE: Popped MS: %s",m_current_meta_state->toString().c_str());
+                RCLCPP_INFO(get_logger(), "POP_METASTATE: Popped MS: %s", m_current_meta_state->toString().c_str());
                 m_meta_states_stack.pop();
                 auto manageFusion{m_petri->getManageTransitionFusionSet()};
                 manageFusion->reset();
                 m_command.cmd = "MOVE_TO_METASTATE";
                 m_command.scc = m_current_meta_state->toString();
-                m_command.transition="";
+                m_command.transition = "";
                 m_command.target_ms.clear();
                 m_command.source_product.clear();
                 m_command_pub->publish(m_command);
@@ -107,9 +107,10 @@ auto MasterNode::run() -> void {
             break;
 
         case state_t::COMPUTE_SYNC:
-            RCLCPP_INFO(get_logger(), "Current SM: COMPUTE_SYNC"); {
-            auto manage{m_petri->getManageTransitionFusionSet()};
-            ml_enabled_fusion_sets = manage->getEnabledFusionSets();
+            RCLCPP_INFO(get_logger(), "Current SM: COMPUTE_SYNC");
+            {
+                auto manage{m_petri->getManageTransitionFusionSet()};
+                ml_enabled_fusion_sets = manage->getEnabledFusionSets();
             }
             m_current_state = state_t::FIRE_SYNC;
             break;
@@ -117,12 +118,12 @@ auto MasterNode::run() -> void {
         case state_t::FIRE_SYNC:
             RCLCPP_INFO(get_logger(), "Current SM: FIRE_SYNC");
             if (!fireSyncTransition()) {
-                m_command.cmd= "PROCESS_FIRE_SYNC_FINISH";
+                m_command.cmd = "PROCESS_FIRE_SYNC_FINISH";
                 m_command.target_ms.clear();
                 m_command.source_product.clear();
                 m_command.transition.clear();
                 m_command_pub->publish(m_command);
-                m_module_ss->reduce(m_current_meta_state);
+                if (_enabled_reduction) m_module_ss->reduce(m_current_meta_state);
                 m_current_state = state_t::PROCESS_FIRE_SYNC_FINISH;
             }
             break;
@@ -160,8 +161,7 @@ auto MasterNode::response_receiver(const ros2dss::Response &resp) -> void {
         m_ack_modules[resp.id] = 1;
         std::set<std::string> enabled_sync_trans{resp.sync.begin(), resp.sync.end()};
         m_petri->getManageTransitionFusionSet()->enableSetFusion(enabled_sync_trans, resp.id);
-    }
-    else if (resp.msg == "ACK_PROCESS_NODE") {
+    } else if (resp.msg == "ACK_PROCESS_NODE") {
         m_ack_modules[resp.id] = 1;
     }
 }
@@ -174,11 +174,9 @@ auto MasterNode::buildInitialMetaState() -> void {
 }
 
 auto MasterNode::computeEnabledSyncTransitions() -> void {
-
     auto enabled_sync_trans{m_petri->getSyncEnabled(m_current_meta_state)};
     auto manageFusion{m_petri->getManageTransitionFusionSet()};
     manageFusion->enableSetFusion(enabled_sync_trans, m_petri->getPetriID());
-
 }
 
 auto MasterNode::statemachineMoveToState(const state_t state) -> void {
@@ -225,29 +223,24 @@ auto MasterNode::fireSyncTransition() -> bool {
     auto l_pair_source_ms{dss::buildMetaStatesNames(received_scc)};
     for (auto &e_tuple: l_pair_source_ms) {
         RCLCPP_INFO(get_logger(), "Source product: %s, Destination metastate: %s",
-                    dss::arrayModelToStdString(std::get<0>(e_tuple)).c_str(), dss::arrayModelToStdString(std::get<1>(e_tuple)).c_str());
-        if (auto dest_ms{m_module_ss->findMetaState(std::get<1>(e_tuple))}; dest_ms) {
+                    dss::arrayModelToStdString(std::get<0>(e_tuple)).c_str(),
+                    dss::arrayModelToStdString(std::get<1>(e_tuple)).c_str());
+        if (auto dest_ms{m_module_ss->findExtendedMetaState(std::get<1>(e_tuple))}; dest_ms) {
             RCLCPP_INFO(get_logger(), "Meta state: %s is already inserted!",
                         dss::arrayModelToStdString(std::get<1>(e_tuple)).c_str());
             // Insert just the edge
-            m_current_meta_state->addSyncArc(new dss::ArcSync{std::get<0>(e_tuple), dest_ms,transition});
-            addFiringInfoRequest(std::get<0>(e_tuple), std::get<1>(e_tuple), transition,false);
+            m_current_meta_state->addSyncArc(new dss::ArcSync{std::get<0>(e_tuple), dest_ms, transition});
+            addFiringInfoRequest(std::get<0>(e_tuple), std::get<1>(e_tuple), transition, false);
         } else {
             // Insert the new metastate
-            auto new_ms {new dss::MetaState(*std::get<2>(e_tuple)->getMetaState())};
+            auto new_ms{new dss::MetaState(*std::get<2>(e_tuple)->getMetaState())};
             new_ms->setName(std::get<1>(e_tuple));
             m_module_ss->insertMS(new_ms);
-            m_current_meta_state->addSyncArc(new dss::ArcSync{std::get<0>(e_tuple), new_ms,transition});
+            m_current_meta_state->addSyncArc(new dss::ArcSync{std::get<0>(e_tuple), new_ms, transition});
             m_meta_states_stack.push(new_ms);
-            // Publish the command to add new metastate
-           /* m_command.cmd = "ADD_NEW_METASTATE";
-            m_command.scc.clear();
-            m_command.source_product=std::get<0>(e_tuple);
-            m_command.target_ms=std::get<1>(e_tuple);
-            m_command.transition=transition;
-            m_command_pub->publish(m_command);*/
+
             RCLCPP_INFO(get_logger(), "Meta state: %s is new!", dss::arrayModelToStdString(new_ms->getName()).c_str());
-            addFiringInfoRequest(std::get<0>(e_tuple), std::get<1>(e_tuple), transition);
+            addFiringInfoRequest(std::get<0>(e_tuple), std::get<1>(e_tuple), transition,true);
         }
     }
 
@@ -289,13 +282,17 @@ auto MasterNode::executeFireSyncTransitionRequest(const uint32_t id_server,
 /*
  * Execute service request to ask modules to add firing info for a transition
  */
-auto MasterNode::addFiringInfoRequest(const std::vector<std::string>& startProduct,const std::vector<std::string> &targetMS,const string &transition, bool is_new) -> void {
+auto MasterNode::addFiringInfoRequest(const std::vector<std::string> &startProduct,
+                                      const std::vector<std::string> &targetMS, const string &transition,
+                                      bool is_new) -> void {
+    static int id_request{0};
+    ++id_request;
     auto request{std::make_shared<ros2dss::InfoFiring::Request>()};
     request->source_product = startProduct;
     request->target_ms = targetMS;
     request->transition = transition;
     request->is_new = is_new;
-    for (size_t i {1};i<m_petri->getModulesCount();++i) {
+    for (size_t i{1}; i < m_petri->getModulesCount(); ++i) {
         auto future{ml_clients_firing_info[i]->async_send_request(request)};
         while (1) {
             m_executor->spin_some();
