@@ -17,7 +17,7 @@ colcon build --packages-select ros2dss_project
 To run the tool, you can use the following command:
 
 ```bash
-ros2 launch ros2dss_project verify.launch.py file1:=<model_file> enable_reduction:=true
+ros2 launch ros2dss_project launch.py file1:=<model_file> enable_reduction:=true
 ```
 
 Parameters:
