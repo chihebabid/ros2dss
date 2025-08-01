@@ -17,7 +17,7 @@ colcon build --packages-select ros2dss_project
 To run the tool, you can use the following command:
 
 ```bash
-ros2 launch ros2dss_project launch.py file1:=<model_file> enable_reduction:=true
+ros2 launch ros2dss_project launch.py files:=<file1,file2,...> enable_reduction:=true
 ```
 
 Parameters:
@@ -30,5 +30,6 @@ Parameters:
 To run the example provided in the `models` folder, you can use the following command:
 ```bash
 
-ros2 launch ros2dss_project launch.py file1:=patrolling_1.pn file2:=patrolling_2.pn file3:=patrolling_3.pn enable_reduction:=true
+ros2 launch ros2dss_project launch.py files:=patrolling_1.pn,patrolling_2.pn,patrolling_3.pn enable_reduction:=true
+
 ```
