@@ -13,6 +13,10 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 
+
+
+
+
 find_package(rosidl_default_generators REQUIRED)
 
 set(msg_files "msg/Command.msg" "srv/SyncTransition.srv" "msg/Firing.msg" "msg/Response.msg" "srv/FiringSyncTransitionSrv.srv"
@@ -50,6 +54,15 @@ install(TARGETS
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib
         RUNTIME DESTINATION lib/${PROJECT_NAME}
+)
+
+# Installer les fichiers de données
+install(DIRECTORY models/
+        DESTINATION share/${PROJECT_NAME}/
+)
+
+install(DIRECTORY launch/
+        DESTINATION share/${PROJECT_NAME}
 )
 
 if(BUILD_TESTING)

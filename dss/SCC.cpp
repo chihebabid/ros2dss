@@ -56,10 +56,12 @@ namespace dss {
                 m_succ.emplace_back(succ.second->getSCCContainer(), succ.first);
             }
         }
-        auto ms{m_ptr->getMetaState()};
-        auto module{ms->getIdModule()};
+
+
         // TODO: reimplement this loop
-        /*for(auto & edge : ms->getSyncSucc()) {
+        /*auto ms{m_ptr->getMetaState()};
+         * auto module{ms->getIdModule()};
+         *for(auto & edge : ms->getSyncSucc()) {
             auto startProduct {edge->getStartProduct()};
             if (m_ptr==startProduct->getSCC(module)) {
                 m_succ.emplace_back(edge->getMetaStateDest()->getInitialSCC(),edge->getFusion()->getTransitionOfModule(module));

@@ -15,11 +15,11 @@ bool Transition::isLocallyFirable() const {
 }
 
 
-void Transition::addPlaceEntree(Place *place, int poids) {
+void Transition::addPlaceEntree(Place *place, const uint32_t poids) {
     ml_input_places.push_back({place,poids});
 }
 
-void Transition::addPlaceSortie(Place *place, int poids) {
+void Transition::addPlaceSortie(Place *place, const uint32_t poids) {
     ml_output_places.push_back({place,poids});
 }
 

@@ -14,6 +14,8 @@ int main(int argc, char * argv[]) {
         std::cout<<"-r: enable reduction of metastates\n";
         return -1;
     }
+
+    RCLCPP_INFO(rclcpp::get_logger("Main"), "File: %s", argv[1]);
     build.setFileName(argv[1]);
     if (argc>2 and strcmp(argv[2],"-r")==0) {
         _enabled_reduction=true;

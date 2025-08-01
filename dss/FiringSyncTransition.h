@@ -18,8 +18,9 @@ namespace dss {
         [[nodiscard]] SCC * getSCCSource() const;
         [[nodiscard]] std::string getTransition() const;
     private:
-        SCC *m_source,*m_dest;
+        SCC *m_source;
         std::string m_transition;
+        SCC *m_dest;
     };
 
 

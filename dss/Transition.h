@@ -12,8 +12,8 @@
 #include "misc.h"
 namespace dss {
 struct transition_t {
-    Place *place;
-    int poids {};
+    Place *place {};
+    uint32_t poids {};
 };
 
 class Transition : public Node {
@@ -38,9 +38,9 @@ public:
         return m_sync;
     }
 
-    void addPlaceSortie(Place *place, int poids);
+    void addPlaceSortie(Place *place, const uint32_t poids);
 
-    void addPlaceEntree(Place *place, int poids);
+    void addPlaceEntree(Place *place, const uint32_t poids);
 
     inline void fire() {
         // Add tokens to output places
