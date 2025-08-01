@@ -22,6 +22,13 @@ ros2 launch ros2dss_project launch.py file1:=<model_file> enable_reduction:=true
 
 Parameters:
 
-- file1, file2, ...,: Name(s) of Petri net files to verify.
+- file1, file2, ...,: Name(s) of Petri net files to verify. For every provided file, a ros2 node is created to build its distributed state space.
 
 - `enable_reduction`: true to enable metastate reduction (-r flag), false otherwise.
+
+## **Example**
+To run the example provided in the `models` folder, you can use the following command:
+```bash
+
+ros2 launch ros2dss_project launch.py file1:=patrolling_1.pn file2:=patrolling_2.pn file3:=patrolling_3.pn enable_reduction:=true
+```
