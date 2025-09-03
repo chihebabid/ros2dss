@@ -6,24 +6,24 @@
 using std::placeholders::_1;
 using std::placeholders::_2;
 
-FiringSyncTransitionService::FiringSyncTransitionService(dss::PetriNet  *petri):Node("firing_sync_transitions"),m_petri(petri) {
+FiringSyncTransitionService::FiringSyncTransitionService(dss::PetriNet  *petri):Node("firing_sync_transitions"+std::to_string(petri->getPetriID())),m_petri(petri) {
         std::string service_name {"firing_sync_transitions_service"+std::to_string(m_petri->getPetriID())};
         m_server_firing_service=create_service<ros2dss::FiringSyncTransitionSrv>(std::move(service_name),std::bind(&FiringSyncTransitionService::firingSyncTransitionsService,this,_1,_2));
 }
 
 void FiringSyncTransitionService::firingSyncTransitionsService(const std::shared_ptr<ros2dss::FiringSyncTransitionSrv::Request> req,
                                   std::shared_ptr<ros2dss::FiringSyncTransitionSrv::Response> resp) {
-    RCLCPP_INFO(rclcpp::get_logger("Service firing sync: "), "Service request firing transition %s",req->transition.c_str());
+    LOG_INFO(rclcpp::get_logger("Service firing sync: "), "Service request firing transition %s",req->transition.c_str());
     auto _result {m_petri->fireSync(req->transition, m_slave_node->getCurrentMetaState())};
     //ml_firing_sync_transitions.insert(_result.begin(),_result.end());
     ml_firing_sync_transitions=_result;
     /*
-     if (ml_firing_sync_transitions.empty()) RCLCPP_INFO(rclcpp::get_logger("rclcpp"),"res: is empty");
-    else RCLCPP_INFO(rclcpp::get_logger("Service firing sync: "),"res: is not empty");
+     if (ml_firing_sync_transitions.empty()) LOG_INFO(rclcpp::get_logger("rclcpp"),"res: is empty");
+    else LOG_INFO(rclcpp::get_logger("Service firing sync: "),"res: is not empty");
     for (const auto & t : ml_firing_sync_transitions) {
-        RCLCPP_INFO(rclcpp::get_logger("Service firing sync: "),"Source metastate: %s",t.getSCCSource()->getMetaState()->toString().c_str());
-        RCLCPP_INFO(rclcpp::get_logger("Service firing sync: "),"Transition fusion name: %s",t.getTransition().c_str());
-        RCLCPP_INFO(rclcpp::get_logger("Service firing sync: "),"Dest metastate: %s",t.getDestSCC()->getMetaState()->toString().c_str());
+        LOG_INFO(rclcpp::get_logger("Service firing sync: "),"Source metastate: %s",t.getSCCSource()->getMetaState()->toString().c_str());
+        LOG_INFO(rclcpp::get_logger("Service firing sync: "),"Transition fusion name: %s",t.getTransition().c_str());
+        LOG_INFO(rclcpp::get_logger("Service firing sync: "),"Dest metastate: %s",t.getDestSCC()->getMetaState()->toString().c_str());
     }
     */
 

@@ -9,23 +9,25 @@ from launch import LaunchContext
 def generate_nodes(context: LaunchContext, models_dir: str):
     files_string = LaunchConfiguration('files').perform(context)
     enable_reduction = LaunchConfiguration('enable_reduction').perform(context)
-
+    include_models = LaunchConfiguration('include_models').perform(context)
     nodes = []
 
     if files_string:
         files = [f.strip() for f in files_string.split(',') if f.strip()]
         for index, filename in enumerate(files):
-            file_path = os.path.join(models_dir, filename)
+            if include_models=='true':
+                file_path = os.path.join(models_dir, filename)
+            else:
+                file_path = filename
             args = [file_path]
             if enable_reduction == 'true':
                 args.append('-r')
 
-            print(f"[DEBUG] Creating node for file: {filename}, enable_reduction={enable_reduction}")
-
+            print(f"[DEBUG] Creating node for file: {filename}, enable_reduction={enable_reduction}, index={index}")
+            n_index=index+1
             node = Node(
                 package='ros2dss_project',
                 executable='ros2dss',
-                name=f'ros2dss_{index}',
                 output='screen',
                 arguments=args
             )
@@ -37,6 +39,7 @@ def generate_nodes(context: LaunchContext, models_dir: str):
 
 def generate_launch_description():
     package_share_dir = get_package_share_directory('ros2dss_project')
+
     models_dir = os.path.join(package_share_dir, 'models')
 
     enable_reduction_arg = DeclareLaunchArgument(

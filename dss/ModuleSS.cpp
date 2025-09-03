@@ -2,7 +2,7 @@
 // Created by chiheb on 13/07/22.
 //
 #include <rclcpp/logging.hpp>
-
+#include "gmisc.h"
 #include "misc.h"
 
 namespace dss {
@@ -93,20 +93,20 @@ namespace dss {
 
     void ModuleSS::stats() const {
         auto my_logger{rclcpp::get_logger("STATS")};
-        RCLCPP_INFO(my_logger, "#Metastates: %ld", getMetaStateCount());
-        RCLCPP_INFO(my_logger, "#States: %ld", getStatesCount());
-        RCLCPP_INFO(my_logger, "#Edges: %ld", getSyncEdgesCount());
+        LOG_INFO(my_logger, "#Metastates: %ld", getMetaStateCount());
+        LOG_INFO(my_logger, "#States: %ld", getStatesCount());
+        LOG_INFO(my_logger, "#Edges: %ld", getSyncEdgesCount());
         for (size_t i{}; i < getMetaStateCount(); ++i) {
             dss::MetaState *ms{mlMetaState[i]};
-            RCLCPP_INFO(my_logger, "#Metastates: %s", ms->toString().c_str());
+            LOG_INFO(my_logger, "#Metastates: %s", ms->toString().c_str());
             for (const auto &arc: ms->getSyncSucc()) {
-                RCLCPP_INFO(my_logger, "Arc: %s -> %s (%s)",
+                LOG_INFO(my_logger, "Arc: %s -> %s (%s)",
                             dss::arrayModelToStdString(*(arc->getStartProduct())).c_str(),
                             dss::arrayModelToStdString((arc->getMetaStateDest()->getName())).c_str(),
                             arc->getTransitionName().c_str());
             }
         }
-        RCLCPP_INFO(my_logger, "End stats...");
+        LOG_INFO(my_logger, "End stats...");
     }
 
 
@@ -164,7 +164,7 @@ namespace dss {
                 }
             }
             // Remove the metastate
-            RCLCPP_INFO(rclcpp::get_logger("ModuleSS"), "Removing equivalent metastate %s equivalent to %s", e_ms->toString().c_str(),ms->toString().c_str());
+            LOG_INFO(rclcpp::get_logger("ModuleSS"), "Removing equivalent metastate %s equivalent to %s", e_ms->toString().c_str(),ms->toString().c_str());
             removeMetaState(e_ms);
         }
     }

@@ -4,6 +4,18 @@
 
 #ifndef GMISC_H
 #define GMISC_H
+
+#define ENABLE_LOGGING 0  // Mettre à 0 pour désactiver, 1 pour activer
+
+#if ENABLE_LOGGING
+#define LOG_INFO RCLCPP_INFO
+#define LOG_ERROR RCLCPP_ERROR
+#else
+#define LOG_INFO(...)
+#define LOG_ERROR(...)
+#endif
+
+
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 #include "ros2dss_project/msg/command.hpp"
