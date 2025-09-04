@@ -2,15 +2,8 @@
 // Created by chiheb on 12/12/24.
 //
 
-#define ENABLE_LOGGING 1  // Mettre à 0 pour désactiver, 1 pour activer
 
-#if ENABLE_LOGGING
-#define LOG_INFO RCLCPP_INFO
-#define LOG_ERROR RCLCPP_ERROR
-#else
-#define LOG_INFO(...)
-#define LOG_ERROR(...)
-#endif
+
 
 #include "gmisc.h"
 #include <chrono>
@@ -38,7 +31,7 @@ int main(int argc, char * argv[]) {
     }
     auto petri {build.getPetriNet()};
     rclcpp::init(argc, argv);
-    rclcpp::WallRate loop_rate(100us);
+    rclcpp::WallRate loop_rate(100ms);
 
     auto syncNode {std::make_shared<SyncTransitionService>(petri)};
     auto executor {std::make_shared<rclcpp::executors::MultiThreadedExecutor>()};

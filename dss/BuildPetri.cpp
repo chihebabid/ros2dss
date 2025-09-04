@@ -172,7 +172,7 @@ namespace dss {
             /*************************************************/
             /** Lecture de transititions de syn,chronisation**/
             /*************************************************/
-            std::cout << "Determining synchronised transitions..." << std::endl;
+            //std::cout << "Determining synchronised transitions..." << std::endl;
             getNextWord();
             //std::string transition;
             std::vector<string> liste_sync;
@@ -180,7 +180,6 @@ namespace dss {
             do {
                 nom_transition = getNextWord();
                 if (nom_transition != "End") {
-                    cout << nom_transition.c_str() << " ";
                     temp = nom_transition;
                     liste_sync.emplace_back(std::move(temp));
                 }

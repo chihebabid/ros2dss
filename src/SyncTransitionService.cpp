@@ -10,7 +10,7 @@ SyncTransitionService::SyncTransitionService(dss::PetriNet  *petri):Node("sync_t
 
     if (petri->getPetriID()==0) {
        m_server=create_service<ros2dss::SyncTransition>("sync_transitions",std::bind(&SyncTransitionService::syncTransitionsService,this,_1,_2));
-       RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Server service for syncing transitions is created...\n");
+       LOG_INFO(rclcpp::get_logger("rclcpp"), "Server service for syncing transitions is created...\n");
     }
     else { // Creating client for the service
         auto client {create_client<ros2dss::SyncTransition>("sync_transitions")};
