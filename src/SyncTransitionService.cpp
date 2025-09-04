@@ -46,7 +46,6 @@ void SyncTransitionService::syncTransitionsService(const std::shared_ptr<ros2dss
    	}
     if (m_request_count==m_petri->getModulesCount()-1) {
         LOG_INFO(rclcpp::get_logger("rclcpp"), "Syncing is done...");
-        // for (
     	m_should_shutdown=true;
     }
 }
