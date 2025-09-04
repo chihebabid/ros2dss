@@ -1,15 +1,10 @@
 //
 // Created by chiheb on 12/12/24.
 //
-
-
-
-
 #include "gmisc.h"
 #include <chrono>
 
 using namespace chrono_literals;
-
 
 int main(int argc, char * argv[]) {
     dss::BuildPetri build;

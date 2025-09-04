@@ -1,0 +1,26 @@
+Total : 3
+Module : 1
+Places
+	Marquage : 2;
+   a1
+	Marquage : 0;
+   a2,a3
+End
+Transitions
+	   sync1,ta1,ta2;
+End
+Input
+   sync1 [ a3  ]
+   ta1  [ a1 ]
+   ta2  [ a2 ]
+
+End
+Output
+   sync1 [ a2 ]
+   ta1  [ a2 ]
+   ta2  [ a3 ]
+End
+
+Sync
+	sync1
+End
