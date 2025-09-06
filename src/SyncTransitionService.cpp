@@ -7,7 +7,7 @@ using std::placeholders::_1;
 using std::placeholders::_2;
 
 SyncTransitionService::SyncTransitionService(dss::PetriNet  *petri):Node("sync_transitions"+std::to_string(petri->getPetriID())),m_petri(petri) {
-
+	rclcpp::QoS qos(rclcpp::ServicesQoS());
     if (petri->getPetriID()==0) {
        m_server=create_service<ros2dss::SyncTransition>("sync_transitions",std::bind(&SyncTransitionService::syncTransitionsService,this,_1,_2));
        LOG_INFO(rclcpp::get_logger("rclcpp"), "Server service for syncing transitions is created...\n");
@@ -22,6 +22,7 @@ SyncTransitionService::SyncTransitionService(dss::PetriNet  *petri):Node("sync_t
                   RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Interrupted while waiting...");
                   return;
              }
+        	LOG_INFO(rclcpp::get_logger("rclcpp"), "Waiting for service...\n");
         }
 
         auto result {client->async_send_request(request)};
