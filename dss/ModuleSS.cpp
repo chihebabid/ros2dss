@@ -164,14 +164,16 @@ namespace dss {
                 }
             }
             // Remove the metastate
-            LOG_INFO(rclcpp::get_logger("ModuleSS"), "Removing equivalent metastate %s equivalent to %s", e_ms->toString().c_str(),ms->toString().c_str());
+            LOG_INFO(rclcpp::get_logger("ModuleSS"), "Removing equivalent metastate %s equivalent to %s\n", e_ms->toString().c_str(),ms->toString().c_str());
             removeMetaState(e_ms);
+            if (findExtendedMetaState(e_ms->getName())!=nullptr) {
+                LOG_INFO(rclcpp::get_logger("ModuleSS"), "Equivalent find! : %s \n",e_ms->toString().c_str());
+            }
         }
     }
 }
 
 ostream &operator<<(ostream &os, const dss::ModuleSS &ss) {
     //os << dt.mo << '/' << dt.da << '/' << dt.yr;
-
     return os;
 }

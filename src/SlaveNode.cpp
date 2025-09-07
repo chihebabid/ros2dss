@@ -54,14 +54,15 @@ auto SlaveNode::command_receiver(const ros2dss::Command &msg) -> void {
         LOG_INFO(get_logger(), "Send ACK_SET_METASTATE_NAME");
     } else if (msg.cmd == "MOVE_TO_METASTATE") {
         m_firing_sync_transition_service->cleanSCCs();
-        m_current_meta_state = m_module_ss->findMetaState(msg.scc);
+
+        ///m_current_meta_state = m_module_ss->findMetaState(msg.scc);
+
+        m_current_meta_state=m_module_ss->findExtendedMetaState(dss::vectorStringToArrayModel(msg.source_product));
         if (!m_current_meta_state) {
             RCLCPP_ERROR(get_logger(), "Didn\'t find requested metastate %s !", msg.scc.c_str());
         } else {
             auto enabled_sync_trans{m_petri->getSyncEnabled(m_current_meta_state)};
-            /*for (auto & elt : enabled_sync_trans) {
-        		LOG_INFO(get_logger(),"locally enabled sync %s\n",elt.c_str());
-    		}*/
+
             m_response.msg = "ACK_MOVE_TO_METASTATE";
             m_response.id = m_petri->getPetriID();
             std::vector<std::string> _vec{enabled_sync_trans.begin(), enabled_sync_trans.end()};

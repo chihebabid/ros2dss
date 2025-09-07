@@ -91,11 +91,11 @@ auto MasterNode::run() -> void {
                 m_meta_states_stack.pop();
                 auto manageFusion{m_petri->getManageTransitionFusionSet()};
                 manageFusion->reset();
+                m_command.scc="";
                 m_command.cmd = "MOVE_TO_METASTATE";
-                m_command.scc = m_current_meta_state->toString();
+                m_command.source_product = m_current_meta_state->getName();
                 m_command.transition = "";
                 m_command.target_ms.clear();
-                m_command.source_product.clear();
                 m_command_pub->publish(m_command);
                 m_current_state = state_t::PREPARE_COMPUTE_SYNC;
             }

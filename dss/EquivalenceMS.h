@@ -16,6 +16,7 @@ namespace dss {
     public:
         void insertMetaState(const ArrayModel<string> &ms);
         bool findMetaState(const ArrayModel<string> &ms) const;
+
         void mergeMetaStates(const EquivalenceMS &other) ;
     private:
         std::vector<ArrayModel<string>> ml_metastates;
