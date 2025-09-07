@@ -1,0 +1,41 @@
+Total : 4
+Module : 4
+
+Places
+    Marquage : 3;
+    Think_4, Fork_4
+    Marquage : 0;
+    Catch1_4, Catch2_4, Eat_4
+End
+
+Transitions
+    FF1a_4, FF1b_4, FF2a_4, FF2b_4, End_4,
+    FF1a_1, FF2b_1, End_1
+End
+
+Input
+    FF1a_4      [ Think_4 ]
+    FF1b_4      [ Think_4 ]
+    FF1b_4      [ Fork_4 ]
+    FF2a_4      [ Fork_4 ]
+    FF2a_4      [ Catch1_4 ]
+    FF2b_4      [ Catch2_4 ]
+    End_4       [ Eat_4 ]
+    FF1a_1      [ Fork_4 ]
+    FF2b_1      [ Fork_4 ]
+End
+
+Output
+    FF1a_4      [ Catch1_4 ]
+    FF1b_4      [ Catch2_4 ]
+    FF2a_4      [ Eat_4 ]
+    FF2b_4      [ Eat_4 ]
+    End_4       [ Think_4 ]
+    End_4       [ Fork_4 ]
+    End_1       [ Fork_4 ]
+End
+
+Sync
+    FF1a_1, FF1a_4, FF2b_1, FF2b_4, End_1, End_4
+End
+
