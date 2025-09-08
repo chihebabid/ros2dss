@@ -1,0 +1,35 @@
+Total : 3
+Module : 3
+Places
+	Marquage : 4;
+   c1
+	Marquage : 0;
+   c2,c3,c4,c5,c6,c7
+End
+Transitions
+	   sync1,sync2,tc1,tc2,tc3,tc4,tc5,tc6;
+End
+Input
+   tc1  [ c1 ]
+   tc2  [ c1 ]
+   sync1 [ c2  ]
+   sync2 [ c3  ]
+   tc3 [ c4 ]
+   tc4 [ c5 ]
+   tc5 [ c6 ]
+   tc6 [ c7 ]
+End
+
+Output
+   tc1  [ c2 ]
+   tc2  [ c3 ]
+   sync1 [ c5  ]
+   sync2 [ c4  ]
+   tc3 [ c6 ]
+   tc4 [ c6 ]
+   tc5 [ c7 ]
+   tc6 [ c1 ]
+End
+Sync
+	sync1,sync2
+End
