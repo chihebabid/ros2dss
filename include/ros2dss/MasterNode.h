@@ -44,7 +44,7 @@ private:
     std::vector<std::string> ml_enabled_fusion_sets; // Used to store the enabled fusion sets
 
     std::vector<std::shared_ptr<rclcpp::Client<ros2dss::InfoFiring>>> ml_clients_firing_info; // Used to store the clients for firing info
-
+    std::vector<std::shared_ptr<rclcpp::Client<ros2dss::FiringSyncTransitionSrv>>> ml_client_firing_service;
 
 };
 

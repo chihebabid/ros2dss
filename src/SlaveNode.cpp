@@ -37,12 +37,15 @@ auto SlaveNode::command_receiver(const ros2dss::Command &msg) -> void {
     if (msg.cmd == "INIT") {
         m_response.msg = "ACK";
         m_response.id = m_petri->getPetriID();
+        m_response.scc.clear();
+        m_response.sync.clear();
         m_response_pub->publish(m_response);
     } else if (msg.cmd == "GET_METASTATE") {
         m_current_meta_state = m_petri->getMetaState(m_petri->getMarquage());
         m_response.msg = "ACK_GET_METASTATE";
         m_response.id = m_petri->getPetriID();
         m_response.scc = m_petri->getSCCName(m_current_meta_state->getInitialSCC());
+        m_response.sync.clear();
         m_response_pub->publish(m_response);
         LOG_INFO(get_logger(), "Send ACK_GET_METASTATE: %s", m_response.scc.c_str());
     } else if (msg.cmd == "SET_METASTATE_NAME") {
@@ -50,6 +53,8 @@ auto SlaveNode::command_receiver(const ros2dss::Command &msg) -> void {
         m_module_ss->insertMS(m_current_meta_state);
         m_response.msg = "ACK_SET_METASTATE_NAME";
         m_response.id = m_petri->getPetriID();
+        m_response.scc.clear();
+        m_response.sync.clear();
         m_response_pub->publish(m_response);
         LOG_INFO(get_logger(), "Send ACK_SET_METASTATE_NAME");
     } else if (msg.cmd == "MOVE_TO_METASTATE") {
@@ -67,6 +72,7 @@ auto SlaveNode::command_receiver(const ros2dss::Command &msg) -> void {
             m_response.id = m_petri->getPetriID();
             std::vector<std::string> _vec{enabled_sync_trans.begin(), enabled_sync_trans.end()};
             m_response.sync = std::move(_vec);
+            m_response.scc.clear();
             m_response_pub->publish(m_response);
         }
     } else if (msg.cmd == "ADD_NEW_METASTATE") {
@@ -116,6 +122,7 @@ auto SlaveNode::command_receiver(const ros2dss::Command &msg) -> void {
         m_response.msg = "ACK_PROCESS_NODE";
         m_response.id = m_petri->getPetriID();
         m_response.sync.clear();
+        m_response.scc.clear();
         m_response_pub->publish(m_response);
     } else if (msg.cmd == "TERMINATE") {
         LOG_INFO(get_logger(), "Received command to terminate");
@@ -171,7 +178,6 @@ auto SlaveNode::executeService(const std::shared_ptr<ros2dss::InfoFiring::Reques
     // Check if the transition is found (the module is synchronized on it)
     if (m_petri->getTransitionPtr(req->transition)) {
         if (find_ms != m_firing_sync_transition_service->getFiringSyncTransitions().end()) {
-            //LOG_INFO(get_logger(), "The module is synchronized on transition %s",msg.transition.c_str());
             dss::Marking *p_marking{find_ms->getDestSCC()->getMetaState()->getInitialMarking()};
             dss::MetaState *new_ms{m_petri->getMetaState(*p_marking)};
             new_ms->setName(req->target_ms);
@@ -183,7 +189,6 @@ auto SlaveNode::executeService(const std::shared_ptr<ros2dss::InfoFiring::Reques
             RCLCPP_ERROR(get_logger(), "Destination SCC not found %s", scc_name.c_str());
         }
     } else {
-        // LOG_INFO(get_logger(), "The module is not synchronized on transition %s",msg.transition.c_str());
         dss::Marking *p_marking{m_current_meta_state->getInitialMarking()};
         dss::MetaState *new_ms{m_petri->getMetaState(*p_marking)};
         new_ms->setName(req->target_ms);

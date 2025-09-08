@@ -37,6 +37,20 @@ MasterNode::MasterNode(dss::PetriNet *petri,
             }
         }
     }
+
+    // Creating clients for firing sync transition services
+    ml_client_firing_service.resize(m_petri->getModulesCount());
+    for (size_t i{1}; i < m_petri->getModulesCount(); ++i) {
+        std::string client_name = "firing_sync_transitions_service" + std::to_string(i);
+        ml_client_firing_service[i] = create_client<ros2dss::FiringSyncTransitionSrv>(client_name);
+        LOG_INFO(get_logger(), "Created client for firing sync service: %s", client_name.c_str());
+        while (!ml_client_firing_service[i]->wait_for_service(10ms)) {
+            if (!rclcpp::ok()) {
+                RCLCPP_ERROR(get_logger(), "Service Firing Sync: interrupted while waiting...");
+
+            }
+        }
+    }
 }
 
 
@@ -77,6 +91,10 @@ auto MasterNode::run() -> void {
             LOG_INFO(get_logger(), "Current SM: SEND_METASTATE_NAME");
             m_command.cmd = "SET_METASTATE_NAME";
             m_command.sync = m_metastate_building_name;
+            m_command.scc.clear();
+            m_command.target_ms.clear();
+            m_command.source_product.clear();
+            m_command.transition.clear();
             m_command_pub->publish(m_command);
             statemachineMoveToState(state_t::POP_METASTATE);
             break;
@@ -91,10 +109,11 @@ auto MasterNode::run() -> void {
                 m_meta_states_stack.pop();
                 auto manageFusion{m_petri->getManageTransitionFusionSet()};
                 manageFusion->reset();
-                m_command.scc="";
+                m_command.scc.clear();
                 m_command.cmd = "MOVE_TO_METASTATE";
                 m_command.source_product = m_current_meta_state->getName();
-                m_command.transition = "";
+                m_command.transition.clear();
+                m_command.sync.clear();
                 m_command.target_ms.clear();
                 m_command_pub->publish(m_command);
                 m_current_state = state_t::PREPARE_COMPUTE_SYNC;
@@ -120,6 +139,8 @@ auto MasterNode::run() -> void {
             LOG_INFO(get_logger(), "Current SM: FIRE_SYNC");
             if (!fireSyncTransition()) {
                 m_command.cmd = "PROCESS_FIRE_SYNC_FINISH";
+                m_command.scc.clear();
+                m_command.sync.clear();
                 m_command.target_ms.clear();
                 m_command.source_product.clear();
                 m_command.transition.clear();
@@ -139,6 +160,9 @@ auto MasterNode::run() -> void {
         case state_t::TERMINATE_BUILDING:
             LOG_INFO(get_logger(), "Current SM: TERMINATE_BUILDING");
             m_command.cmd = "TERMINATE";
+            m_command.scc.clear();
+            m_command.target_ms.clear();
+            m_command.source_product.clear();
             m_command_pub->publish(m_command);
             m_module_ss->stats();
             requestShutdown();
@@ -250,9 +274,9 @@ auto MasterNode::fireSyncTransition() -> bool {
 
 auto MasterNode::executeFireSyncTransitionRequest(const uint32_t id_server,
                                                   const string &transition) -> std::vector<dss::firing_sync_t> {
-    std::vector<dss::firing_sync_t> res;
 
-    auto client_firing_service{
+
+    /*auto client_firing_service{
         create_client<ros2dss::FiringSyncTransitionSrv>("firing_sync_transitions_service" + std::to_string(id_server))
     };
     auto request{std::make_shared<ros2dss::FiringSyncTransitionSrv::Request>()};
@@ -262,15 +286,17 @@ auto MasterNode::executeFireSyncTransitionRequest(const uint32_t id_server,
             RCLCPP_ERROR(get_logger(), "Interrupted while waiting...");
             return res;
         }
-    }
-
-    auto future{client_firing_service->async_send_request(request)};
-    while (1) {
+    }*/
+    std::vector<dss::firing_sync_t> res;
+    auto request{std::make_shared<ros2dss::FiringSyncTransitionSrv::Request>()};
+    request->transition = transition;
+    auto future{ml_client_firing_service[id_server]->async_send_request(request)};
+    do  {
         m_executor->spin_some();
-        if (future.wait_for(10ms) == std::future_status::ready) {
+        if (future.wait_for(20ns) == std::future_status::ready) {
             break;
         }
-    }
+    } while (1);
 
     auto response{future.get()};
     for (const auto &f: response->lfiring) {
@@ -295,11 +321,11 @@ auto MasterNode::addFiringInfoRequest(const std::vector<std::string> &startProdu
     request->is_new = is_new;
     for (size_t i{1}; i < m_petri->getModulesCount(); ++i) {
         auto future{ml_clients_firing_info[i]->async_send_request(request)};
-        while (1) {
+        do  {
             m_executor->spin_some();
-            if (future.wait_for(2ms) == std::future_status::ready) {
+            if (future.wait_for(20ns) == std::future_status::ready) {
                 break;
             }
-        }
+        } while (1);
     }
 }
