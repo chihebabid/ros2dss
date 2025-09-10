@@ -93,9 +93,9 @@ namespace dss {
 
     void ModuleSS::stats() const {
         auto my_logger{rclcpp::get_logger("STATS")};
-        LOG_INFO(my_logger, "#Metastates: %ld", getMetaStateCount());
-        LOG_INFO(my_logger, "#States: %ld", getStatesCount());
-        LOG_INFO(my_logger, "#Edges: %ld", getSyncEdgesCount());
+        RCLCPP_WARN(my_logger, "#Metastates: %ld", getMetaStateCount());
+        RCLCPP_WARN(my_logger, "#States: %ld", getStatesCount());
+        RCLCPP_WARN(my_logger, "#Edges: %ld", getSyncEdgesCount());
         for (size_t i{}; i < getMetaStateCount(); ++i) {
             dss::MetaState *ms{mlMetaState[i]};
             LOG_INFO(my_logger, "#Metastates: %s", ms->toString().c_str());
@@ -173,7 +173,3 @@ namespace dss {
     }
 }
 
-ostream &operator<<(ostream &os, const dss::ModuleSS &ss) {
-    //os << dt.mo << '/' << dt.da << '/' << dt.yr;
-    return os;
-}
