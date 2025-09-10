@@ -1,0 +1,16 @@
+
+Files:             test_0.mcap
+Bag size:          35.7 KiB
+Storage id:        mcap
+ROS Distro:        jazzy
+Duration:          6.734366379s
+Start:             Sep 10 2025 20:57:51.177494515 (1757534271.177494515)
+End:               Sep 10 2025 20:57:57.911860894 (1757534277.911860894)
+Messages:          142
+Topic information: Topic: /dss/command | Type: ros2dss_project/msg/Command | Count: 18 | Serialization Format: cdr
+                   Topic: /dss/response | Type: ros2dss_project/msg/Response | Count: 115 | Serialization Format: cdr
+                   Topic: /events/write_split | Type: rosbag2_interfaces/msg/WriteSplitEvent | Count: 0 | Serialization Format: cdr
+                   Topic: /parameter_events | Type: rcl_interfaces/msg/ParameterEvent | Count: 0 | Serialization Format: cdr
+                   Topic: /rosout | Type: rcl_interfaces/msg/Log | Count: 9 | Serialization Format: cdr
+Service:           0
+Service information: 
