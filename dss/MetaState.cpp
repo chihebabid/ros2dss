@@ -66,7 +66,7 @@ namespace dss {
     bool MetaState::operator==(MetaState &ms) {
         if (ms.getListMarkings().size() != getListMarkings().size()) return false;
         for (auto &elt1: ms.getListMarkings()) {
-            bool found = false;
+            bool found {};
             for (const auto &elt2: getListMarkings()) {
                 if (*elt1 == *elt2) {
                     found = true;

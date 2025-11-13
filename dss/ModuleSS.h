@@ -40,7 +40,7 @@ namespace dss {
         void reduce(MetaState *ms);
 
     private:
-        bool reduceStep(MetaState *ms);
+        bool reduceStep(MetaState *ms,std::vector<MetaState*> &neighbours);
         MetaState *findEquivalentMS(MetaState *ms);
         std::vector<MetaState*> getPredMS(const MetaState *ms);
         vector<MetaState *> mlMetaState;

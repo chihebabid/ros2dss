@@ -2,6 +2,7 @@
 // Created by chiheb on 13/07/22.
 //
 #include <rclcpp/logging.hpp>
+#include <algorithm>
 #include "gmisc.h"
 #include "misc.h"
 
@@ -128,10 +129,6 @@ namespace dss {
                     bool areSame = true;
                     for (const auto &edge1: lEdges1) {
                         auto compare = [ms,elt,&edge1](ArcSync *arc) {
-                            /*if ((edge1->getMetaStateDest()==ms) and (edge1->getTransitionName() == arc->getTransitionName()) and
-                                       (elt == arc->getMetaStateDest())) {
-                                return true;
-                            }*/
                             return (edge1->getTransitionName() == arc->getTransitionName()) and ((edge1->getMetaStateDest()
                                    == arc->getMetaStateDest()) or
                                    ((edge1->getMetaStateDest()==ms or edge1->getMetaStateDest()==elt) and (arc->getMetaStateDest()==ms or arc->getMetaStateDest()==elt)));
@@ -165,23 +162,26 @@ namespace dss {
         std::stack<element_t> to_process;
         element_t elt {nullptr,{ms}};
         to_process.push(elt);
+        std::list<MetaState*> l_eq_metastates;
         while (!to_process.empty()) {
             element_t current_elt {to_process.top()};
             to_process.pop();
             while (!current_elt.pred_ms.empty()) {
                 auto ms_to_reduce {current_elt.pred_ms.back()};
                 current_elt.pred_ms.pop_back();
-                auto reduced {reduceStep(ms_to_reduce)};
-                if (current_elt.current_ms and reduced) {
-                    current_elt.pred_ms=getPredMS(current_elt.current_ms);
+                auto reduced {reduceStep(ms_to_reduce,current_elt.pred_ms)};
+                if (reduced) {
+                    l_eq_metastates.emplace_back(ms_to_reduce);
                 }
             }
-
-
+            for (const auto e:l_eq_metastates) {
+                to_process.push({e,getPredMS(e)});
+            }
+            l_eq_metastates.clear();
         }
     }
 
-    bool ModuleSS::reduceStep(MetaState *ms) {
+    bool ModuleSS::reduceStep(MetaState *ms,std::vector<MetaState*> &neighbours) {
         bool result{};
         MetaState* e_ms;
         while ( e_ms = findEquivalentMS(ms)) {
@@ -192,9 +192,15 @@ namespace dss {
                 for (const auto &edge: m->getSyncSucc()) {
                     if (edge->getMetaStateDest() == e_ms) edge->setDestination(ms);
                 }
+                // Remove edge duplicates ???
+
             }
             // Remove the metastate
             LOG_INFO(rclcpp::get_logger("ModuleSS"), "Removing equivalent metastate %s equivalent to %s\n", e_ms->toString().c_str(),ms->toString().c_str());
+            auto it {std::find(neighbours.begin(),neighbours.end(),e_ms)};
+            if (it!=neighbours.end()) {
+                neighbours.erase(it);
+            }
             removeMetaState(e_ms);
         }
         return result;

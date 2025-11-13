@@ -5,7 +5,7 @@
 #ifndef GMISC_H
 #define GMISC_H
 
-#define ENABLE_LOGGING 0  // 0: disable loggin, 1: enable
+#define ENABLE_LOGGING 1  // 0: disable loggin, 1: enable
 
 #if ENABLE_LOGGING
 #define LOG_INFO RCLCPP_INFO

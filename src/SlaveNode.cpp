@@ -151,8 +151,15 @@ auto SlaveNode::executeService(const std::shared_ptr<ros2dss::InfoFiring::Reques
             RCLCPP_ERROR(get_logger(), "Existant target MS not found %s", dss::vectorToStdString(req->target_ms).c_str());
             return;
         }
-        m_current_meta_state->addSyncArc(new dss::ArcSync{
-                dss::vectorStringToArrayModel(req->source_product), ms, req->transition});
+        // Add the sync arc
+        if (m_petri->getTransitionPtr(req->transition)) {
+            m_current_meta_state->addSyncArc(new dss::ArcSync{
+                    dss::vectorStringToArrayModel(req->source_product), ms, req->transition});
+        }
+        else {
+            m_current_meta_state->addSyncArc(new dss::ArcSync{
+                    dss::vectorStringToArrayModel(req->source_product), ms, "-"});
+        }
         return;
     }
 
@@ -194,7 +201,7 @@ auto SlaveNode::executeService(const std::shared_ptr<ros2dss::InfoFiring::Reques
         new_ms->setName(req->target_ms);
         m_module_ss->insertMS(new_ms);
         m_current_meta_state->addSyncArc(new dss::ArcSync{
-               dss::vectorStringToArrayModel(req->source_product), new_ms, req->transition
+               dss::vectorStringToArrayModel(req->source_product), new_ms, "-"
            });
     }
 }
