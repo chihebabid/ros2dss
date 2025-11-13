@@ -52,21 +52,22 @@ public:
     [[nodiscard]] bool getProcessedReduction() const;
     void setProcessedReduction(const bool v);
 private:
+    static uint32_t m_Counter;
     ArrayModel<string> m_metastate_name;
     EquivalenceMS m_equivalence;
-    size_t m_id_module;
-
-    vector<ArcSync *> mArcs;
-    uint32_t m_id;
-    static uint32_t m_Counter;
-
     vector<Marking *> m_nodes;
     vector<string> ml_transition_names;
     vector<SCC *> ml_scc;
-    unsigned int m_index; // Used in Tarjan algorithm
+    vector<ArcSync *> mArcs;
     vector<Marking *> m_stack;
+    size_t m_id_module;
+
+    uint32_t m_id;
+    unsigned int m_index; // Used in Tarjan algorithm
+    bool m_processed_reduction {};
+
     void computeStrongConnectedComponents(Marking *v);
-    bool m_processed_reduction {false};
+
 
 };
 }

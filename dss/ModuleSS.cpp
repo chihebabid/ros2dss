@@ -35,6 +35,7 @@ namespace dss {
     }
 
     size_t ModuleSS::getMetaStateCount() const {
+
         return mlMetaState.size();
     }
 
@@ -114,7 +115,7 @@ namespace dss {
  * @brief Check whether a metastate can be fused with another
  * @param ms a Metastate
  * @param module Module index
- * @return true if *ms can be fusedm else false
+ * @return true if *ms can be merged else false
  */
     MetaState *ModuleSS::findEquivalentMS(MetaState *ms) {
         for (const auto &elt: mlMetaState) {
@@ -127,12 +128,13 @@ namespace dss {
                     bool areSame = true;
                     for (const auto &edge1: lEdges1) {
                         auto compare = [ms,elt,&edge1](ArcSync *arc) {
-                            if ((edge1->getMetaStateDest()==ms) and (edge1->getTransitionName() == arc->getTransitionName()) and
+                            /*if ((edge1->getMetaStateDest()==ms) and (edge1->getTransitionName() == arc->getTransitionName()) and
                                        (elt == arc->getMetaStateDest())) {
                                 return true;
-                            }
-                            return edge1->getTransitionName() == arc->getTransitionName() && edge1->getMetaStateDest()
-                                   == arc->getMetaStateDest();
+                            }*/
+                            return (edge1->getTransitionName() == arc->getTransitionName()) and ((edge1->getMetaStateDest()
+                                   == arc->getMetaStateDest()) or
+                                   ((edge1->getMetaStateDest()==ms or edge1->getMetaStateDest()==elt) and (arc->getMetaStateDest()==ms or arc->getMetaStateDest()==elt)));
                         };
                         auto res = std::find_if(lEdges2.begin(), lEdges2.end(), compare);
                         if (res == lEdges2.end()) {
@@ -155,7 +157,35 @@ namespace dss {
     }
 
     void ModuleSS::reduce(MetaState *ms) {
-        if (auto e_ms = findEquivalentMS(ms); e_ms) {
+        bool changed{};
+        struct element_t {
+            MetaState *current_ms {};
+            std::vector<MetaState*> pred_ms;
+        };
+        std::stack<element_t> to_process;
+        element_t elt {nullptr,{ms}};
+        to_process.push(elt);
+        while (!to_process.empty()) {
+            element_t current_elt {to_process.top()};
+            to_process.pop();
+            while (!current_elt.pred_ms.empty()) {
+                auto ms_to_reduce {current_elt.pred_ms.back()};
+                current_elt.pred_ms.pop_back();
+                auto reduced {reduceStep(ms_to_reduce)};
+                if (current_elt.current_ms and reduced) {
+                    current_elt.pred_ms=getPredMS(current_elt.current_ms);
+                }
+            }
+
+
+        }
+    }
+
+    bool ModuleSS::reduceStep(MetaState *ms) {
+        bool result{};
+        MetaState* e_ms;
+        while ( e_ms = findEquivalentMS(ms)) {
+            result=true;
             ms->getEquivalence().mergeMetaStates(e_ms->getEquivalence());
             ms->getEquivalence().insertMetaState(e_ms->getName());
             for (const auto &m: mlMetaState) {
@@ -166,10 +196,21 @@ namespace dss {
             // Remove the metastate
             LOG_INFO(rclcpp::get_logger("ModuleSS"), "Removing equivalent metastate %s equivalent to %s\n", e_ms->toString().c_str(),ms->toString().c_str());
             removeMetaState(e_ms);
-            if (findExtendedMetaState(e_ms->getName())!=nullptr) {
-                LOG_INFO(rclcpp::get_logger("ModuleSS"), "Equivalent find! : %s \n",e_ms->toString().c_str());
+        }
+        return result;
+    }
+
+    std::vector<MetaState*> ModuleSS::getPredMS(const MetaState *ms) {
+        std::vector<MetaState*> res;
+        for (const auto elt : mlMetaState) {
+            auto it {find_if(elt->getSyncSucc().begin(),elt->getSyncSucc().end(),[ms](auto arc) {
+                return arc->getMetaStateDest()==ms;
+            })};
+            if (it!=elt->getSyncSucc().end()) {
+                res.push_back(elt);
             }
         }
+        return res;
     }
 }
 

@@ -40,7 +40,9 @@ namespace dss {
         void reduce(MetaState *ms);
 
     private:
+        bool reduceStep(MetaState *ms);
         MetaState *findEquivalentMS(MetaState *ms);
+        std::vector<MetaState*> getPredMS(const MetaState *ms);
         vector<MetaState *> mlMetaState;
         size_t m_id_module;
     };
